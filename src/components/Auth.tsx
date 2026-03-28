@@ -421,8 +421,13 @@ export default function Auth({ onLogin }: AuthProps) {
           </AnimatePresence>
         </motion.div>
 
-        <div className="mt-8 flex items-center justify-center gap-8 opacity-30 grayscale">
-          <img src="https://upload.wikimedia.org/wikipedia/en/2/23/Shahjalal_University_of_Science_and_Technology_logo.png" alt="SUST Logo" className="h-12" />
+        <div className="mt-8 flex flex-col items-center justify-center gap-6">
+          <div className="flex items-center justify-center gap-8 opacity-30 grayscale">
+            <img src="https://upload.wikimedia.org/wikipedia/en/2/23/Shahjalal_University_of_Science_and_Technology_logo.png" alt="SUST Logo" className="h-12" />
+          </div>
+          <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest opacity-50">
+            Copy right, developed by Honestime Inc.
+          </p>
         </div>
       </div>
     </div>

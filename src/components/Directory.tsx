@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import * as d3 from "d3";
 import { 
   Map as MapIcon, 
   Search, 
@@ -8,16 +9,126 @@ import {
   Users, 
   MessageCircle,
   Linkedin,
-  GraduationCap
+  GraduationCap,
+  X,
+  User
 } from "lucide-react";
 
-const alumniData = [
-  { id: 1, name: "Dr. S. Ahmed", batch: "2008-09", location: "Geneva, Switzerland", role: "Research Scientist at CERN", lat: 46.2044, lng: 6.1432 },
-  { id: 2, name: "N. Sultana", batch: "2012-13", location: "Mountain View, USA", role: "Senior Data Scientist at Google", lat: 37.3861, lng: -122.0839 },
-  { id: 3, name: "M. Rahman", batch: "2015-16", location: "Dhaka, Bangladesh", role: "Assistant Professor at SUST", lat: 23.8103, lng: 90.4125 },
-  { id: 4, name: "A. Karim", batch: "2010-11", location: "London, UK", role: "Quantitative Analyst at Goldman Sachs", lat: 51.5074, lng: -0.1278 },
-  { id: 5, name: "F. Begum", batch: "2018-19", location: "Tokyo, Japan", role: "PhD Candidate at University of Tokyo", lat: 35.6762, lng: 139.6503 },
-];
+const WorldMap = ({ alumni }: { alumni: any[] }) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [selectedAlumni, setSelectedAlumni] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    const svg = d3.select(svgRef.current);
+    const width = svgRef.current.clientWidth;
+    const height = svgRef.current.clientHeight;
+
+    svg.selectAll("*").remove();
+
+    const projection = d3.geoMercator()
+      .scale(width / 6.5)
+      .translate([width / 2, height / 1.5]);
+
+    const path = d3.geoPath().projection(projection);
+
+    // Fetch world map data
+    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then((data: any) => {
+      svg.append("g")
+        .selectAll("path")
+        .data(data.features)
+        .enter()
+        .append("path")
+        .attr("d", path as any)
+        .attr("fill", "#18181b")
+        .attr("stroke", "#27272a")
+        .attr("stroke-width", 0.5);
+
+      // Add markers
+      const markers = svg.append("g")
+        .selectAll("circle")
+        .data(alumni.filter(a => a.lat && a.lng))
+        .enter()
+        .append("circle")
+        .attr("cx", d => projection([d.lng, d.lat])![0])
+        .attr("cy", d => projection([d.lng, d.lat])![1])
+        .attr("r", 5)
+        .attr("fill", "#f97316")
+        .attr("stroke", "#ffffff")
+        .attr("stroke-width", 1)
+        .attr("class", "cursor-pointer hover:scale-150 transition-transform")
+        .on("click", (event, d) => {
+          setSelectedAlumni(d);
+        });
+
+      // Add pulse effect
+      markers.each(function() {
+        const marker = d3.select(this);
+        const repeat = () => {
+          marker.transition()
+            .duration(1000)
+            .attr("r", 8)
+            .attr("opacity", 0.5)
+            .transition()
+            .duration(1000)
+            .attr("r", 5)
+            .attr("opacity", 1)
+            .on("end", repeat);
+        };
+        repeat();
+      });
+    });
+  }, [alumni]);
+
+  return (
+    <div className="relative w-full h-full">
+      <svg ref={svgRef} className="w-full h-full" />
+      
+      <AnimatePresence>
+        {selectedAlumni && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 w-80 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-2xl z-50"
+          >
+            <button 
+              onClick={() => setSelectedAlumni(null)}
+              className="absolute top-2 right-2 p-1 text-zinc-500 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div className="flex items-center gap-4 mb-4">
+              <img 
+                src={selectedAlumni.photoURL} 
+                alt={selectedAlumni.displayName} 
+                className="w-12 h-12 rounded-xl object-cover border border-zinc-700"
+              />
+              <div>
+                <h4 className="text-sm font-bold text-white">{selectedAlumni.displayName}</h4>
+                <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Batch {selectedAlumni.batch}</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-xs text-zinc-400">
+                <Globe className="w-3 h-3 text-zinc-600" />
+                <span>{selectedAlumni.location}</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-zinc-400">
+                <Users className="w-3 h-3 text-zinc-600" />
+                <span>{selectedAlumni.currentIndustry || "Alumni"}</span>
+              </div>
+            </div>
+            <button className="w-full mt-4 py-2 bg-white text-black text-xs font-bold rounded-xl hover:scale-105 transition-transform">
+              View Full Profile
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 export default function Directory() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -137,20 +248,8 @@ export default function Directory() {
           ))}
         </div>
       ) : (
-        <div className="h-[60vh] w-full bg-zinc-900 border border-zinc-800 rounded-3xl relative overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 opacity-20 pointer-events-none" 
-               style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-          <div className="text-center space-y-4">
-            <Globe className="w-16 h-16 text-zinc-700 mx-auto animate-pulse" />
-            <p className="text-zinc-500 font-mono text-xs uppercase tracking-widest">Interactive Alumni Map Initializing...</p>
-            <div className="flex flex-wrap justify-center gap-2 max-w-md">
-              {filteredAlumni.map(a => (
-                <div key={a.uid} className="px-3 py-1 bg-zinc-800 border border-zinc-700 rounded-full text-[10px] text-zinc-400">
-                  {a.location}
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="h-[60vh] w-full bg-zinc-950 border border-zinc-800 rounded-3xl relative overflow-hidden">
+          <WorldMap alumni={filteredAlumni} />
         </div>
       )}
     </div>

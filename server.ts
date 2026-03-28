@@ -22,13 +22,15 @@ let users: Record<string, any> = {
     thesisTopic: "Nonlinear Optics",
     currentIndustry: "Data Science",
     location: "Mountain View, USA",
+    lat: 37.3861,
+    lng: -122.0839,
     whatsapp: "+1234567890",
     skills: ["Python", "Physics", "Machine Learning"],
     aspirations: "Transitioning into Quantum Machine Learning and seeking leadership roles in tech.",
     mentorshipRole: "mentee",
-    role: "alumni",
+    role: "admin",
     isPublic: true,
-    photoURL: "https://picsum.photos/seed/alumni/200"
+    photoURL: "https://picsum.photos/seed/alumni/200",
   },
   "alumni-2": {
     uid: "alumni-2",
@@ -38,6 +40,8 @@ let users: Record<string, any> = {
     thesisTopic: "Higgs Boson Decay",
     currentIndustry: "Research",
     location: "Geneva, Switzerland",
+    lat: 46.2044,
+    lng: 6.1432,
     whatsapp: "+411234567",
     skills: ["Particle Physics", "C++", "Data Analysis", "Mentoring"],
     aspirations: "Contributing to large-scale international research collaborations and mentoring young physicists.",
@@ -54,6 +58,8 @@ let users: Record<string, any> = {
     thesisTopic: "Semiconductor Physics",
     currentIndustry: "Hardware Engineering",
     location: "Hillsboro, USA",
+    lat: 45.5231,
+    lng: -122.9898,
     whatsapp: "+1503987654",
     skills: ["VLSI", "Photonics", "Team Leadership"],
     aspirations: "Leading hardware innovation at Intel and helping juniors navigate the semiconductor industry.",
@@ -70,6 +76,8 @@ let users: Record<string, any> = {
     thesisTopic: "Quantum Computing",
     currentIndustry: "Academia",
     location: "Zurich, Switzerland",
+    lat: 47.3769,
+    lng: 8.5417,
     whatsapp: "+4178123456",
     skills: ["Quantum Algorithms", "Qiskit", "Research"],
     aspirations: "Completing PhD and moving into industrial quantum research. Looking for guidance on industry transitions.",
@@ -86,6 +94,8 @@ let users: Record<string, any> = {
     thesisTopic: "Computational Physics",
     currentIndustry: "Software Engineering",
     location: "London, UK",
+    lat: 51.5074,
+    lng: -0.1278,
     whatsapp: "+44771234567",
     skills: ["Go", "Distributed Systems", "Cloud Computing"],
     aspirations: "Scaling global infrastructure at Google. Interested in mentoring those switching from physics to software.",
@@ -93,6 +103,24 @@ let users: Record<string, any> = {
     role: "alumni",
     isPublic: true,
     photoURL: "https://picsum.photos/seed/fahim/200"
+  },
+  "alumni-6": {
+    uid: "alumni-6",
+    displayName: "M. Rahman",
+    email: "rahman@sust.edu",
+    batch: "2015-16",
+    thesisTopic: "Atmospheric Physics",
+    currentIndustry: "Academia",
+    location: "Sylhet, Bangladesh",
+    lat: 24.8949,
+    lng: 91.8687,
+    whatsapp: "+8801712345678",
+    skills: ["Meteorology", "Data Analysis", "Teaching"],
+    aspirations: "Advancing atmospheric research in Bangladesh and improving weather prediction models.",
+    mentorshipRole: "mentor",
+    role: "alumni",
+    isPublic: true,
+    photoURL: "https://picsum.photos/seed/rahman/200"
   }
 };
 
@@ -770,6 +798,54 @@ async function startServer() {
   app.post("/api/auth/logout", (req, res) => {
     currentUser = null;
     res.json({ success: true });
+  });
+
+  // Admin Routes
+  app.get("/api/admin/stats", (req, res) => {
+    if (!currentUser || users[currentUser]?.role !== "admin") {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    res.json({
+      totalUsers: Object.keys(users).length,
+      activeOpportunities: opportunities.length,
+      researchPapers: researchItems.length,
+      pendingVerifications: 0, // Mocked for now
+      systemStatus: "Healthy",
+      lastAiUpdate
+    });
+  });
+
+  app.get("/api/admin/users", (req, res) => {
+    if (!currentUser || users[currentUser]?.role !== "admin") {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    res.json(Object.values(users));
+  });
+
+  app.put("/api/admin/users/:uid", (req, res) => {
+    if (!currentUser || users[currentUser]?.role !== "admin") {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    const { uid } = req.params;
+    if (users[uid]) {
+      users[uid] = { ...users[uid], ...req.body };
+      res.json(users[uid]);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  });
+
+  app.delete("/api/admin/users/:uid", (req, res) => {
+    if (!currentUser || users[currentUser]?.role !== "admin") {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    const { uid } = req.params;
+    if (users[uid]) {
+      delete users[uid];
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
   });
 
   // Profile Routes

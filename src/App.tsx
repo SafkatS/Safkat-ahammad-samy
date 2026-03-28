@@ -14,7 +14,8 @@ import {
   Search,
   Menu,
   X,
-  ChevronRight
+  ChevronRight,
+  Shield
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import Dashboard from "./components/Dashboard";
@@ -28,6 +29,7 @@ import Notice from "./components/Notice";
 import Events from "./components/Events";
 import Sponsor from "./components/Sponsor";
 import Newsletter from "./components/Newsletter";
+import AdminPanel from "./components/AdminPanel";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -109,6 +111,10 @@ export default function App() {
     { id: "profile", label: "Profile", icon: Settings },
   ];
 
+  if (profile?.role === "admin") {
+    navItems.splice(navItems.length - 1, 0, { id: "admin", label: "Admin", icon: Shield });
+  }
+
   return (
     <div className="h-screen w-full flex bg-zinc-950 text-zinc-100 overflow-hidden">
       {/* Sidebar */}
@@ -151,6 +157,11 @@ export default function App() {
             <LogOut className="w-5 h-5 shrink-0" />
             {isSidebarOpen && <span className="font-medium">Sign Out</span>}
           </button>
+          {isSidebarOpen && (
+            <div className="mt-4 px-3 text-[10px] text-zinc-600 font-mono uppercase tracking-tighter">
+              Copy right, developed by Honestime Inc.
+            </div>
+          )}
         </div>
       </motion.aside>
 
@@ -211,8 +222,14 @@ export default function App() {
               {activeTab === "events" && <Events />}
               {activeTab === "sponsor" && <Sponsor />}
               {activeTab === "newsletter" && <Newsletter />}
+              {activeTab === "admin" && <AdminPanel />}
             </motion.div>
           </AnimatePresence>
+          <footer className="mt-12 pt-8 border-t border-zinc-900 text-center pb-8">
+            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">
+              Copy right, developed by Honestime Inc.
+            </p>
+          </footer>
         </div>
 
         {/* Floating WhatsApp Action */}
