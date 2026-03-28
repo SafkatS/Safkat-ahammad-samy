@@ -1,0 +1,7 @@
+{
+  "name": "SUST Physics Alumni Hub",
+  "description": "An intelligent, globally connected ecosystem for SUST Physics Alumni featuring AI-driven mentorship, career matching, and research collaboration.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
