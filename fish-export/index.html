@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oceanora Seafood</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Oceanora Seafood exports frozen Black Tiger shrimp, freshwater prawn, hilsa, mud crab, pangasius and cephalopods from the Bay of Bengal to 40+ countries. HACCP, EU-approved, FDA-registered. Request a CFR/FOB quote in 24 hours.">
+<meta property="og:title" content="Oceanora Seafood — Bay of Bengal seafood exporter">
+<meta property="og:description" content="Frozen shrimp, prawn, hilsa, crab and finfish. EU-approved processing, −18 °C cold chain, quotes within 24 hours.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Oceanora Seafood","description":"Exporter of frozen shrimp, prawn, finfish, crab and cephalopods from Bangladesh.","areaServed":["EU","GB","US","JP","CN","AE","SA","KR"],"contactPoint":{"@type":"ContactPoint","contactType":"sales","availableLanguage":["English","Bengali","Arabic"]}}
+</script>
+<style>
+/* Layout: a cold-store spec sheet — wide ink bands for the story, ruled "spec cards" for product data, mono for anything a buyer would copy into a PO. */
+:root{
+  --ink:#0A2730;          /* Bay of Bengal at depth */
+  --ink-2:#123843;
+  --ice:#F1F6F5;          /* frost on a carton */
+  --paper:#FFFFFF;
+  --line:#D3E0DE;
+  --muted:#4F6B70;
+  --fg:#0A2730;
+  --bg:#F1F6F5;
+  --surface:#FFFFFF;
+  --coral:#E0522F;        /* cooked tiger shrimp */
+  --coral-ink:#B83E1E;
+  --frost:#7FD1C7;        /* reefer display */
+  --band:#0A2730;
+  --band-fg:#E8F2F0;
+  --band-muted:#9DB9BC;
+  --good:#1F8A5B;
+  --focus:#E0522F;
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r:6px;
+  --wrap:1180px;
+  --gutter-l:max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r:max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --fg:#E6F0EE; --bg:#071C22; --surface:#0D2A32; --line:#1E434D; --muted:#93AFB3;
+    --band:#04141A; --band-fg:#E6F0EE; --band-muted:#8FAEB2;
+    --coral:#F2714F; --coral-ink:#FF8E6E; --frost:#7FD1C7; --good:#4CC28A; --focus:#F2714F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --fg:#E6F0EE; --bg:#071C22; --surface:#0D2A32; --line:#1E434D; --muted:#93AFB3;
+  --band:#04141A; --band-fg:#E6F0EE; --band-muted:#8FAEB2;
+  --coral:#F2714F; --coral-ink:#FF8E6E; --frost:#7FD1C7; --good:#4CC28A; --focus:#F2714F;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--band)}
+img,svg{max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:var(--f-display);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.02em}
+h2{font-size:clamp(2rem,4.2vw,3.25rem);font-weight:800}
+h3{font-size:1.25rem;font-weight:600;letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:var(--gutter-l);padding-right:var(--gutter-r)}
+.eyebrow{font:600 .75rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--coral-ink)}
+.band .eyebrow{color:var(--frost)}
+.lede{font-size:1.125rem;color:var(--muted);max-width:62ch}
+.band .lede{color:var(--band-muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.5rem;font:600 .95rem/1 var(--f-body);padding:.9rem 1.25rem;border-radius:var(--r);border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:transform .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--coral);color:#fff}
+.btn-primary:hover{background:var(--coral-ink)}
+.btn-ghost{border-color:currentColor;background:transparent;color:inherit}
+.btn-wa{background:#1FAF5A;color:#fff}
+.btn svg{width:18px;height:18px;flex:none}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--band);color:var(--band-fg);border-bottom:1px solid rgba(255,255,255,.08)}
+.top .wrap{display:flex;align-items:center;gap:1.5rem;height:68px}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;font:800 1.2rem/1 var(--f-display);letter-spacing:-.02em}
+.logo svg{width:34px;height:34px}
+.nav{display:flex;gap:1.4rem;margin-left:auto;font-weight:500;font-size:.95rem}
+.nav a{text-decoration:none;color:var(--band-muted)}
+.nav a:hover{color:var(--band-fg)}
+.top .btn{padding:.65rem 1rem}
+.menu-btn{display:none;margin-left:auto;background:none;border:1px solid rgba(255,255,255,.25);color:inherit;border-radius:var(--r);padding:.5rem .7rem;font:600 .9rem var(--f-body)}
+@media (max-width:920px){
+  .nav{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:var(--band);padding:.5rem var(--gutter-r) 1rem var(--gutter-l);border-bottom:1px solid rgba(255,255,255,.1)}
+  .nav.open{display:flex}
+  .nav a{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .menu-btn{display:block}
+  .top .cta-top{display:none}
+}
+
+/* Hero */
+.hero{background:var(--band);color:var(--band-fg);position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.25fr .9fr;gap:3rem;padding-block:4.5rem 5.5rem;position:relative;z-index:1}
+.hero h1{font-size:clamp(2.6rem,6.4vw,5.4rem);font-weight:800;margin:1rem 0 1.4rem}
+.hero h1 em{font-style:normal;color:var(--frost);white-space:nowrap}
+.hero .actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:2rem;margin-top:2.75rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.12)}
+.hero-meta div{min-width:0}
+.hero-meta b{display:block;font:800 2rem/1 var(--f-display);color:var(--band-fg)}
+.hero-meta span{font-size:.85rem;color:var(--band-muted)}
+.waves{position:absolute;left:0;right:0;bottom:-2px;height:120px;z-index:0;opacity:.9}
+.waves path{fill:none;stroke:var(--frost);stroke-opacity:.18;stroke-width:1.2}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.waves g{animation:drift 26s linear infinite}
+
+/* Reefer readout */
+.reefer{align-self:center;background:#03141A;border:1px solid #1E434D;border-radius:10px;padding:1.4rem;font-family:var(--f-mono);color:#CFE6E3;box-shadow:0 30px 60px -30px rgba(0,0,0,.6);min-width:0}
+.reefer-head{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#7FA3A7}
+.live{display:inline-flex;align-items:center;gap:.4rem;color:#7FD1C7}
+.live i{width:8px;height:8px;border-radius:50%;background:#7FD1C7;box-shadow:0 0 0 0 rgba(127,209,199,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(127,209,199,0)}100%{box-shadow:0 0 0 0 rgba(127,209,199,0)}}
+.temp{font-size:clamp(3rem,7vw,4.4rem);font-weight:600;color:#7FD1C7;line-height:1;margin:1rem 0 .3rem;font-variant-numeric:tabular-nums}
+.temp small{font-size:1.4rem;color:#7FA3A7}
+.reefer dl{display:grid;grid-template-columns:auto 1fr;gap:.45rem 1rem;margin:1.2rem 0 0;font-size:.82rem}
+.reefer dt{color:#7FA3A7}
+.reefer dd{margin:0;text-align:right;color:#E6F0EE;font-variant-numeric:tabular-nums}
+.route{margin-top:1.2rem;padding-top:1rem;border-top:1px dashed #1E434D;font-size:.78rem;color:#7FA3A7}
+.track{height:4px;background:#1E434D;border-radius:2px;margin-top:.6rem;position:relative}
+.track b{position:absolute;left:0;top:0;bottom:0;width:62%;background:linear-gradient(90deg,#7FD1C7,#E0522F);border-radius:2px}
+.reefer .note{font-size:.68rem;color:#5C7F84;margin-top:.9rem}
+@media (max-width:920px){.hero .wrap{grid-template-columns:1fr;padding-block:3rem 5rem}}
+
+/* Cert strip */
+.certs{border-bottom:1px solid var(--line);background:var(--surface)}
+.certs .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 2rem;padding-block:1.3rem}
+.certs .label{font:600 .72rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cert{font:700 .9rem var(--f-display);letter-spacing:.02em;color:var(--fg);display:flex;align-items:center;gap:.4rem}
+.cert::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--good)}
+
+section{padding-block:6rem}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:end;margin-bottom:3rem}
+.sec-head > *{min-width:0}
+.sec-head h2{margin-top:.8rem}
+@media (max-width:820px){.sec-head{grid-template-columns:1fr}section{padding-block:4rem}}
+
+/* Products */
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.75rem}
+.chip{font:600 .88rem var(--f-body);padding:.55rem 1rem;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;min-width:0}
+.spec-top{padding:1.3rem 1.3rem 1rem;display:flex;gap:1rem;align-items:flex-start;border-bottom:1px solid var(--line)}
+.spec-top svg{width:58px;height:40px;flex:none;color:var(--coral)}
+.spec-top div{min-width:0}
+.spec .latin{font-style:italic;color:var(--muted);font-size:.9rem}
+.spec .local{font:600 .7rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--coral-ink);margin-top:.3rem}
+.spec table{width:100%;border-collapse:collapse;font-size:.86rem}
+.spec th{text-align:left;font:600 .68rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.55rem 1.3rem;width:34%;vertical-align:top;font-weight:600}
+.spec td{padding:.55rem 1.3rem .55rem 0;vertical-align:top}
+.spec tr+tr th,.spec tr+tr td{border-top:1px dashed var(--line)}
+.spec-foot{margin-top:auto;padding:1rem 1.3rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid var(--line)}
+.spec-foot .hs{font:600 .8rem var(--f-mono);color:var(--muted)}
+.add{font:600 .85rem var(--f-body);padding:.55rem .9rem;border-radius:var(--r);border:1.5px solid var(--coral);background:transparent;color:var(--coral-ink);cursor:pointer}
+.add[aria-pressed="true"]{background:var(--coral);color:#fff}
+.flag{font:600 .7rem var(--f-mono);background:color-mix(in srgb,var(--coral) 14%,transparent);color:var(--coral-ink);padding:.2rem .45rem;border-radius:4px;margin-left:.3rem;white-space:nowrap}
+
+/* Cold chain */
+.band{background:var(--band);color:var(--band-fg)}
+.chain{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);gap:0;position:relative}
+.chain li{padding:1.5rem 1.2rem 0 0;position:relative;min-width:0}
+.chain li::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad,#7FD1C7)}
+.chain .t{font:600 1.9rem/1 var(--f-mono);color:var(--frost);font-variant-numeric:tabular-nums;margin-bottom:.75rem;display:block}
+.chain .step{font:600 .7rem var(--f-mono);letter-spacing:.12em;color:var(--band-muted);text-transform:uppercase}
+.chain h3{margin:.4rem 0 .5rem;font-size:1.1rem}
+.chain p{font-size:.9rem;color:var(--band-muted)}
+@media (max-width:980px){.chain{grid-template-columns:repeat(2,1fr);row-gap:2rem}}
+@media (max-width:520px){.chain{grid-template-columns:1fr}}
+.chain-note{margin-top:2.5rem;font-size:.85rem;color:var(--band-muted);font-family:var(--f-mono)}
+
+/* Quality */
+.quality{display:grid;grid-template-columns:1.1fr 1fr;gap:2.5rem}
+.quality > *{min-width:0}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.checks div{background:var(--surface);padding:1.25rem}
+.checks b{display:block;font:600 1rem var(--f-display);margin-bottom:.3rem}
+.checks span{font-size:.88rem;color:var(--muted)}
+.trace{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.5rem}
+.trace form{display:flex;gap:.5rem;margin:1rem 0 1.25rem;flex-wrap:wrap}
+.trace input{flex:1;min-width:0;font:600 1rem var(--f-mono);padding:.8rem 1rem;border:1.5px solid var(--line);border-radius:var(--r);background:var(--bg);color:var(--fg);text-transform:uppercase}
+.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--line)}
+.timeline li{padding:0 0 1rem 1.1rem;position:relative;font-size:.9rem}
+.timeline li::before{content:"";position:absolute;left:-6px;top:.45rem;width:10px;height:10px;border-radius:50%;background:var(--good)}
+.timeline li.nodot::before{display:none}
+.timeline time{font:600 .75rem var(--f-mono);color:var(--muted);display:block}
+.sample-tag{font:600 .68rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:900px){.quality{grid-template-columns:1fr}}
+@media (max-width:480px){.checks{grid-template-columns:1fr}}
+
+/* Markets + calculator */
+.markets{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem}
+.markets > *{min-width:0}
+.ports{width:100%;border-collapse:collapse;font-size:.92rem}
+.ports th{text-align:left;font:600 .7rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.6rem .5rem;border-bottom:2px solid var(--fg)}
+.ports td{padding:.75rem .5rem;border-bottom:1px solid var(--line);vertical-align:top}
+.ports td.mono{white-space:nowrap}
+.tbl{overflow-x:auto}
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.5rem}
+.calc .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.calc .row > *{min-width:0}
+.out{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:1.5rem;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.out div{background:var(--bg);padding:1rem}
+.out b{display:block;font:600 1.6rem/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.out span{font-size:.78rem;color:var(--muted)}
+@media (max-width:900px){.markets{grid-template-columns:1fr}}
+@media (max-width:480px){.calc .row{grid-template-columns:1fr}.out{grid-template-columns:1fr}}
+
+/* Forms */
+label{display:block;font-weight:600;font-size:.88rem;margin-bottom:.35rem}
+.f{display:flex;flex-direction:column;min-width:0}
+input,select,textarea{font:inherit;font-size:1rem;padding:.75rem .9rem;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--fg);width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px color-mix(in srgb,var(--coral) 25%,transparent)}
+textarea{min-height:110px;resize:vertical}
+.hint{font-size:.8rem;color:var(--muted);margin-top:.3rem}
+
+/* Ordering steps */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem 2.5rem;counter-reset:s}
+.steps li{counter-increment:s;padding-top:1rem;border-top:1px solid var(--line);min-width:0}
+.steps li::before{content:counter(s,decimal-leading-zero);font:600 .8rem var(--f-mono);color:var(--coral-ink);display:block;margin-bottom:.6rem}
+.steps h3{margin-bottom:.4rem}
+.steps p{color:var(--muted);font-size:.95rem}
+@media (max-width:820px){.steps{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* RFQ */
+.rfq{display:grid;grid-template-columns:.8fr 1.2fr;gap:3rem}
+.rfq > *{min-width:0}
+.rfq-form{background:var(--surface);color:var(--fg);border-radius:10px;padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+.rfq-form .full{grid-column:1/-1}
+.basket{display:flex;flex-wrap:wrap;gap:.4rem;min-height:2.6rem;padding:.5rem;border:1.5px dashed var(--line);border-radius:var(--r)}
+.basket:empty::before{content:"Add products from the catalogue, or list them below.";color:var(--muted);font-size:.88rem;padding:.3rem}
+.pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:.3rem .4rem .3rem .8rem;font-size:.85rem;font-weight:600}
+.pill button{border:0;background:var(--line);color:var(--fg);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:.9rem;line-height:1}
+.consent{display:flex;gap:.6rem;align-items:flex-start;font-weight:400;font-size:.85rem;color:var(--muted)}
+.consent input{width:auto;margin-top:.2rem}
+.status{grid-column:1/-1;font-size:.92rem;padding:.9rem 1rem;border-radius:var(--r);background:color-mix(in srgb,var(--good) 12%,transparent);color:var(--fg);border:1px solid color-mix(in srgb,var(--good) 40%,transparent)}
+.status.err{background:color-mix(in srgb,var(--coral) 12%,transparent);border-color:color-mix(in srgb,var(--coral) 45%,transparent)}
+.contact-list{list-style:none;margin:2rem 0 0;padding:0;display:grid;gap:1rem}
+.contact-list li{display:grid;grid-template-columns:110px 1fr;gap:1rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.1);font-size:.95rem}
+.contact-list span{font:600 .7rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--band-muted);padding-top:.25rem}
+.contact-list a{text-decoration:none;color:var(--band-fg);word-break:break-word}
+.contact-list a:hover{text-decoration:underline}
+.channel-btns{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.75rem}
+@media (max-width:900px){.rfq{grid-template-columns:1fr}}
+@media (max-width:560px){.rfq-form{grid-template-columns:1fr;padding:1.25rem}}
+
+/* FAQ */
+.faq{max-width:860px}
+details{border-bottom:1px solid var(--line);padding:1.1rem 0}
+summary{cursor:pointer;font:600 1.1rem var(--f-display);list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::after{content:"+";font-family:var(--f-mono);color:var(--coral-ink)}
+details[open] summary::after{content:"–"}
+details p{margin-top:.7rem;color:var(--muted);max-width:68ch}
+
+/* Footer */
+footer{background:var(--band);color:var(--band-muted);font-size:.88rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;padding-block:2rem calc(2rem + env(safe-area-inset-bottom,0px))}
+footer a{color:var(--band-fg)}
+
+/* Floating WhatsApp + consent */
+.wa-float{position:fixed;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:70;width:58px;height:58px;border-radius:50%;background:#1FAF5A;color:#fff;display:grid;place-items:center;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);text-decoration:none}
+.wa-float svg{width:30px;height:30px}
+.cookie{position:fixed;left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));right:calc(92px + env(safe-area-inset-right,0px));max-width:520px;z-index:69;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem;box-shadow:0 20px 40px -20px rgba(0,0,0,.35);font-size:.88rem;display:grid;gap:.75rem}
+.cookie div{display:flex;gap:.5rem;flex-wrap:wrap}
+.cookie .btn{padding:.55rem .9rem;font-size:.85rem}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:.7rem 1.1rem;border-radius:var(--r);font-weight:600;font-size:.9rem;z-index:80;max-width:calc(100% - 32px)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Oceanora Seafood home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#E0522F"/><path d="M8 21c4-6 11-8 18-4l6-4-1.5 7 1.5 7-6-4c-7 4-14 2-18-2z" fill="#0A2730"/><circle cx="14" cy="19.5" r="1.4" fill="#F1F6F5"/><path d="M6 29c3 0 3-1.6 6-1.6s3 1.6 6 1.6 3-1.6 6-1.6 3 1.6 6 1.6 3-1.6 4-1.6" stroke="#F1F6F5" stroke-width="1.4" fill="none"/></svg>
+      <span data-brand>Oceanora</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#products">Products</a>
+      <a href="#cold-chain">Cold chain</a>
+      <a href="#quality">Quality</a>
+      <a href="#markets">Markets</a>
+      <a href="#ordering">Ordering</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+    <a class="btn btn-primary cta-top" href="#rfq" data-track="cta_header">Request a quote</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" style="padding:0">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Bay of Bengal · Est. processing in Khulna &amp; Chattogram</p>
+        <h1>Sundarbans seafood, landed in your cold store at <em>−18 °C</em>.</h1>
+        <p class="lede">Oceanora processes and exports Black Tiger shrimp, freshwater prawn, hilsa, mud crab and finfish for importers, distributors and retail private label across Europe, the Gulf, North America and East Asia. Price offers within 24 hours, FOB Chattogram or CFR to your port.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#rfq" data-track="cta_hero">Get a CFR price offer</a>
+          <a class="btn btn-wa" href="#" data-wa="Hello Oceanora, I'd like your current price list." data-track="whatsapp_click">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3z"/></svg>
+            WhatsApp the export desk
+          </a>
+        </div>
+        <div class="hero-meta">
+          <div><b class="mono">40+</b><span>importing countries</span></div>
+          <div><b class="mono">12,000 MT</b><span>annual frozen capacity</span></div>
+          <div><b class="mono">24 h</b><span>quote turnaround</span></div>
+        </div>
+      </div>
+
+      <aside class="reefer" aria-label="Example reefer container readout">
+        <div class="reefer-head"><span>Reefer · OCNU 482193-7</span><span class="live"><i></i>Live</span></div>
+        <div class="temp" id="reeferTemp">−20.1<small> °C</small></div>
+        <div style="font-size:.78rem;color:#7FA3A7">Set point −20.0 °C · Return air</div>
+        <dl>
+          <dt>Cargo</dt><dd>HLSO Black Tiger 16/20</dd>
+          <dt>Pack</dt><dd>6 × 1.8 kg block</dd>
+          <dt>Net weight</dt><dd>21,600 kg</dd>
+          <dt>Cartons</dt><dd>2,000</dd>
+          <dt>Humidity</dt><dd id="reeferHum">87 %</dd>
+        </dl>
+        <div class="route">
+          <div style="display:flex;justify-content:space-between"><span>CGP Chattogram</span><span>RTM Rotterdam</span></div>
+          <div class="track"><b></b></div>
+          <div style="margin-top:.5rem">Day 19 of 31 · via Colombo</div>
+        </div>
+        <p class="note">Example readout. Buyers get real reefer telemetry on every shipment.</p>
+      </aside>
+    </div>
+    <svg class="waves" viewBox="0 0 2400 120" preserveAspectRatio="none" aria-hidden="true"><g>
+      <path d="M0 60 Q 150 20 300 60 T 600 60 T 900 60 T 1200 60 T 1500 60 T 1800 60 T 2100 60 T 2400 60"/>
+      <path d="M0 80 Q 150 45 300 80 T 600 80 T 900 80 T 1200 80 T 1500 80 T 1800 80 T 2100 80 T 2400 80"/>
+      <path d="M0 100 Q 150 72 300 100 T 600 100 T 900 100 T 1200 100 T 1500 100 T 1800 100 T 2100 100 T 2400 100"/>
+    </g></svg>
+  </section>
+
+  <div class="certs">
+    <div class="wrap">
+      <span class="label">Approvals</span>
+      <span class="cert">HACCP</span>
+      <span class="cert">EU-approved establishment</span>
+      <span class="cert">US FDA registered</span>
+      <span class="cert">BRCGS Food Safety</span>
+      <span class="cert">BAP</span>
+      <span class="cert">ISO 22000</span>
+      <span class="cert">Halal</span>
+    </div>
+  </div>
+
+  <section id="products">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Catalogue · 13 species</p>
+          <h2>Spec sheets, not brochures.</h2>
+        </div>
+        <p class="lede">Every line lists the cut, the count grade and the pack your buyers ask for. Pick the products you need and they go straight into your quote request.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter products">
+        <button class="chip" aria-pressed="true" data-filter="all">All</button>
+        <button class="chip" aria-pressed="false" data-filter="shrimp">Shrimp &amp; prawn</button>
+        <button class="chip" aria-pressed="false" data-filter="finfish">Finfish</button>
+        <button class="chip" aria-pressed="false" data-filter="shell">Crab &amp; cephalopods</button>
+        <button class="chip" aria-pressed="false" data-filter="dried">Dried &amp; value-added</button>
+      </div>
+      <div class="grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <section id="cold-chain" class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Cold chain · pond to port</p>
+          <h2>Six temperatures between the pond and your port.</h2>
+        </div>
+        <p class="lede">Product is iced within an hour of harvest and never climbs back above 4 °C. Each stage is logged against the lot code printed on the master carton.</p>
+      </div>
+      <ol class="chain">
+        <li style="--grad:#B5E3DC"><span class="t">0–4°</span><span class="step">Step 1</span><h3>Harvest &amp; icing</h3><p>Flake ice 1:1 at farm gate in Satkhira, Bagerhat and Cox's Bazar.</p></li>
+        <li style="--grad:#9ED9D0"><span class="t">≤4°</span><span class="step">Step 2</span><h3>Depot &amp; grading</h3><p>Insulated trucks to plant. Received, washed and size-graded by count.</p></li>
+        <li style="--grad:#86CFC4"><span class="t">≤4°</span><span class="step">Step 3</span><h3>Processing</h3><p>Heading, peeling and deveining in a chilled hall. Antibiotic screen per lot.</p></li>
+        <li style="--grad:#6FC5B9"><span class="t">−35°</span><span class="step">Step 4</span><h3>IQF / plate freeze</h3><p>Spiral IQF or plate freezer until core reaches −18 °C. Glaze 5–20 % as specified.</p></li>
+        <li style="--grad:#58BBAE"><span class="t">−22°</span><span class="step">Step 5</span><h3>Cold storage</h3><p>Palletised in master cartons. Pre-shipment inspection by SGS or Bureau Veritas.</p></li>
+        <li style="--grad:#E0522F"><span class="t">−20°</span><span class="step">Step 6</span><h3>Reefer to port</h3><p>40′ reefer loaded at plant, sealed, and tracked to your destination port.</p></li>
+      </ol>
+      <p class="chain-note">Core temperature is probed and recorded at steps 2, 4, 5 and 6.</p>
+    </div>
+  </section>
+
+  <section id="quality">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Quality &amp; compliance</p>
+          <h2>Tested by lot, traceable to the pond.</h2>
+        </div>
+        <p class="lede">Every shipment travels with a health certificate from the Department of Fisheries, a certificate of origin and a lab report for the exact lot you receive.</p>
+      </div>
+      <div class="quality">
+        <div class="checks">
+          <div><b>Antibiotic residues</b><span>Nitrofurans, chloramphenicol and malachite green by LC-MS/MS on every lot.</span></div>
+          <div><b>Heavy metals</b><span>Lead, cadmium and mercury below EU 2023/915 limits.</span></div>
+          <div><b>Microbiology</b><span>TPC, E. coli, Salmonella, Vibrio and Listeria before release.</span></div>
+          <div><b>Sulphite-free on request</b><span>Melanosis control with 4-hexylresorcinol for EU and Japan buyers.</span></div>
+          <div><b>Net weight control</b><span>Deglazed weight checked on 13 cartons per 2,000 to Codex CAC/GL 50.</span></div>
+          <div><b>Private label</b><span>Retail bags and printed cartons to your artwork, barcodes and language.</span></div>
+        </div>
+        <div class="trace">
+          <span class="sample-tag">Lot trace · try the sample code</span>
+          <h3 style="margin-top:.5rem">Where did this carton come from?</h3>
+          <form id="traceForm" autocomplete="off">
+            <label class="sr" for="lot">Lot code</label>
+            <input id="lot" name="lot" value="OCN-26-1187" aria-describedby="lotHint">
+            <button class="btn btn-primary" type="submit">Trace lot</button>
+          </form>
+          <p class="hint" id="lotHint" style="margin-top:-.6rem;margin-bottom:1rem">The lot code is printed on the side of every master carton.</p>
+          <ol class="timeline" id="traceOut"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="markets" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Markets &amp; logistics</p>
+          <h2>Weekly sailings from Chattogram and Mongla.</h2>
+        </div>
+        <p class="lede">We quote FOB, CFR or CIF. Transit times below are typical for feeder via Colombo or Singapore.</p>
+      </div>
+      <div class="markets">
+        <div class="tbl">
+          <table class="ports">
+            <thead><tr><th>Region</th><th>Main ports</th><th>Transit</th></tr></thead>
+            <tbody>
+              <tr><td>European Union</td><td>Rotterdam, Antwerp, Hamburg, Valencia</td><td class="mono">28–34 d</td></tr>
+              <tr><td>United Kingdom</td><td>Felixstowe, London Gateway</td><td class="mono">30–35 d</td></tr>
+              <tr><td>GCC</td><td>Jebel Ali, Dammam, Jeddah, Doha</td><td class="mono">14–20 d</td></tr>
+              <tr><td>North America</td><td>New York/NJ, Savannah, Los Angeles, Vancouver</td><td class="mono">35–45 d</td></tr>
+              <tr><td>East Asia</td><td>Tokyo, Busan, Shanghai, Hong Kong</td><td class="mono">18–26 d</td></tr>
+              <tr><td>South Asia</td><td>Kolkata (road via Benapole), Colombo</td><td class="mono">2–7 d</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="calc" id="calc">
+          <p class="eyebrow">Load planner</p>
+          <h3 style="margin-top:.5rem">How much fits in one reefer?</h3>
+          <div class="row">
+            <div class="f"><label for="cContainer">Container</label>
+              <select id="cContainer">
+                <option value="40">40′ reefer high cube</option>
+                <option value="20">20′ reefer</option>
+              </select></div>
+            <div class="f"><label for="cPack">Master carton</label>
+              <select id="cPack">
+                <option value="block">6 × 1.8 kg block (10.8 kg)</option>
+                <option value="iqf" selected>10 × 1 kg IQF bags (10 kg)</option>
+                <option value="bulk">20 kg bulk IQF</option>
+                <option value="fish">Whole fish, 20 kg carton</option>
+              </select></div>
+          </div>
+          <div class="out" aria-live="polite">
+            <div><b id="oCartons">—</b><span>cartons</span></div>
+            <div><b id="oNet">—</b><span>net MT</span></div>
+            <div><b id="oPallets">—</b><span>pallets (if palletised)</span></div>
+          </div>
+          <p class="hint" style="margin-top:1rem">Estimate, floor-loaded, using 88 % of internal volume and the container's payload limit. We confirm exact loading in the proforma invoice.</p>
+          <button class="btn btn-ghost" style="margin-top:1rem" id="calcToRfq" type="button">Use this in my quote</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ordering">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Ordering</p>
+          <h2>From first message to bill of lading.</h2>
+        </div>
+        <p class="lede">A first container usually ships 3–5 weeks after the signed contract, depending on season and grade.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Request a quote</h3><p>Send species, cut, grade, pack and port. You get a price offer within 24 hours.</p></li>
+        <li><h3>Samples</h3><p>Frozen samples by courier on dry ice, or a video inspection of current stock.</p></li>
+        <li><h3>Contract &amp; payment</h3><p>Proforma invoice. Payment by irrevocable L/C at sight or T/T with deposit.</p></li>
+        <li><h3>Production &amp; inspection</h3><p>Packed to your spec. Third-party pre-shipment inspection with photos per lot.</p></li>
+        <li><h3>Shipment</h3><p>Reefer booked, sealed at plant, telemetry shared. Documents couriered or via eBL.</p></li>
+        <li><h3>Arrival &amp; claims</h3><p>Our team supports border inspection. Quality claims answered within 48 hours.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="rfq" class="band">
+    <div class="wrap rfq">
+      <div>
+        <p class="eyebrow">Request for quotation</p>
+        <h2 style="margin-top:.8rem">Tell us what you need. We reply within 24 hours.</h2>
+        <p class="lede" style="margin-top:1.2rem">Your request reaches the export desk instantly. A confirmation arrives by email, and on WhatsApp if you add your number.</p>
+        <ul class="contact-list">
+          <li><span>WhatsApp</span><a href="#" data-wa="Hello Oceanora export desk" data-track="whatsapp_click" data-show="whatsappDisplay"></a></li>
+          <li><span>Messenger</span><a href="#" data-messenger data-track="messenger_click">m.me/<span data-show-text="messengerPage"></span></a></li>
+          <li><span>Email</span><a href="#" data-mail data-track="email_click"></a></li>
+          <li><span>Plant</span><a>Rupsha Industrial Area, Khulna 9203, Bangladesh</a></li>
+          <li><span>Hours</span><a>Sat–Thu 09:00–19:00 BST (UTC+6). WhatsApp answered 7 days.</a></li>
+        </ul>
+      </div>
+
+      <form class="rfq-form" id="rfqForm" novalidate>
+        <div class="f full">
+          <label>Products</label>
+          <div class="basket" id="basket" aria-live="polite"></div>
+        </div>
+        <div class="f"><label for="company">Company</label><input id="company" name="company" required autocomplete="organization"></div>
+        <div class="f"><label for="name">Your name</label><input id="name" name="name" required autocomplete="name"></div>
+        <div class="f"><label for="email">Work email</label><input id="email" name="email" type="email" required autocomplete="email"></div>
+        <div class="f"><label for="whatsapp">WhatsApp number</label><input id="whatsapp" name="whatsapp" type="tel" placeholder="+31 6 1234 5678" autocomplete="tel"><span class="hint">Optional. Include the country code.</span></div>
+        <div class="f"><label for="country">Country</label><input id="country" name="country" required autocomplete="country-name"></div>
+        <div class="f"><label for="port">Destination port</label><input id="port" name="port" placeholder="e.g. Rotterdam"></div>
+        <div class="f"><label for="incoterm">Incoterm</label>
+          <select id="incoterm" name="incoterm"><option>CFR</option><option>CIF</option><option>FOB Chattogram</option><option>Not sure yet</option></select></div>
+        <div class="f"><label for="volume">Volume</label>
+          <select id="volume" name="volume">
+            <option value="sample">Samples only</option>
+            <option value="lcl">Less than 1 container</option>
+            <option value="1" selected>1 × 40′ reefer</option>
+            <option value="2-4">2–4 containers / month</option>
+            <option value="5+">5+ containers / month</option>
+          </select></div>
+        <div class="f"><label for="buyerType">You are a</label>
+          <select id="buyerType" name="buyerType"><option>Importer / distributor</option><option>Retail chain</option><option>Food service</option><option>Processor / re-packer</option><option>Trading agent</option></select></div>
+        <div class="f"><label for="shipMonth">Target shipment</label><input id="shipMonth" name="shipMonth" type="month"></div>
+        <div class="f full"><label for="details">Specification details</label><textarea id="details" name="details" placeholder="Cut, count grade, glaze %, pack, brand/label, certificates required…"></textarea></div>
+        <label class="consent full" for="consent"><input type="checkbox" id="consent" name="consent" required> I agree that Oceanora may store these details to prepare a quote and contact me about it. We never share your data with third parties.</label>
+        <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
+        <div class="full" style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-primary" type="submit" id="rfqSubmit">Send quote request</button>
+          <span class="hint" style="margin:0">Takes under a minute.</span>
+        </div>
+        <div class="status" id="rfqStatus" role="status" hidden></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <p class="eyebrow">FAQ</p>
+      <h2 style="margin:.8rem 0 2rem">Questions buyers ask first</h2>
+      <div class="faq">
+        <details><summary>What is your minimum order?</summary><p>One 20′ reefer for a single product, or one 40′ reefer that can be split across up to four products. Retail private label starts at one 40′ container.</p></details>
+        <details><summary>Can you export hilsa?</summary><p>Hilsa export from Bangladesh needs a government permit and is limited to published quotas and seasons. Tell us your volume and we will confirm availability under the current quota.</p></details>
+        <details><summary>Which payment terms do you accept?</summary><p>Irrevocable L/C at sight from a first-class bank, or T/T with 30 % advance and the balance against scanned documents. Repeat buyers can apply for CAD terms.</p></details>
+        <details><summary>Do you pack under our brand?</summary><p>Yes. We print retail bags and master cartons to your artwork, including EAN/UPC barcodes, multilingual labels and the EU establishment number.</p></details>
+        <details><summary>How do you handle quality claims?</summary><p>Send photos and the lot code within 7 days of arrival. We respond within 48 hours and settle agreed claims by credit note or replacement on the next shipment.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr">2026</span> <span data-brand>Oceanora</span> Seafood Ltd. · Khulna, Bangladesh</span>
+    <span>EU approval no. <span class="mono">BD-000</span> · FDA reg. <span class="mono">00000000000</span></span>
+  </div>
+</footer>
+
+<a class="wa-float" href="#" data-wa="Hello Oceanora, I have a question about your seafood." data-track="whatsapp_click" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3z"/></svg>
+</a>
+
+<div class="cookie" id="cookie" hidden>
+  <span>We use first-party analytics to understand which products buyers look at. No ad trackers.</span>
+  <div><button class="btn btn-primary" id="ckYes" type="button">Accept</button><button class="btn btn-ghost" id="ckNo" type="button">Decline</button></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============================================================
+   CONFIG — edit these values to go live. Nothing else needs changing.
+   ============================================================ */
+const CONFIG = {
+  brand: "Oceanora",
+  whatsappNumber: "8801700000000",        // international format, digits only
+  whatsappDisplay: "+880 1700-000000",
+  email: "export@oceanora-seafood.com",
+  messengerPage: "oceanoraseafood",       // facebook page username for m.me links
+  // n8n production webhook URLs (Webhook node → "Production URL").
+  // Leave empty to run the site in demo mode (form shows success locally).
+  rfqWebhook: "",                          // e.g. https://n8n.yourdomain.com/webhook/oceanora-rfq
+  eventsWebhook: "",                       // e.g. https://n8n.yourdomain.com/webhook/oceanora-events
+};
+
+/* ---------- Product catalogue ---------- */
+const FISH = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20c8-11 26-14 38-4l12-8-3 12 3 12-12-8C30 34 12 31 4 20z"/><circle cx="14" cy="18" r="1.6" fill="currentColor"/></svg>';
+const SHRIMP = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M46 10c-14-6-32 2-32 16 0 6 5 9 10 8"/><path d="M46 10c4 4 4 12-2 17-5 4-12 6-20 7"/><path d="M24 34l-6 4m6-4l-2 5m2-5l3 5"/><path d="M46 10l10-6M46 10l12 1"/><path d="M22 18v8m6-12v12m6-13v12m6-9v8"/></svg>';
+const CRAB = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="30" cy="24" rx="14" ry="9"/><path d="M16 22l-8-8m0 0l-2-6m2 6l6-2M44 22l8-8m0 0l2-6m-2 6l-6-2M18 30l-6 5m10-3l-3 6m22-8l6 5m-10-3l3 6"/></svg>';
+const SQUID = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20l10-8h20c6 0 10 4 10 8s-4 8-10 8H16z"/><path d="M46 17l10-3m-10 6h12m-12 3l10 3"/><circle cx="38" cy="20" r="1.6" fill="currentColor"/></svg>';
+
+const PRODUCTS = [
+  {id:"bt", cat:"shrimp", icon:SHRIMP, name:"Black Tiger shrimp", latin:"Penaeus monodon", local:"Bagda chingri", hs:"0306.17", flag:"Bestseller",
+   cut:"HOSO, HLSO, PD, PDTO, PUD, Nobashi, cooked", grade:"U/5 – 71/90 pcs/lb", pack:"6 × 1.8 kg block · 10 × 1 kg IQF"},
+  {id:"gp", cat:"shrimp", icon:SHRIMP, name:"Giant freshwater prawn", latin:"Macrobrachium rosenbergii", local:"Golda chingri", hs:"0306.17",
+   cut:"HOSO, HLSO, PUD", grade:"2/4 – 21/30 pcs/kg (HOSO)", pack:"6 × 2 kg block · 10 × 1 kg IQF"},
+  {id:"vn", cat:"shrimp", icon:SHRIMP, name:"Whiteleg shrimp", latin:"Litopenaeus vannamei", local:"Vannamei", hs:"0306.17",
+   cut:"HLSO, PD, PDTO, cooked ring", grade:"21/25 – 91/110 pcs/lb", pack:"10 × 1 kg IQF · 5 kg bulk"},
+  {id:"pk", cat:"shrimp", icon:SHRIMP, name:"Brown & pink shrimp", latin:"Metapenaeus monoceros", local:"Harina / Chaka", hs:"0306.17",
+   cut:"HOSO, PUD, PD", grade:"100/200 – 300/500 pcs/kg", pack:"6 × 2 kg block"},
+  {id:"hl", cat:"finfish", icon:FISH, name:"Hilsa", latin:"Tenualosa ilisha", local:"Ilish", hs:"0303.89", flag:"Quota",
+   cut:"Whole round, frozen", grade:"500–700 g · 700–1,000 g · 1 kg+", pack:"10 kg & 20 kg carton"},
+  {id:"pg", cat:"finfish", icon:FISH, name:"Pangasius fillet", latin:"Pangasianodon hypophthalmus", local:"Pangas", hs:"0304.62",
+   cut:"Well-trimmed fillet, skinless boneless", grade:"120–170 · 170–220 · 220 g+", pack:"10 kg IQF, 0–20 % glaze"},
+  {id:"tl", cat:"finfish", icon:FISH, name:"Tilapia", latin:"Oreochromis niloticus", local:"Telapia", hs:"0303.23",
+   cut:"Whole gutted scaled, fillet", grade:"300–500 · 500–800 g", pack:"10 kg IQF carton"},
+  {id:"rh", cat:"finfish", icon:FISH, name:"Rohu & Indian carp", latin:"Labeo rohita", local:"Rui, Katla, Mrigal", hs:"0303.25",
+   cut:"Whole, steaks, curry cut", grade:"1–2 · 2–3 · 3 kg+", pack:"20 kg carton · 1 kg retail"},
+  {id:"pf", cat:"finfish", icon:FISH, name:"Silver pomfret", latin:"Pampus argenteus", local:"Rupchanda", hs:"0303.89",
+   cut:"Whole round, IQF", grade:"4–6 · 6–8 · 8–10 pcs/kg", pack:"10 kg carton"},
+  {id:"rb", cat:"finfish", icon:FISH, name:"Ribbonfish", latin:"Trichiurus lepturus", local:"Churi", hs:"0303.89",
+   cut:"Whole round, block frozen", grade:"100–200 · 200–300 · 300 g+", pack:"10 kg block"},
+  {id:"mc", cat:"shell", icon:CRAB, name:"Mud crab", latin:"Scylla serrata", local:"Kakra", hs:"0306.33 / 0306.14",
+   cut:"Live (air-freight), soft-shell frozen", grade:"200–300 · 300–400 · 400 g+", pack:"Live: 10 kg styro · Frozen: 1 kg tray"},
+  {id:"sq", cat:"shell", icon:SQUID, name:"Squid & cuttlefish", latin:"Uroteuthis duvaucelii · Sepia pharaonis", local:"Kalamari", hs:"0307.43",
+   cut:"Whole cleaned, tubes, rings, fillet", grade:"U/5 – 20/40 pcs/kg", pack:"6 × 2 kg block · 10 × 1 kg IQF"},
+  {id:"df", cat:"dried", icon:FISH, name:"Dried fish", latin:"Harpadon nehereus · Trichiurus", local:"Loitta (Bombay duck), Churi shutki", hs:"0305.59",
+   cut:"Sun-dried, salt-free", grade:"Large · Medium", pack:"5 kg & 10 kg carton, vacuum 500 g"}
+];
+
+/* ---------- Helpers ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const store = { get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2600)}
+const qs = new URLSearchParams(location.search);
+const utm = {}; ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","fbclid"].forEach(k=>{if(qs.get(k))utm[k]=qs.get(k)});
+const visitorId = store.get("oc_vid") || ("v_"+Math.random().toString(36).slice(2,10)+Date.now().toString(36)); store.set("oc_vid",visitorId);
+
+/* ---------- Visitor events → n8n (consent-gated) ---------- */
+let consent = store.get("oc_consent");
+function track(event, data={}){
+  if(consent!=="yes" || !CONFIG.eventsWebhook) return;
+  const body = JSON.stringify({event, data, visitorId, page:location.pathname+location.hash, referrer:document.referrer||null, utm, lang:navigator.language, ts:new Date().toISOString()});
+  try{ if(navigator.sendBeacon) navigator.sendBeacon(CONFIG.eventsWebhook, new Blob([body],{type:"text/plain"})); else fetch(CONFIG.eventsWebhook,{method:"POST",body,keepalive:true}); }catch(e){}
+}
+if(consent==null) $("#cookie").hidden=false;
+$("#ckYes").onclick=()=>{consent="yes";store.set("oc_consent","yes");$("#cookie").hidden=true;track("page_view")};
+$("#ckNo").onclick=()=>{consent="no";store.set("oc_consent","no");$("#cookie").hidden=true};
+if(consent==="yes") track("page_view");
+
+/* ---------- Brand & channel links ---------- */
+$$("[data-brand]").forEach(e=>e.textContent=CONFIG.brand);
+$("#yr").textContent=new Date().getFullYear();
+$$("[data-wa]").forEach(a=>{a.href="https://wa.me/"+CONFIG.whatsappNumber+"?text="+encodeURIComponent(a.dataset.wa);a.target="_blank";a.rel="noopener"});
+$$('[data-show="whatsappDisplay"]').forEach(a=>a.textContent=CONFIG.whatsappDisplay);
+$$("[data-messenger]").forEach(a=>{a.href="https://m.me/"+CONFIG.messengerPage;a.target="_blank";a.rel="noopener"});
+$$('[data-show-text="messengerPage"]').forEach(s=>s.textContent=CONFIG.messengerPage);
+$$("[data-mail]").forEach(a=>{a.href="mailto:"+CONFIG.email+"?subject="+encodeURIComponent("Seafood enquiry");a.textContent=CONFIG.email});
+document.addEventListener("click",e=>{const t=e.target.closest("[data-track]");if(t)track(t.dataset.track,{label:t.textContent.trim().slice(0,60)})});
+
+/* Mobile menu */
+$("#menuBtn").onclick=function(){const n=$("#nav");const o=n.classList.toggle("open");this.setAttribute("aria-expanded",o)};
+$$("#nav a").forEach(a=>a.addEventListener("click",()=>{$("#nav").classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false")}));
+
+/* ---------- Reefer readout (sample telemetry) ---------- */
+(function(){let t=-20.1;setInterval(()=>{t=Math.max(-20.6,Math.min(-19.6,t+(Math.random()-.5)*.2));$("#reeferTemp").firstChild.nodeValue=(t<0?"−":"")+Math.abs(t).toFixed(1);$("#reeferHum").textContent=(85+Math.round(Math.random()*4))+" %"},3000)})();
+
+/* ---------- Catalogue + RFQ basket ---------- */
+let basket = store.get("oc_basket") || [];
+function renderProducts(filter="all"){
+  $("#productGrid").innerHTML = PRODUCTS.filter(p=>filter==="all"||p.cat===filter).map(p=>`
+    <article class="spec" data-id="${p.id}">
+      <div class="spec-top">${p.icon}<div><h3>${p.name}${p.flag?`<span class="flag">${p.flag}</span>`:""}</h3><div class="latin">${p.latin}</div><div class="local">${p.local}</div></div></div>
+      <table><tr><th>Cuts</th><td>${p.cut}</td></tr><tr><th>Grades</th><td class="mono" style="font-size:.82rem">${p.grade}</td></tr><tr><th>Pack</th><td>${p.pack}</td></tr></table>
+      <div class="spec-foot"><span class="hs">HS ${p.hs}</span><button class="add" type="button" data-add="${p.id}" aria-pressed="${basket.includes(p.id)}">${basket.includes(p.id)?"Added to quote":"Add to quote"}</button></div>
+    </article>`).join("");
+}
+function renderBasket(){
+  $("#basket").innerHTML = basket.map(id=>{const p=PRODUCTS.find(x=>x.id===id);return p?`<span class="pill">${p.name}<button type="button" data-remove="${id}" aria-label="Remove ${p.name}">×</button></span>`:""}).join("");
+  store.set("oc_basket",basket);
+}
+$$(".chip").forEach(c=>c.onclick=()=>{$$(".chip").forEach(x=>x.setAttribute("aria-pressed","false"));c.setAttribute("aria-pressed","true");renderProducts(c.dataset.filter);track("catalogue_filter",{filter:c.dataset.filter})});
+document.addEventListener("click",e=>{
+  const a=e.target.closest("[data-add]");
+  if(a){const id=a.dataset.add;if(basket.includes(id)){basket=basket.filter(x=>x!==id)}else{basket.push(id);toast("Added to your quote request");track("rfq_item_added",{product:id})}
+    a.setAttribute("aria-pressed",basket.includes(id));a.textContent=basket.includes(id)?"Added to quote":"Add to quote";renderBasket()}
+  const r=e.target.closest("[data-remove]");
+  if(r){basket=basket.filter(x=>x!==r.dataset.remove);renderBasket();const b=$(`[data-add="${r.dataset.remove}"]`);if(b){b.setAttribute("aria-pressed","false");b.textContent="Add to quote"}}
+});
+renderProducts();renderBasket();
+
+/* ---------- Lot trace (sample data) ---------- */
+function trace(code){
+  code=code.trim().toUpperCase();
+  const ok=/^OCN-\d{2}-\d{3,5}$/.test(code);
+  const out=$("#traceOut");
+  if(!ok){out.innerHTML=`<li class="nodot">Lot codes look like <span class="mono">OCN-26-1187</span>. Check the carton side label.</li>`;return}
+  const n=parseInt(code.slice(-4),10)||1187;
+  const farms=["Shyamnagar, Satkhira","Mongla, Bagerhat","Paikgachha, Khulna","Chakaria, Cox's Bazar"];
+  out.innerHTML=[
+    ["14 Sep · 05:40","Harvested", farms[n%4]+" · pond BD-"+(1000+n%900)+" · iced at 2.1 °C"],
+    ["14 Sep · 09:15","Received at plant","Core 3.4 °C · graded 16/20 · 1,940 kg"],
+    ["14 Sep · 16:30","Lab release","Nitrofurans, CAP: not detected · TPC within limit"],
+    ["15 Sep · 02:10","Plate frozen","Core −18.6 °C · 6 × 1.8 kg block · glaze 10 %"],
+    ["22 Sep · 11:00","Loaded","Reefer set −20 °C · seal OC"+(400000+n)],
+  ].map(([t,h,d])=>`<li><time>${t}</time><b>${h}</b><br>${d}</li>`).join("")+`<li class="nodot"><span class="sample-tag">Sample trace for demonstration</span></li>`;
+  track("lot_trace",{code});
+}
+$("#traceForm").onsubmit=e=>{e.preventDefault();trace($("#lot").value)};
+trace("OCN-26-1187");
+
+/* ---------- Reefer load planner ---------- */
+const CONT={ "40":{vol:67.5,payload:29000,name:"40′ RHC"}, "20":{vol:28.3,payload:27000,name:"20′ RF"} };
+const PACK={ block:{net:10.8,gross:11.8,vol:0.0305}, iqf:{net:10,gross:11,vol:0.031}, bulk:{net:20,gross:21,vol:0.05}, fish:{net:20,gross:21.5,vol:0.052} };
+function calc(){
+  const c=CONT[$("#cContainer").value], p=PACK[$("#cPack").value];
+  const byVol=Math.floor(c.vol*0.88/p.vol), byWt=Math.floor(c.payload/p.gross);
+  const cartons=Math.min(byVol,byWt), net=cartons*p.net/1000;
+  $("#oCartons").textContent=cartons.toLocaleString("en-US");
+  $("#oNet").textContent=net.toFixed(1);
+  $("#oPallets").textContent=$("#cContainer").value==="40"?"20":"10";
+  return {container:c.name,pack:$("#cPack").selectedOptions[0].text,cartons,netMT:+net.toFixed(1)};
+}
+["#cContainer","#cPack"].forEach(s=>$(s).addEventListener("change",()=>{const r=calc();track("load_planner",r)}));
+calc();
+$("#calcToRfq").onclick=()=>{const r=calc();const d=$("#details");d.value=(d.value?d.value+"\n":"")+`Load plan: ${r.container}, ${r.pack}, ~${r.cartons} cartons / ${r.netMT} MT net.`;location.hash="rfq";toast("Load plan added to your request")};
+
+/* ---------- RFQ submit → n8n ---------- */
+const form=$("#rfqForm"), status=$("#rfqStatus");
+store.get("oc_draft") && Object.entries(store.get("oc_draft")).forEach(([k,v])=>{const el=form.elements[k];if(el&&el.type!=="checkbox"&&!el.value)el.value=v});
+form.addEventListener("input",()=>{const d={};["company","name","email","whatsapp","country","port","details"].forEach(k=>d[k]=form.elements[k].value);store.set("oc_draft",d)});
+let started=false;form.addEventListener("focusin",()=>{if(!started){started=true;track("rfq_started")}});
+
+form.addEventListener("submit",async e=>{
+  e.preventDefault();
+  status.hidden=true;status.classList.remove("err");
+  const req=["company","name","email","country"];
+  const missing=req.filter(k=>!form.elements[k].value.trim());
+  if(missing.length){showStatus("Please fill in "+missing.join(", ")+".",true);form.elements[missing[0]].focus();return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.elements.email.value.trim())){showStatus("That email address looks incomplete. Check it and try again.",true);form.elements.email.focus();return}
+  if(!form.elements.consent.checked){showStatus("Tick the consent box so we can store your request and reply.",true);return}
+  if(form.elements.website.value){return} // honeypot
+  const fd=Object.fromEntries(new FormData(form));
+  delete fd.website;
+  const payload={...fd, consent:true,
+    products: basket.map(id=>{const p=PRODUCTS.find(x=>x.id===id);return {id, name:p.name, hs:p.hs}}),
+    source:"website", visitorId, utm, page:location.href, submittedAt:new Date().toISOString()};
+  const btn=$("#rfqSubmit");btn.disabled=true;btn.textContent="Sending…";
+  try{
+    if(!CONFIG.rfqWebhook){ await new Promise(r=>setTimeout(r,600)); done({ref:"DEMO-"+Date.now().toString().slice(-6),demo:true}); return; }
+    const res=await fetch(CONFIG.rfqWebhook,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const j=await res.json().catch(()=>({}));
+    done(j);
+  }catch(err){
+    showStatus("We couldn't send your request just now. Message us on WhatsApp or email "+CONFIG.email+" and we'll reply today.",true);
+  }finally{btn.disabled=false;btn.textContent="Send quote request"}
+});
+function done(j){
+  const ref=j.ref||j.reference||"—";
+  showStatus(`Request received. Your reference is ${ref}. Check your inbox for the confirmation${form.elements.whatsapp.value?" and WhatsApp":""}.${j.demo?" (Demo mode: connect the n8n webhook in CONFIG to go live.)":""}`);
+  basket=[];renderBasket();renderProducts($(".chip[aria-pressed=true]").dataset.filter);
+  store.set("oc_draft",null);form.reset();
+}
+function showStatus(m,err){status.textContent=m;status.hidden=false;status.classList.toggle("err",!!err)}
+</script>
+</body>
+</html>

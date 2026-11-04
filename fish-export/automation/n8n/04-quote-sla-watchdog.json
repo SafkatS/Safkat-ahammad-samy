@@ -1,0 +1,176 @@
+{
+  "name": "Oceanora · 04 Quote SLA watchdog",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "8be16a68-f27f-4043-9af6-437fa8806290",
+      "name": "Every hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Oceanora Seafood',\n    salesEmail: 'export@oceanora-seafood.com',\n    managerEmail: 'manager@oceanora-seafood.com',\n    fromEmail: 'Oceanora Export Desk <export@oceanora-seafood.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://oceanora-seafood.com/#products'\n  }\n}}];"
+      },
+      "id": "8382b1a8-65e2-4dd2-a442-d5e377d7d77b",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubapi.com/crm/v3/objects/deals/search",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ filterGroups: [ { filters: [ { propertyName: 'dealstage', operator: 'EQ', value: $('Config').first().json.cfg.hubspotStage }, { propertyName: 'pipeline', operator: 'EQ', value: $('Config').first().json.cfg.hubspotPipeline }, { propertyName: 'createdate', operator: 'LT', value: String(Date.now() - 4*3600*1000) }, { propertyName: 'createdate', operator: 'GT', value: String(Date.now() - 7*24*3600*1000) } ] } ], properties: ['dealname','amount','createdate','hubspot_owner_id'], sorts: [ { propertyName: 'createdate', direction: 'ASCENDING' } ], limit: 50 }) }}",
+        "options": {
+          "timeout": 15000
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "hubspotAppToken"
+      },
+      "id": "39b4c5a6-ac31-45ac-ae5d-ea9b6311f582",
+      "name": "HubSpot · Stale RFQ deals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "REPLACE_ME",
+          "name": "HubSpot Private App"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json.results || [];\nif (!r.length) return [];\nconst rows = r.map(d => {\n  const hrs = Math.round((Date.now() - new Date(d.properties.createdate).getTime()) / 36e5);\n  return `<tr><td>${d.properties.dealname}</td><td style=\"text-align:right\">${hrs} h</td><td style=\"text-align:right\">$${Number(d.properties.amount || 0).toLocaleString()}</td></tr>`;\n}).join('');\nreturn [{ json: { count: r.length, html: `<p>${r.length} quote request(s) are past the 4-hour first-response target and still in the first stage.</p><table cellpadding=\"6\" style=\"border-collapse:collapse;font:14px Arial\">${rows}</table><p>Move the deal stage once a price offer is sent to clear it from this list.</p>` } }];"
+      },
+      "id": "4884f781-de29-4d18-a67c-97ae8d95b159",
+      "name": "Any breaches?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $('Config').first().json.cfg.managerEmail }}",
+        "subject": "=⏱ {{ $json.count }} RFQ(s) waiting > 4 h for a price offer",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "ba540e2b-1e23-4929-9863-cf41d8537e2a",
+      "name": "Email · SLA breach to manager",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        880,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP export desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Every hour": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "HubSpot · Stale RFQ deals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot · Stale RFQ deals": {
+      "main": [
+        [
+          {
+            "node": "Any breaches?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any breaches?": {
+      "main": [
+        [
+          {
+            "node": "Email · SLA breach to manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "oceanora"
+    },
+    {
+      "name": "hubspot"
+    },
+    {
+      "name": "sla"
+    }
+  ]
+}

@@ -1,0 +1,496 @@
+{
+  "name": "Oceanora · 02 WhatsApp & Messenger inbox",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "oceanora-meta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "d33245e2-258a-4a39-88e7-5bec3c09c8a8",
+      "name": "Meta verify (GET)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "4555b578-c743-4735-ba21-8a7e5a13d150"
+    },
+    {
+      "parameters": {
+        "jsCode": "const VERIFY_TOKEN = 'REPLACE_WITH_YOUR_VERIFY_TOKEN';   // same value you enter in Meta App → Webhooks\nconst q = $input.first().json.query || {};\nconst ok = q['hub.mode'] === 'subscribe' && q['hub.verify_token'] === VERIFY_TOKEN;\nreturn [{ json: { ok, challenge: ok ? String(q['hub.challenge']) : 'forbidden' } }];"
+      },
+      "id": "3440f74d-934f-445d-93a9-264e1edc3c23",
+      "name": "Check verify token",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.challenge }}",
+        "options": {
+          "responseCode": "={{ $json.ok ? 200 : 403 }}"
+        }
+      },
+      "id": "d2dc6c29-b9f5-45ad-b35c-508f162170f9",
+      "name": "Return challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "oceanora-meta",
+        "responseMode": "onReceived",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "91410b88-65c1-4dfd-b054-b5f62f27a65f",
+      "name": "Meta events (POST)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "95134548-f511-4d6c-bb2d-8d4256be0e3a"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Oceanora Seafood',\n    salesEmail: 'export@oceanora-seafood.com',\n    managerEmail: 'manager@oceanora-seafood.com',\n    fromEmail: 'Oceanora Export Desk <export@oceanora-seafood.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://oceanora-seafood.com/#products'\n  }\n}}];"
+      },
+      "id": "fbcc7f58-0971-49fb-b69f-637228aad0af",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json.cfg;\nconst body = $('Meta events (POST)').first().json.body || {};\nconst out = [];\nconst intentOf = t => {\n  const s = (t || '').toLowerCase();\n  if (/(human|agent|call me|talk to|someone|person)/.test(s)) return 'human';\n  if (/(price|rate|quote|offer|cfr|fob|cif|\\$|usd|eur|দাম)/.test(s)) return 'price';\n  if (/(sample)/.test(s)) return 'sample';\n  if (/(catalog|catalogue|product|list|spec|size|grade)/.test(s)) return 'catalog';\n  if (/(certif|haccp|brc|eu approv|fda|halal|asc|bap)/.test(s)) return 'compliance';\n  if (/^(hi|hello|hey|salam|assalam|good (morning|evening))/.test(s)) return 'greeting';\n  return 'other';\n};\nconst replies = {\n  greeting: `Hello from ${cfg.brand} 👋 We export frozen shrimp, prawn, hilsa, crab and finfish. Reply with:\\n1️⃣ CATALOGUE\\n2️⃣ PRICE + product, size and port\\n3️⃣ SAMPLE\\n4️⃣ HUMAN to talk to the export desk`,\n  catalog: `Our full spec catalogue (cuts, count grades, packs, HS codes): ${cfg.catalogueUrl}\\nTell us the product, size and destination port and we will quote.`,\n  price: `Thanks! To quote CFR/FOB we need: product & cut, count grade, pack, quantity (MT or containers) and destination port. A trader will reply with today's price shortly.`,\n  sample: `We send frozen samples on dry ice by courier. Please share company name, delivery address and products. A trader will confirm cost and timing.`,\n  compliance: `We hold HACCP, EU establishment approval, US FDA registration, BRCGS and Halal. Certificates are shared as PDF on request — a trader will send them.`,\n  human: `Connecting you to our export desk now. Hours: Sat–Thu 09:00–19:00 Bangladesh time (UTC+6).`,\n  other: `Thanks for your message. A member of our export desk will reply shortly. Meanwhile, browse our catalogue: ${cfg.catalogueUrl}`\n};\nfor (const entry of body.entry || []) {\n  if (body.object === 'whatsapp_business_account') {\n    for (const ch of entry.changes || []) {\n      const v = ch.value || {};\n      const contact = (v.contacts || [])[0] || {};\n      for (const m of v.messages || []) {\n        const text = m.text?.body || m.button?.text || m.interactive?.button_reply?.title || m.interactive?.list_reply?.title || `[${m.type}]`;\n        const intent = intentOf(text);\n        out.push({ json: { channel: 'whatsapp', from: m.from, name: contact.profile?.name || '', text, msgId: m.id, intent, reply: replies[intent], ts: m.timestamp } });\n      }\n    }\n  } else if (body.object === 'page') {\n    for (const ev of entry.messaging || []) {\n      if (!ev.message || ev.message.is_echo) continue;\n      const text = ev.message.text || '[attachment]';\n      const intent = intentOf(text);\n      out.push({ json: { channel: 'messenger', from: ev.sender.id, name: '', text, msgId: ev.message.mid, intent, reply: replies[intent], ts: ev.timestamp } });\n    }\n  }\n}\nreturn out;   // status callbacks (delivered/read) produce no items and stop here"
+      },
+      "id": "61cc5550-7705-4f9a-adee-9d80ec029d37",
+      "name": "Parse & detect intent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "a5883119-8487-416b-ad4a-ea5987222caa",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "whatsapp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "WhatsApp"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "1e2deee3-5cc8-4e35-821d-1b2ac7fcc529",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "messenger",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Messenger"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4bacb8b6-8b8e-41e9-a7be-ea01a83ab864",
+      "name": "Route by channel",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Config').first().json.cfg.waPhoneNumberId }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $json.from, type: 'text', text: { preview_url: true, body: $json.reply } }) }}",
+        "options": {}
+      },
+      "id": "5b62c1e3-bade-459e-9332-80a91e9f741c",
+      "name": "WhatsApp · Auto-reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "WhatsApp Cloud API (Bearer)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/me/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ recipient: { id: $json.from }, messaging_type: 'RESPONSE', message: { text: $json.reply } }) }}",
+        "options": {}
+      },
+      "id": "f0170b06-7036-4e56-b484-ef84ae1a039b",
+      "name": "Messenger · Auto-reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "Meta Page Token (Bearer)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Needs two custom UNIQUE contact properties in HubSpot: whatsapp_id and messenger_psid (single-line text, \"unique value\" ticked)\nreturn $input.all().map(({ json: m }) => {\n  const idProperty = m.channel === 'whatsapp' ? 'whatsapp_id' : 'messenger_psid';\n  const properties = { [idProperty]: m.from, hs_lead_status: 'NEW' };\n  if (m.channel === 'whatsapp') { properties.phone = '+' + m.from; if (m.name) properties.firstname = m.name; }\n  return { json: { ...m, crm: { inputs: [{ idProperty, id: m.from, properties }] } } };\n});"
+      },
+      "id": "01e76abe-662e-473e-877c-72cbbc36b42f",
+      "name": "Build CRM record",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.crm) }}",
+        "options": {
+          "timeout": 15000
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "hubspotAppToken"
+      },
+      "id": "cabbbc6e-9cdf-48cb-b577-df8f09a6af44",
+      "name": "HubSpot · Upsert by channel id",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1340,
+        300
+      ],
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "REPLACE_ME",
+          "name": "HubSpot Private App"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "9ba1ce17-3fe8-4742-9dda-d6598b5b36c4",
+              "leftValue": "={{ ['human','price','sample','compliance'].includes($('Build CRM record').item.json.intent) }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1b55993-65bd-4c79-ae32-04c2ff670a6d",
+      "name": "Needs a trader?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $('Config').first().json.cfg.salesEmail }}",
+        "subject": "=[{{ $('Build CRM record').item.json.channel.toUpperCase() }} · {{ $('Build CRM record').item.json.intent }}] {{ $('Build CRM record').item.json.name || $('Build CRM record').item.json.from }}",
+        "emailFormat": "html",
+        "html": "=<p><b>{{ $('Build CRM record').item.json.name || 'Unknown' }}</b> ({{ $('Build CRM record').item.json.from }}) wrote on {{ $('Build CRM record').item.json.channel }}:</p><blockquote style=\"border-left:3px solid #E0522F;padding-left:10px\">{{ $('Build CRM record').item.json.text }}</blockquote><p>Auto-reply sent. Reply from the WhatsApp Business inbox / Meta Business Suite within 15 minutes.</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "357f85c4-01dc-4c1f-a214-c01a8b953cca",
+      "name": "Email · Hand-off to export desk",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1780,
+        280
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP export desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Config').first().json.cfg.sheetId }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Chats"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "09993966-d1d8-4523-810d-c9b91ac4c888",
+      "name": "Sheets · Chat log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1560,
+        480
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Google Sheets"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Meta verify (GET)": {
+      "main": [
+        [
+          {
+            "node": "Check verify token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check verify token": {
+      "main": [
+        [
+          {
+            "node": "Return challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta events (POST)": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Parse & detect intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse & detect intent": {
+      "main": [
+        [
+          {
+            "node": "Route by channel",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Build CRM record",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sheets · Chat log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build CRM record": {
+      "main": [
+        [
+          {
+            "node": "HubSpot · Upsert by channel id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot · Upsert by channel id": {
+      "main": [
+        [
+          {
+            "node": "Needs a trader?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs a trader?": {
+      "main": [
+        [
+          {
+            "node": "Email · Hand-off to export desk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by channel": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp · Auto-reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Messenger · Auto-reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "oceanora"
+    },
+    {
+      "name": "whatsapp"
+    },
+    {
+      "name": "messenger"
+    },
+    {
+      "name": "hubspot"
+    }
+  ]
+}
