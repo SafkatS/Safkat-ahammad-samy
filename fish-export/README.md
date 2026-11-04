@@ -6,7 +6,15 @@ A ready-to-deploy website for a seafood export company, plus four n8n workflows 
 
 ```
 fish-export/
-├── index.html                      # the whole site (HTML + CSS + JS, no build step)
+├── index.html                      # Home: video hero + ocean waves, catch reel, best sellers, cold chain, CTA
+├── products.html                   # Full catalogue (14 species) with filters + add-to-quote
+├── quality.html                    # Lab testing, lot trace, cold chain, plant footage
+├── markets.html                    # Ports & transit, reefer load planner, ordering steps, FAQ
+├── contact.html                    # Quote request form (→ n8n) + WhatsApp / Messenger / email
+├── assets/
+│   ├── css/site.css                # shared design (light ocean theme)
+│   ├── js/site.js                  # CONFIG, catalogue, ocean canvas, video player, forms, tracking
+│   └── video/                      # web-compressed clips (H.264, no audio) + poster frames
 └── automation/
     ├── build_workflows.py          # regenerates the workflow JSON
     └── n8n/
@@ -15,6 +23,13 @@ fish-export/
         ├── 03-website-visitor-intent.json
         └── 04-quote-sla-watchdog.json
 ```
+
+## Video & animation
+- Every page header plays a muted, looping clip behind a light sea-haze overlay, with the animated ocean canvas (waves, light rays, fish, bubbles that follow the pointer) melting into the page.
+- The home page "Watch the catch" reel autoplays tiles only while they are on screen; tapping one opens a full-screen player.
+- Visitors with *reduce motion* turned on see poster frames and a still ocean.
+- To swap a clip, drop a new `.mp4` + `.jpg` poster into `assets/video/` with the same name. Compress first:
+  `ffmpeg -i in.mp4 -t 10 -an -vf scale=1280:-2 -c:v libx264 -crf 28 -movflags +faststart out.mp4`
 
 ## Website features
 
@@ -31,7 +46,7 @@ fish-export/
 | SEO | Meta and OG tags, JSON-LD Organization |
 
 ### Go live
-1. Edit the `CONFIG` block at the top of the `<script>` in `index.html`: WhatsApp number, email, Messenger page, and the two n8n **production** webhook URLs.
+1. Edit the `CONFIG` block at the top of `assets/js/site.js`: WhatsApp number, email, Messenger page, and the two n8n **production** webhook URLs.
 2. If the webhook URLs are left empty, the form runs in demo mode.
 3. Deploy the folder to any static host: Netlify, Vercel, Cloudflare Pages, GitHub Pages or cPanel.
 
