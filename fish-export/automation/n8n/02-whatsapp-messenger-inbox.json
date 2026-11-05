@@ -1,14 +1,14 @@
 {
-  "name": "Oceanora · 02 WhatsApp & Messenger inbox",
+  "name": "WBF · 02 WhatsApp & Messenger inbox",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "GET",
-        "path": "oceanora-meta",
+        "path": "wbf-meta",
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "d33245e2-258a-4a39-88e7-5bec3c09c8a8",
+      "id": "989fcd8d-ee31-46f7-a369-fb0a2505bfca",
       "name": "Meta verify (GET)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,13 +16,13 @@
         0,
         0
       ],
-      "webhookId": "4555b578-c743-4735-ba21-8a7e5a13d150"
+      "webhookId": "6e1112a5-0d34-4a63-926b-2431e9d56f25"
     },
     {
       "parameters": {
         "jsCode": "const VERIFY_TOKEN = 'REPLACE_WITH_YOUR_VERIFY_TOKEN';   // same value you enter in Meta App → Webhooks\nconst q = $input.first().json.query || {};\nconst ok = q['hub.mode'] === 'subscribe' && q['hub.verify_token'] === VERIFY_TOKEN;\nreturn [{ json: { ok, challenge: ok ? String(q['hub.challenge']) : 'forbidden' } }];"
       },
-      "id": "3440f74d-934f-445d-93a9-264e1edc3c23",
+      "id": "179a1f62-64f7-408e-8b22-c687c3bac43b",
       "name": "Check verify token",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -39,7 +39,7 @@
           "responseCode": "={{ $json.ok ? 200 : 403 }}"
         }
       },
-      "id": "d2dc6c29-b9f5-45ad-b35c-508f162170f9",
+      "id": "d52c92ce-2ea8-4eba-b19e-9d6c28869e6d",
       "name": "Return challenge",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -51,13 +51,13 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "oceanora-meta",
+        "path": "wbf-meta",
         "responseMode": "onReceived",
         "options": {
           "allowedOrigins": "*"
         }
       },
-      "id": "91410b88-65c1-4dfd-b054-b5f62f27a65f",
+      "id": "eeddfcb8-dd11-4db8-8458-29ffd2e81051",
       "name": "Meta events (POST)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -65,13 +65,13 @@
         0,
         300
       ],
-      "webhookId": "95134548-f511-4d6c-bb2d-8d4256be0e3a"
+      "webhookId": "f225129d-f808-4dfe-bba3-e35346534a7a"
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Oceanora Seafood',\n    salesEmail: 'export@oceanora-seafood.com',\n    managerEmail: 'manager@oceanora-seafood.com',\n    fromEmail: 'Oceanora Export Desk <export@oceanora-seafood.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://oceanora-seafood.com/#products'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Worldclass Bengal Fishers',\n    salesEmail: 'sales@worldclassbengalfishers.com',\n    managerEmail: 'manager@worldclassbengalfishers.com',\n    fromEmail: 'Worldclass Bengal Fishers <sales@worldclassbengalfishers.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.worldclassbengalfishers.com/products.html'\n  }\n}}];"
       },
-      "id": "fbcc7f58-0971-49fb-b69f-637228aad0af",
+      "id": "a57a6661-cb08-41fe-b7b5-47a97b299557",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -82,9 +82,9 @@
     },
     {
       "parameters": {
-        "jsCode": "const cfg = $('Config').first().json.cfg;\nconst body = $('Meta events (POST)').first().json.body || {};\nconst out = [];\nconst intentOf = t => {\n  const s = (t || '').toLowerCase();\n  if (/(human|agent|call me|talk to|someone|person)/.test(s)) return 'human';\n  if (/(price|rate|quote|offer|cfr|fob|cif|\\$|usd|eur|দাম)/.test(s)) return 'price';\n  if (/(sample)/.test(s)) return 'sample';\n  if (/(catalog|catalogue|product|list|spec|size|grade)/.test(s)) return 'catalog';\n  if (/(certif|haccp|brc|eu approv|fda|halal|asc|bap)/.test(s)) return 'compliance';\n  if (/^(hi|hello|hey|salam|assalam|good (morning|evening))/.test(s)) return 'greeting';\n  return 'other';\n};\nconst replies = {\n  greeting: `Hello from ${cfg.brand} 👋 We export frozen shrimp, prawn, hilsa, crab and finfish. Reply with:\\n1️⃣ CATALOGUE\\n2️⃣ PRICE + product, size and port\\n3️⃣ SAMPLE\\n4️⃣ HUMAN to talk to the export desk`,\n  catalog: `Our full spec catalogue (cuts, count grades, packs, HS codes): ${cfg.catalogueUrl}\\nTell us the product, size and destination port and we will quote.`,\n  price: `Thanks! To quote CFR/FOB we need: product & cut, count grade, pack, quantity (MT or containers) and destination port. A trader will reply with today's price shortly.`,\n  sample: `We send frozen samples on dry ice by courier. Please share company name, delivery address and products. A trader will confirm cost and timing.`,\n  compliance: `We hold HACCP, EU establishment approval, US FDA registration, BRCGS and Halal. Certificates are shared as PDF on request — a trader will send them.`,\n  human: `Connecting you to our export desk now. Hours: Sat–Thu 09:00–19:00 Bangladesh time (UTC+6).`,\n  other: `Thanks for your message. A member of our export desk will reply shortly. Meanwhile, browse our catalogue: ${cfg.catalogueUrl}`\n};\nfor (const entry of body.entry || []) {\n  if (body.object === 'whatsapp_business_account') {\n    for (const ch of entry.changes || []) {\n      const v = ch.value || {};\n      const contact = (v.contacts || [])[0] || {};\n      for (const m of v.messages || []) {\n        const text = m.text?.body || m.button?.text || m.interactive?.button_reply?.title || m.interactive?.list_reply?.title || `[${m.type}]`;\n        const intent = intentOf(text);\n        out.push({ json: { channel: 'whatsapp', from: m.from, name: contact.profile?.name || '', text, msgId: m.id, intent, reply: replies[intent], ts: m.timestamp } });\n      }\n    }\n  } else if (body.object === 'page') {\n    for (const ev of entry.messaging || []) {\n      if (!ev.message || ev.message.is_echo) continue;\n      const text = ev.message.text || '[attachment]';\n      const intent = intentOf(text);\n      out.push({ json: { channel: 'messenger', from: ev.sender.id, name: '', text, msgId: ev.message.mid, intent, reply: replies[intent], ts: ev.timestamp } });\n    }\n  }\n}\nreturn out;   // status callbacks (delivered/read) produce no items and stop here"
+        "jsCode": "const cfg = $('Config').first().json.cfg;\nconst body = $('Meta events (POST)').first().json.body || {};\nconst out = [];\nconst intentOf = t => {\n  const s = (t || '').toLowerCase();\n  if (/(human|agent|call me|talk to|someone|person)/.test(s)) return 'human';\n  if (/(price|rate|quote|offer|cfr|fob|cif|\\$|usd|eur|দাম)/.test(s)) return 'price';\n  if (/(sample)/.test(s)) return 'sample';\n  if (/(catalog|catalogue|product|list|spec|size|grade)/.test(s)) return 'catalog';\n  if (/(certif|haccp|brc|eu approv|fda|halal|asc|bap)/.test(s)) return 'compliance';\n  if (/^(hi|hello|hey|salam|assalam|good (morning|evening))/.test(s)) return 'greeting';\n  return 'other';\n};\nconst replies = {\n  greeting: `Hello from ${cfg.brand} 👋 We source Bangladeshi seafood and food for importers, with QC on every lot. Reply with:\\n1️⃣ CATALOGUE\\n2️⃣ PRICE + product, size and port\\n3️⃣ SAMPLE\\n4️⃣ HUMAN to talk to the export desk`,\n  catalog: `Our export product directory (100+ products with HS codes and markets): ${cfg.catalogueUrl}\\nTell us the product, size and destination port and we will quote.`,\n  price: `Thanks! To quote CFR/FOB we need: product & cut, count grade, pack, quantity (MT or containers) and destination port. A trader will reply with today's price shortly.`,\n  sample: `We send frozen samples on dry ice by courier. Please share company name, delivery address and products. A trader will confirm cost and timing.`,\n  compliance: `We work with plants approved for your market (EU, SFDA, GACC, US FDA) and certified to HACCP, BRCGS or Halal as required. A trader will send the relevant certificates.`,\n  human: `Connecting you to our export desk now. Hours: Sun–Thu 09:00–18:00 Bangladesh time (UTC+6).`,\n  other: `Thanks for your message. A member of our export desk will reply shortly. Meanwhile, browse our catalogue: ${cfg.catalogueUrl}`\n};\nfor (const entry of body.entry || []) {\n  if (body.object === 'whatsapp_business_account') {\n    for (const ch of entry.changes || []) {\n      const v = ch.value || {};\n      const contact = (v.contacts || [])[0] || {};\n      for (const m of v.messages || []) {\n        const text = m.text?.body || m.button?.text || m.interactive?.button_reply?.title || m.interactive?.list_reply?.title || `[${m.type}]`;\n        const intent = intentOf(text);\n        out.push({ json: { channel: 'whatsapp', from: m.from, name: contact.profile?.name || '', text, msgId: m.id, intent, reply: replies[intent], ts: m.timestamp } });\n      }\n    }\n  } else if (body.object === 'page') {\n    for (const ev of entry.messaging || []) {\n      if (!ev.message || ev.message.is_echo) continue;\n      const text = ev.message.text || '[attachment]';\n      const intent = intentOf(text);\n      out.push({ json: { channel: 'messenger', from: ev.sender.id, name: '', text, msgId: ev.message.mid, intent, reply: replies[intent], ts: ev.timestamp } });\n    }\n  }\n}\nreturn out;   // status callbacks (delivered/read) produce no items and stop here"
       },
-      "id": "61cc5550-7705-4f9a-adee-9d80ec029d37",
+      "id": "340205da-3f56-4368-8922-e2db8334b07f",
       "name": "Parse & detect intent",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -106,7 +106,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "a5883119-8487-416b-ad4a-ea5987222caa",
+                    "id": "3598f8eb-0900-4a51-be79-be8c973632b6",
                     "leftValue": "={{ $json.channel }}",
                     "rightValue": "whatsapp",
                     "operator": {
@@ -129,7 +129,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "1e2deee3-5cc8-4e35-821d-1b2ac7fcc529",
+                    "id": "072ef229-7fcc-47e4-a5c5-83ded4c8a587",
                     "leftValue": "={{ $json.channel }}",
                     "rightValue": "messenger",
                     "operator": {
@@ -147,7 +147,7 @@
         },
         "options": {}
       },
-      "id": "4bacb8b6-8b8e-41e9-a7be-ea01a83ab864",
+      "id": "cc58c4b2-ce8d-4b57-98b5-805fc8b6587b",
       "name": "Route by channel",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -167,7 +167,7 @@
         "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $json.from, type: 'text', text: { preview_url: true, body: $json.reply } }) }}",
         "options": {}
       },
-      "id": "5b62c1e3-bade-459e-9332-80a91e9f741c",
+      "id": "709c94e7-5750-4493-9cb0-d1aa16ffc548",
       "name": "WhatsApp · Auto-reply",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -194,7 +194,7 @@
         "jsonBody": "={{ JSON.stringify({ recipient: { id: $json.from }, messaging_type: 'RESPONSE', message: { text: $json.reply } }) }}",
         "options": {}
       },
-      "id": "f0170b06-7036-4e56-b484-ef84ae1a039b",
+      "id": "4499891b-d149-4b73-a39f-b52608d06db6",
       "name": "Messenger · Auto-reply",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -214,7 +214,7 @@
       "parameters": {
         "jsCode": "// Needs two custom UNIQUE contact properties in HubSpot: whatsapp_id and messenger_psid (single-line text, \"unique value\" ticked)\nreturn $input.all().map(({ json: m }) => {\n  const idProperty = m.channel === 'whatsapp' ? 'whatsapp_id' : 'messenger_psid';\n  const properties = { [idProperty]: m.from, hs_lead_status: 'NEW' };\n  if (m.channel === 'whatsapp') { properties.phone = '+' + m.from; if (m.name) properties.firstname = m.name; }\n  return { json: { ...m, crm: { inputs: [{ idProperty, id: m.from, properties }] } } };\n});"
       },
-      "id": "01e76abe-662e-473e-877c-72cbbc36b42f",
+      "id": "48fe63d8-0204-4965-ae51-cccf70eb691f",
       "name": "Build CRM record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -236,7 +236,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "cabbbc6e-9cdf-48cb-b577-df8f09a6af44",
+      "id": "4d7c9ac1-5b61-47c0-8006-848d5c9e1af6",
       "name": "HubSpot · Upsert by channel id",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -265,7 +265,7 @@
           },
           "conditions": [
             {
-              "id": "9ba1ce17-3fe8-4742-9dda-d6598b5b36c4",
+              "id": "1a0ac728-4585-44a4-882e-87d2293effde",
               "leftValue": "={{ ['human','price','sample','compliance'].includes($('Build CRM record').item.json.intent) }}",
               "operator": {
                 "type": "boolean",
@@ -278,7 +278,7 @@
         },
         "options": {}
       },
-      "id": "a1b55993-65bd-4c79-ae32-04c2ff670a6d",
+      "id": "27f31f45-e780-45ee-aae2-872e4b736c9b",
       "name": "Needs a trader?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -298,7 +298,7 @@
           "appendAttribution": false
         }
       },
-      "id": "357f85c4-01dc-4c1f-a214-c01a8b953cca",
+      "id": "8569f6d5-84bc-4aa1-adcc-77fc27409193",
       "name": "Email · Hand-off to export desk",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -335,7 +335,7 @@
         },
         "options": {}
       },
-      "id": "09993966-d1d8-4523-810d-c9b91ac4c888",
+      "id": "490d49da-abd5-4eb5-b6f4-ab52c271e1a8",
       "name": "Sheets · Chat log",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -481,7 +481,7 @@
   },
   "tags": [
     {
-      "name": "oceanora"
+      "name": "wbf"
     },
     {
       "name": "whatsapp"

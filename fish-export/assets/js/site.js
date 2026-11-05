@@ -2,53 +2,17 @@
    CONFIG — edit these values to go live. Nothing else needs changing.
    ============================================================ */
 const CONFIG = {
-  brand: "Oceanora",
+  brand: "Worldclass Bengal Fishers",
   whatsappNumber: "8801700000000",        // international format, digits only
   whatsappDisplay: "+880 1700-000000",
-  email: "export@oceanora-seafood.com",
-  messengerPage: "oceanoraseafood",       // facebook page username for m.me links
+  email: "sales@worldclassbengalfishers.com",
+  messengerPage: "worldclassbengalfishers",       // facebook page username for m.me links
   // n8n production webhook URLs (Webhook node → "Production URL").
   // Leave empty to run the site in demo mode (form shows success locally).
-  rfqWebhook: "",                          // e.g. https://n8n.yourdomain.com/webhook/oceanora-rfq
-  eventsWebhook: "",                       // e.g. https://n8n.yourdomain.com/webhook/oceanora-events
+  rfqWebhook: "",                          // e.g. https://n8n.yourdomain.com/webhook/wbf-rfq
+  eventsWebhook: "",                       // e.g. https://n8n.yourdomain.com/webhook/wbf-events
+  supplierWebhook: "",                     // e.g. https://n8n.yourdomain.com/webhook/wbf-supplier
 };
-
-/* ---------- Product catalogue ---------- */
-const FISH = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20c8-11 26-14 38-4l12-8-3 12 3 12-12-8C30 34 12 31 4 20z"/><circle cx="14" cy="18" r="1.6" fill="currentColor"/></svg>';
-const SHRIMP = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M46 10c-14-6-32 2-32 16 0 6 5 9 10 8"/><path d="M46 10c4 4 4 12-2 17-5 4-12 6-20 7"/><path d="M24 34l-6 4m6-4l-2 5m2-5l3 5"/><path d="M46 10l10-6M46 10l12 1"/><path d="M22 18v8m6-12v12m6-13v12m6-9v8"/></svg>';
-const CRAB = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="30" cy="24" rx="14" ry="9"/><path d="M16 22l-8-8m0 0l-2-6m2 6l6-2M44 22l8-8m0 0l2-6m-2 6l-6-2M18 30l-6 5m10-3l-3 6m22-8l6 5m-10-3l3 6"/></svg>';
-const SQUID = '<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20l10-8h20c6 0 10 4 10 8s-4 8-10 8H16z"/><path d="M46 17l10-3m-10 6h12m-12 3l10 3"/><circle cx="38" cy="20" r="1.6" fill="currentColor"/></svg>';
-
-const PRODUCTS = [
-  {id:"bt", cat:"shrimp", icon:SHRIMP, name:"Black Tiger shrimp", latin:"Penaeus monodon", local:"Bagda chingri", hs:"0306.17", flag:"Bestseller",
-   cut:"HOSO, HLSO, PD, PDTO, PUD, Nobashi, cooked", grade:"U/5 – 71/90 pcs/lb", pack:"6 × 1.8 kg block · 10 × 1 kg IQF"},
-  {id:"gp", cat:"shrimp", icon:SHRIMP, name:"Giant freshwater prawn", latin:"Macrobrachium rosenbergii", local:"Golda chingri", hs:"0306.17",
-   cut:"HOSO, HLSO, PUD", grade:"2/4 – 21/30 pcs/kg (HOSO)", pack:"6 × 2 kg block · 10 × 1 kg IQF"},
-  {id:"pg", cat:"finfish", icon:FISH, name:"Pangasius fillet", latin:"Pangasianodon hypophthalmus", local:"Pangas", hs:"0304.62",
-   cut:"Well-trimmed fillet, skinless boneless", grade:"120–170 · 170–220 · 220 g+", pack:"10 kg IQF, 0–20 % glaze"},
-  {id:"rh", cat:"finfish", icon:FISH, name:"Rohu & Indian carp", latin:"Labeo rohita", local:"Rui, Katla, Mrigal", hs:"0303.25",
-   cut:"Whole, steaks, curry cut", grade:"1–2 · 2–3 · 3 kg+", pack:"20 kg carton · 1 kg retail"},
-  {id:"rs", cat:"finfish", icon:FISH, name:"Red snapper", latin:"Lutjanus malabaricus", local:"Lal choukhya", hs:"0303.89",
-   cut:"Whole round on ice, gutted, fillet", grade:"300–500 · 500–1,000 g · 1 kg+", pack:"10 kg carton · chilled by air"},
-  {id:"hl", cat:"finfish", icon:FISH, name:"Hilsa", latin:"Tenualosa ilisha", local:"Ilish", hs:"0303.89", flag:"Quota",
-   cut:"Whole round, frozen", grade:"500–700 g · 700–1,000 g · 1 kg+", pack:"10 kg & 20 kg carton"},
-  {id:"vn", cat:"shrimp", icon:SHRIMP, name:"Whiteleg shrimp", latin:"Litopenaeus vannamei", local:"Vannamei", hs:"0306.17",
-   cut:"HLSO, PD, PDTO, cooked ring", grade:"21/25 – 91/110 pcs/lb", pack:"10 × 1 kg IQF · 5 kg bulk"},
-  {id:"pk", cat:"shrimp", icon:SHRIMP, name:"Brown & pink shrimp", latin:"Metapenaeus monoceros", local:"Harina / Chaka", hs:"0306.17",
-   cut:"HOSO, PUD, PD", grade:"100/200 – 300/500 pcs/kg", pack:"6 × 2 kg block"},
-  {id:"tl", cat:"finfish", icon:FISH, name:"Tilapia", latin:"Oreochromis niloticus", local:"Telapia", hs:"0303.23",
-   cut:"Whole gutted scaled, fillet", grade:"300–500 · 500–800 g", pack:"10 kg IQF carton"},
-  {id:"pf", cat:"finfish", icon:FISH, name:"Silver pomfret", latin:"Pampus argenteus", local:"Rupchanda", hs:"0303.89",
-   cut:"Whole round, IQF", grade:"4–6 · 6–8 · 8–10 pcs/kg", pack:"10 kg carton"},
-  {id:"rb", cat:"finfish", icon:FISH, name:"Ribbonfish", latin:"Trichiurus lepturus", local:"Churi", hs:"0303.89",
-   cut:"Whole round, block frozen", grade:"100–200 · 200–300 · 300 g+", pack:"10 kg block"},
-  {id:"mc", cat:"shell", icon:CRAB, name:"Mud crab", latin:"Scylla serrata", local:"Kakra", hs:"0306.33 / 0306.14",
-   cut:"Live (air-freight), soft-shell frozen", grade:"200–300 · 300–400 · 400 g+", pack:"Live: 10 kg styro · Frozen: 1 kg tray"},
-  {id:"sq", cat:"shell", icon:SQUID, name:"Squid & cuttlefish", latin:"Uroteuthis duvaucelii · Sepia pharaonis", local:"Kalamari", hs:"0307.43",
-   cut:"Whole cleaned, tubes, rings, fillet", grade:"U/5 – 20/40 pcs/kg", pack:"6 × 2 kg block · 10 × 1 kg IQF"},
-  {id:"df", cat:"dried", icon:FISH, name:"Dried fish", latin:"Harpadon nehereus · Trichiurus", local:"Loitta (Bombay duck), Churi shutki", hs:"0305.59",
-   cut:"Sun-dried, salt-free", grade:"Large · Medium", pack:"5 kg & 10 kg carton, vacuum 500 g"}
-];
 
 /* ---------- Helpers ---------- */
 const $ = (s, r=document) => r.querySelector(s);
@@ -158,43 +122,44 @@ if(lb){
 /* ---------- Reefer readout (sample telemetry) ---------- */
 if($("#reeferTemp")){let t=-20.1;setInterval(()=>{t=Math.max(-20.6,Math.min(-19.6,t+(Math.random()-.5)*.2));$("#reeferTemp").firstChild.nodeValue=(t<0?"−":"")+Math.abs(t).toFixed(1);$("#reeferHum").textContent=(85+Math.round(Math.random()*4))+" %"},3000)}
 
-/* ---------- Catalogue + quote basket (shared across pages) ---------- */
-let basket = store.get("oc_basket") || [];
-function card(p){return `
-    <article class="spec" data-id="${p.id}">
-      <div class="spec-top">${p.icon}<div><h3>${p.name}${p.flag?`<span class="flag">${p.flag}</span>`:""}</h3><div class="latin">${p.latin}</div><div class="local">${p.local}</div></div></div>
-      <table><tr><th>Cuts</th><td>${p.cut}</td></tr><tr><th>Grades</th><td class="mono" style="font-size:.82rem">${p.grade}</td></tr><tr><th>Pack</th><td>${p.pack}</td></tr></table>
-      <div class="spec-foot"><span class="hs">HS ${p.hs}</span><button class="add" type="button" data-add="${p.id}" aria-pressed="${basket.includes(p.id)}">${basket.includes(p.id)?"Added to quote":"Add to quote"}</button></div>
-    </article>`}
-const grid=$("#productGrid");
-function renderProducts(filter="all"){
-  if(!grid)return;
-  const limit=parseInt(grid.dataset.limit||"0",10);
-  let list=PRODUCTS.filter(p=>filter==="all"||p.cat===filter);
-  if(limit)list=list.slice(0,limit);
-  grid.innerHTML=list.map(card).join("");
-}
+/* ---------- Product directory + quote basket (shared across pages) ---------- */
+const CAT = window.CATALOG || {};
+let basket = (store.get("oc_basket") || []).filter(id=>CAT[id]);
+function syncButtons(){$$("[data-add]").forEach(b=>{const on=basket.includes(b.dataset.add);b.setAttribute("aria-pressed",on);b.textContent=on?"Added to quote":"Add to quote"})}
 function renderBasket(){
   store.set("oc_basket",basket);
   $$("[data-basket-count]").forEach(e=>{e.textContent=basket.length;e.hidden=!basket.length});
-  const b=$("#basket");if(!b)return;
-  b.innerHTML=basket.map(id=>{const p=PRODUCTS.find(x=>x.id===id);return p?`<span class="pill">${p.name}<button type="button" data-remove="${id}" aria-label="Remove ${p.name}">×</button></span>`:""}).join("");
+  const b=$("#basket");if(b)b.innerHTML=basket.map(id=>`<span class="pill">${CAT[id].n}<button type="button" data-remove="${id}" aria-label="Remove ${CAT[id].n}">×</button></span>`).join("");
+  syncButtons();
 }
-$$(".chip[data-filter]").forEach(c=>c.onclick=()=>{$$(".chip[data-filter]").forEach(x=>x.setAttribute("aria-pressed","false"));c.setAttribute("aria-pressed","true");renderProducts(c.dataset.filter);track("catalogue_filter",{filter:c.dataset.filter})});
 document.addEventListener("click",e=>{
   const a=e.target.closest("[data-add]");
-  if(a){const id=a.dataset.add;if(basket.includes(id)){basket=basket.filter(x=>x!==id)}else{basket.push(id);toast("Added to your quote request");track("rfq_item_added",{product:id})}
-    a.setAttribute("aria-pressed",basket.includes(id));a.textContent=basket.includes(id)?"Added to quote":"Add to quote";renderBasket()}
+  if(a){const id=a.dataset.add;if(basket.includes(id))basket=basket.filter(x=>x!==id);else{basket.push(id);toast(CAT[id].n+" added to your quote request");track("rfq_item_added",{product:id})}renderBasket()}
   const r=e.target.closest("[data-remove]");
-  if(r){basket=basket.filter(x=>x!==r.dataset.remove);renderBasket();const b=$(`[data-add="${r.dataset.remove}"]`);if(b){b.setAttribute("aria-pressed","false");b.textContent="Add to quote"}}
+  if(r){basket=basket.filter(x=>x!==r.dataset.remove);renderBasket()}
 });
-renderProducts();renderBasket();
+renderBasket();
+
+const dir=$(".directory");
+if(dir){
+  let cat="all";const q=$("#dirSearch");
+  const apply=()=>{
+    const term=q.value.trim().toLowerCase();let shown=0;
+    $$(".cat",dir).forEach(sec=>{let n=0;
+      $$(".item",sec).forEach(it=>{const ok=(cat==="all"||it.dataset.cat===cat)&&(!term||it.dataset.search.includes(term));it.hidden=!ok;if(ok)n++});
+      sec.hidden=!n;shown+=n});
+    $("#dirCount").textContent=shown+(shown===1?" product":" products");$("#dirEmpty").hidden=!!shown;
+  };
+  $$(".chip[data-filter]").forEach(c=>c.onclick=()=>{$$(".chip[data-filter]").forEach(x=>x.setAttribute("aria-pressed","false"));c.setAttribute("aria-pressed","true");cat=c.dataset.filter;apply();track("catalogue_filter",{filter:cat})});
+  let t;q.addEventListener("input",()=>{apply();clearTimeout(t);t=setTimeout(()=>q.value.trim()&&track("catalogue_search",{q:q.value.trim().slice(0,60)}),800)});
+  if(location.hash.startsWith("#p-")){const el=document.getElementById(location.hash.slice(1));if(el)el.classList.add("flash")}
+}
 
 /* ---------- Lot trace (sample data) ---------- */
 function trace(code){
   code=code.trim().toUpperCase();
   const out=$("#traceOut");
-  if(!/^OCN-\d{2}-\d{3,5}$/.test(code)){out.innerHTML=`<li class="nodot">Lot codes look like <span class="mono">OCN-26-1187</span>. Check the carton side label.</li>`;return}
+  if(!/^(WBF|OCN)-\d{2}-\d{3,5}$/.test(code)){out.innerHTML=`<li class="nodot">Lot codes look like <span class="mono">WBF-26-1187</span>. Check the carton side label.</li>`;return}
   const n=parseInt(code.slice(-4),10)||1187;
   const farms=["Shyamnagar, Satkhira","Mongla, Bagerhat","Paikgachha, Khulna","Chakaria, Cox's Bazar"];
   out.innerHTML=[
@@ -206,7 +171,7 @@ function trace(code){
   ].map(([t,h,d])=>`<li><time>${t}</time><b>${h}</b><br>${d}</li>`).join("")+`<li class="nodot"><span class="sample-tag">Sample trace for demonstration</span></li>`;
   track("lot_trace",{code});
 }
-if($("#traceForm")){$("#traceForm").onsubmit=e=>{e.preventDefault();trace($("#lot").value)};trace("OCN-26-1187")}
+if($("#traceForm")){$("#traceForm").onsubmit=e=>{e.preventDefault();trace($("#lot").value)};trace("WBF-26-1187")}
 
 /* ---------- Reefer load planner ---------- */
 if($("#calc")){
@@ -240,7 +205,7 @@ if(form){
     if(!form.elements.consent.checked){showStatus("Tick the consent box so we can store your request and reply.",true);return}
     if(form.elements.website.value)return; // honeypot
     const fd=Object.fromEntries(new FormData(form));delete fd.website;
-    const payload={...fd,consent:true,products:basket.map(id=>{const p=PRODUCTS.find(x=>x.id===id);return {id,name:p.name,hs:p.hs}}),
+    const payload={...fd,consent:true,products:basket.map(id=>({id,name:CAT[id].n,hs:CAT[id].hs,category:CAT[id].c})),
       source:"website",visitorId,utm,page:location.href,submittedAt:new Date().toISOString()};
     const btn=$("#rfqSubmit");btn.disabled=true;btn.textContent="Sending…";
     try{
@@ -252,4 +217,47 @@ if(form){
     }catch(err){showStatus("We couldn't send your request just now. Message us on WhatsApp or email "+CONFIG.email+" and we'll reply today.",true)}
     finally{btn.disabled=false;btn.textContent="Send quote request"}
   });
+}
+
+/* ---------- Supplier application → n8n ---------- */
+const sf=$("#supplierForm");
+if(sf){
+  const st=$("#supplierStatus"),show=(m,err)=>{st.textContent=m;st.hidden=false;st.classList.toggle("err",!!err)};
+  sf.addEventListener("submit",async e=>{
+    e.preventDefault();st.hidden=true;
+    const miss=["company","name","phone","email"].filter(k=>!sf.elements[k].value.trim());
+    if(miss.length){show("Please fill in "+miss.join(", ")+".",true);sf.elements[miss[0]].focus();return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(sf.elements.email.value.trim())){show("That email address looks incomplete. Check it and try again.",true);return}
+    if(!sf.elements.consent.checked){show("Tick the confirmation box to submit your application.",true);return}
+    if(sf.elements.website.value)return;
+    const fd=new FormData(sf),data=Object.fromEntries(fd);delete data.website;
+    data.categories=fd.getAll("categories");data.approvals=fd.getAll("approvals");
+    Object.assign(data,{source:"website",visitorId,utm,submittedAt:new Date().toISOString()});
+    const btn=$("#supplierSubmit");btn.disabled=true;btn.textContent="Submitting…";
+    try{
+      let j;
+      if(!CONFIG.supplierWebhook){await new Promise(r=>setTimeout(r,600));j={ref:"SUP-DEMO-"+Date.now().toString().slice(-5),demo:true}}
+      else{const res=await fetch(CONFIG.supplierWebhook,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(!res.ok)throw new Error();j=await res.json().catch(()=>({}))}
+      show(`Application received (reference ${j.ref||"—"}). We will review it and call you within 3 working days.${j.demo?" (Demo mode: connect the n8n webhook in CONFIG to go live.)":""}`);
+      sf.reset();track("supplier_applied",{district:data.district});
+    }catch(err){show("We couldn't submit your application just now. Please WhatsApp or email us instead.",true)}
+    finally{btn.disabled=false;btn.textContent="Submit application"}
+  });
+}
+
+/* ---------- Landed cost & margin calculator ---------- */
+if($("#landed")){
+  const v=id=>parseFloat($(id).value)||0, usd=n=>(n<0?"−$":"$")+Math.abs(Math.round(n)).toLocaleString("en-US");
+  const calc=()=>{
+    const kg=v("#lKg"),fob=v("#lFob")*kg,cfr=fob+v("#lFreight"),ins=cfr*.003,cif=cfr+ins,duty=cif*v("#lDuty")/100;
+    const landed=cif+duty+v("#lLocal"),perKg=kg?landed/kg:0,rev=v("#lSell")*kg,profit=rev-landed,m=rev?profit/rev*100:0;
+    $("#lLanded").textContent=perKg?perKg.toFixed(2):"—";$("#lMargin").textContent=rev?m.toFixed(1)+" %":"—";$("#lProfit").textContent=rev?usd(profit):"—";
+    $("#lMargin").style.color=m<0?"var(--coral-ink)":"";
+    return {fob:v("#lFob"),kg,landed:+perKg.toFixed(2),margin:+m.toFixed(1),sell:v("#lSell")};
+  };
+  $$("#landed input").forEach(i=>i.addEventListener("input",calc));calc();
+  let tracked=false;$("#landed").addEventListener("change",()=>{if(!tracked){tracked=true;track("landed_cost_calc",calc())}});
+  $("#landedToRfq").onclick=()=>{const r=calc(),d=store.get("oc_draft")||{};
+    d.details=(d.details?d.details+"\n":"")+`Target: landed US$${r.landed}/kg (FOB US$${r.fob}/kg, ${r.kg} kg), selling at US$${r.sell}/kg for ${r.margin}% gross margin.`;
+    store.set("oc_draft",d);location.href="contact.html#rfq"};
 }

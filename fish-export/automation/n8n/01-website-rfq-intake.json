@@ -1,16 +1,16 @@
 {
-  "name": "Oceanora · 01 Website RFQ intake",
+  "name": "WBF · 01 Website RFQ intake",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "oceanora-rfq",
+        "path": "wbf-rfq",
         "responseMode": "responseNode",
         "options": {
           "allowedOrigins": "*"
         }
       },
-      "id": "882d6370-85d5-4838-9f6a-f2d2bf3bbccf",
+      "id": "af8401e3-d9d2-43fc-8047-516bff404a56",
       "name": "RFQ Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -18,13 +18,13 @@
         0,
         300
       ],
-      "webhookId": "62ce807b-c76c-40f9-906e-3ea0c05bc1ae"
+      "webhookId": "f66af15c-f24a-47e6-8652-6629da7261d2"
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Oceanora Seafood',\n    salesEmail: 'export@oceanora-seafood.com',\n    managerEmail: 'manager@oceanora-seafood.com',\n    fromEmail: 'Oceanora Export Desk <export@oceanora-seafood.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://oceanora-seafood.com/#products'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Worldclass Bengal Fishers',\n    salesEmail: 'sales@worldclassbengalfishers.com',\n    managerEmail: 'manager@worldclassbengalfishers.com',\n    fromEmail: 'Worldclass Bengal Fishers <sales@worldclassbengalfishers.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.worldclassbengalfishers.com/products.html'\n  }\n}}];"
       },
-      "id": "8b31e32d-8f13-4a22-9f30-c17f934b974d",
+      "id": "bd29df7c-b05f-440d-ac74-ef739c94c296",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -37,7 +37,7 @@
       "parameters": {
         "jsCode": "const cfg = $('Config').first().json.cfg;\nconst b = $('RFQ Webhook').first().json.body || {};\nconst clean = s => String(s ?? '').trim().slice(0, 2000);\nconst email = clean(b.email).toLowerCase();\nif (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) throw new Error('Invalid email');\nif (b.website) throw new Error('Honeypot triggered');            // bot\n\nconst [firstname, ...rest] = clean(b.name).split(/\\s+/);\nconst wa = clean(b.whatsapp).replace(/[^\\d]/g, '');\nconst products = Array.isArray(b.products) ? b.products : [];\n\n// Lead score 0–100: volume, buyer type, completeness, intent\nconst volScore = { 'sample': 5, 'lcl': 10, '1': 25, '2-4': 40, '5+': 50 }[b.volume] ?? 10;\nconst typeScore = /retail|importer/i.test(b.buyerType) ? 15 : /food service|processor/i.test(b.buyerType) ? 10 : 5;\nconst freeMail = /@(gmail|yahoo|hotmail|outlook|icloud|aol|mail)\\./i.test(email) ? 0 : 10;\nconst detail = clean(b.details).length > 40 ? 10 : 0;\nconst score = Math.min(100, volScore + typeScore + freeMail + detail + (wa ? 5 : 0) + Math.min(products.length * 3, 10));\nconst tier = score >= cfg.hotScore ? 'HOT' : score >= 35 ? 'WARM' : 'COLD';\n\n// Rough deal value in USD (FOB-ish blended $/kg × MT) — refined by sales later\nconst mt = { 'sample': 0, 'lcl': 8, '1': 21, '2-4': 63, '5+': 105 }[b.volume] ?? 0;\nconst estValue = Math.round(mt * 1000 * 7.5);\n\nconst ref = 'RFQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();\nreturn [{ json: {\n  ref, score, tier, estValue,\n  email, firstname: firstname || '', lastname: rest.join(' '),\n  name: clean(b.name), company: clean(b.company), country: clean(b.country), port: clean(b.port),\n  whatsapp: wa, incoterm: clean(b.incoterm), volume: clean(b.volume), buyerType: clean(b.buyerType),\n  shipMonth: clean(b.shipMonth), details: clean(b.details),\n  productList: products.map(p => p.name).join(', ') || 'Not specified',\n  utmSource: b.utm?.utm_source || '', utmCampaign: b.utm?.utm_campaign || '', gclid: b.utm?.gclid || '',\n  visitorId: clean(b.visitorId), page: clean(b.page), submittedAt: b.submittedAt || new Date().toISOString()\n}}];"
       },
-      "id": "e36ee3fd-5c53-4680-9e83-ba2e6b9d4abe",
+      "id": "7d18bc5c-df26-4cbc-b698-774ad86b240a",
       "name": "Normalize & Score",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -54,7 +54,7 @@
           "responseCode": 200
         }
       },
-      "id": "dfd2f2b9-2ffe-4bf8-9458-c891e99bbce4",
+      "id": "ddbd5adc-6b57-4db0-ae32-fea0b976ddfb",
       "name": "Respond 200",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -76,7 +76,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "ac3eb4e2-59b0-47c9-aa6d-2181231c14d9",
+      "id": "a50858c6-64aa-4039-93fe-b7c36c2a7dcf",
       "name": "HubSpot · Upsert contact",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -108,7 +108,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "b7220ae2-a149-49b6-9086-307c7a299588",
+      "id": "6bc2443f-9b15-42ce-9f46-fa3761c6eeb4",
       "name": "HubSpot · Create deal",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -138,7 +138,7 @@
           "appendAttribution": false
         }
       },
-      "id": "b4d88dc6-bf34-4e84-8352-c96ba9a5dd70",
+      "id": "04aadbe7-6fae-4b6d-9c2b-b6eae9062b37",
       "name": "Email · Buyer confirmation",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -164,7 +164,7 @@
           },
           "conditions": [
             {
-              "id": "e681b081-e024-493c-994f-347e5759ec13",
+              "id": "422872b1-c20e-4b8e-b571-407107984e2e",
               "leftValue": "={{ $('Normalize & Score').first().json.whatsapp }}",
               "operator": {
                 "type": "string",
@@ -177,7 +177,7 @@
         },
         "options": {}
       },
-      "id": "1858d788-e293-4346-bae5-6b9d290da5ee",
+      "id": "95849a76-434b-40ee-b529-f496345d8562",
       "name": "Has WhatsApp?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -199,7 +199,7 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth"
       },
-      "id": "6a2d6d07-5db2-4b85-96ca-9c04e3232d68",
+      "id": "665c5eaa-7c79-4ad8-8145-e998f1637c66",
       "name": "WhatsApp · Buyer confirmation",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -228,7 +228,7 @@
           },
           "conditions": [
             {
-              "id": "6f34784d-e0a1-4de0-9cbf-348d9c60833c",
+              "id": "def980ad-6cad-4f62-8f80-714e6c6598bc",
               "leftValue": "={{ $('Normalize & Score').first().json.score }}",
               "operator": {
                 "type": "number",
@@ -241,7 +241,7 @@
         },
         "options": {}
       },
-      "id": "0fad8221-fbaf-48db-abe6-d04f0287cfeb",
+      "id": "e855d015-edef-4fd7-907b-bd7fa2e7c542",
       "name": "Hot lead?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -263,7 +263,7 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth"
       },
-      "id": "d721a4d6-91f8-4ab6-80a8-b3d2a22a7e00",
+      "id": "e7762409-b47e-4bb7-a834-504d33f432fa",
       "name": "WhatsApp · Alert sales lead",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -293,7 +293,7 @@
           "appendAttribution": false
         }
       },
-      "id": "a475a3c1-3194-4688-bea4-84dbd904dca9",
+      "id": "4441a49d-9cc9-4a56-be19-bb9afb739a01",
       "name": "Email · Sales desk",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -313,7 +313,7 @@
       "parameters": {
         "jsCode": "const l = $('Normalize & Score').first().json;\nreturn [{ json: { Ref: l.ref, Submitted: l.submittedAt, Tier: l.tier, Score: l.score, Company: l.company,\n  Name: l.name, Email: l.email, WhatsApp: l.whatsapp, Country: l.country, Port: l.port, Incoterm: l.incoterm,\n  Volume: l.volume, BuyerType: l.buyerType, Products: l.productList, ShipMonth: l.shipMonth,\n  Details: l.details, UTMSource: l.utmSource, UTMCampaign: l.utmCampaign, VisitorId: l.visitorId, Status: 'NEW' } }];"
       },
-      "id": "a3b3e2d8-2176-444f-915e-448268464cb6",
+      "id": "2785b3b3-88aa-4ea3-8a11-9d0bf727cb7d",
       "name": "Flatten for sheet",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -343,7 +343,7 @@
         },
         "options": {}
       },
-      "id": "28ba89c6-cb41-4045-991b-657694d0985d",
+      "id": "2b6fdd8d-b9e8-49f3-9596-b88d21e28977",
       "name": "Sheets · RFQ log",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -486,7 +486,7 @@
   },
   "tags": [
     {
-      "name": "oceanora"
+      "name": "wbf"
     },
     {
       "name": "rfq"

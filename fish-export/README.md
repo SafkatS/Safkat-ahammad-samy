@@ -1,126 +1,48 @@
-# Oceanora Seafood: export website and n8n automation
+# Worldclass Bengal Fishers: buyer's-broker website and n8n automation
 
-A ready-to-deploy website for a seafood export company, plus four n8n workflows that capture every enquiry from the website, WhatsApp and Messenger and send it into HubSpot, email and Google Sheets.
+The website for **Worldclass Bengal Fishers (WBF)**, a Bangladesh-based buyer's broker for seafood and food. WBF's mission is to be the best broker in the world for food importers. The site is written from the buyer's side: better landed cost, lower risk, compliance for the buyer's market and strict QC on every lot. Five n8n workflows capture every buyer and supplier enquiry from the website, WhatsApp and Messenger and send it into HubSpot, email and Google Sheets.
 
-"Oceanora" is a placeholder brand. Change the name, contacts, stats, approvals and registration numbers to your own before going live, and list only the certificates you actually hold.
-
-```
-fish-export/
-├── index.html                      # Home: video hero + ocean waves, catch reel, best sellers, cold chain, CTA
-├── products.html                   # Full catalogue (14 species) with filters + add-to-quote
-├── quality.html                    # Lab testing, lot trace, cold chain, plant footage
-├── markets.html                    # Ports & transit, reefer load planner, ordering steps, FAQ
-├── contact.html                    # Quote request form (→ n8n) + WhatsApp / Messenger / email
-├── assets/
-│   ├── css/site.css                # shared design (light ocean theme)
-│   ├── js/site.js                  # CONFIG, catalogue, ocean canvas, video player, forms, tracking
-│   └── video/                      # web-compressed clips (H.264, no audio) + poster frames
-└── automation/
-    ├── build_workflows.py          # regenerates the workflow JSON
-    └── n8n/
-        ├── 01-website-rfq-intake.json
-        ├── 02-whatsapp-messenger-inbox.json
-        ├── 03-website-visitor-intent.json
-        └── 04-quote-sla-watchdog.json
-```
-
-## Video & animation
-- Every page header plays a muted, looping clip behind a light sea-haze overlay, with the animated ocean canvas (waves, light rays, fish, bubbles that follow the pointer) melting into the page.
-- The home page "Watch the catch" reel autoplays tiles only while they are on screen; tapping one opens a full-screen player.
-- Visitors with *reduce motion* turned on see poster frames and a still ocean.
-- To swap a clip, drop a new `.mp4` + `.jpg` poster into `assets/video/` with the same name. Compress first:
-  `ffmpeg -i in.mp4 -t 10 -an -vf scale=1280:-2 -c:v libx264 -crf 28 -movflags +faststart out.mp4`
-
-## Website features
-
-| Section | What it does |
+## Pages
+| Page | Purpose |
 |---|---|
-| Hero + reefer readout | Value proposition, example container telemetry, WhatsApp CTA |
-| Catalogue | 13 species as spec sheets (cut, count grade, pack, HS code), filterable. **Add to quote** puts them into the RFQ |
-| Cold chain | 6 temperature-logged steps, pond to port |
-| Quality | Lab test matrix + lot-trace demo (`OCN-26-1187`) |
-| Markets | Ports and transit times + **reefer load planner** (cartons / MT per 20′ or 40′) |
-| RFQ form | Validated quote request → n8n webhook. Saves a draft locally, has a honeypot, GDPR consent and UTM capture |
-| Channels | Floating WhatsApp button, wa.me / m.me / email links |
-| Analytics | Visitor events (page views, products added, WhatsApp clicks, RFQ started) sent to n8n, **only after the cookie banner is accepted** |
-| SEO | Meta and OG tags, JSON-LD Organization |
+| `index.html` | Buyer value (price, risk, compliance, QC), WBF vs a typical broker, landed-cost and margin calculator, catch videos, best sellers, process, FAQ |
+| `products.html` | **Bangladesh export product directory**: 103 products (63 seafood, 40 food) with scientific name, Bangla name, HS heading, forms and markets. Searchable and filterable |
+| `quality.html` | Five QC gates, a 13-risk import control matrix with the evidence for each, lab testing, lot trace, cold chain |
+| `sourcing.html` | Supplier network (148 exporters mapped, priority tiers, verification steps) and the **supplier application form** |
+| `markets.html` | Transit times, reefer load planner, ordering steps, shipping FAQ |
+| `guide.html` | Bangladesh seafood and food export guide: the main page for search and AI answers |
+| `contact.html` | Quote request form (sent to n8n) plus WhatsApp, Messenger and email |
 
-### Go live
-1. Edit the `CONFIG` block at the top of `assets/js/site.js`: WhatsApp number, email, Messenger page, and the two n8n **production** webhook URLs.
-2. If the webhook URLs are left empty, the form runs in demo mode.
-3. Deploy the folder to any static host: Netlify, Vercel, Cloudflare Pages, GitHub Pages or cPanel.
+## Editing
+- **Products:** edit `tools/catalog.py`, then run `python3 tools/build_site.py`. This rebuilds every page, `assets/js/catalog.js`, `sitemap.xml`, `robots.txt` and `llms.txt`.
+- **Page text, FAQs, network figures and domain:** edit `tools/build_site.py` (`SITE`, `NET`, the FAQ lists, `RISKS`), then rebuild.
+- **Contacts and webhooks:** edit the `CONFIG` block at the top of `assets/js/site.js`. Set the WhatsApp number, email, Messenger page and the three n8n webhook URLs (`rfqWebhook`, `eventsWebhook`, `supplierWebhook`). Any webhook left empty runs in demo mode.
+- **Domain:** set `SITE` in `tools/build_site.py` to your live domain, then rebuild so canonical URLs, the sitemap and structured data are correct.
 
-## n8n workflows
+## SEO and AI-search (AEO) setup
+- A unique title, description, canonical URL, Open Graph tags and Twitter card on every page.
+- JSON-LD structured data: Organization, WebSite, BreadcrumbList, FAQPage, Article (guide) and ItemList of 103 Products (directory).
+- The directory is plain HTML rather than built by JavaScript, so search engines and AI crawlers can read every product.
+- Each section opens with a direct answer, and the guide has a contents list, sources and a last-updated date.
+- `llms.txt` gives AI assistants a plain-text summary. `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended and other AI crawlers. `sitemap.xml` lists every page.
+- **After launch:** submit the sitemap in Google Search Console and Bing Webmaster Tools, create a Google Business Profile, and get listed on the BFFEA and EPB directories, Alibaba, Tridge, Seafood Source, Europages and Kompass. Those backlinks drive ranking.
 
-Import: **n8n → Workflows → Import from file**. Then edit the **Config** node in each workflow and attach the credentials (marked `REPLACE_ME`).
+## n8n workflows (`automation/n8n/`)
+| # | Workflow | Trigger | Does |
+|---|---|---|---|
+| 01 | Website RFQ intake | `POST /webhook/wbf-rfq` | Scores the lead; HubSpot contact and deal; email and WhatsApp confirmation; hot-lead WhatsApp alert; Sheets log |
+| 02 | WhatsApp & Messenger inbox | `GET/POST /webhook/wbf-meta` | Meta verification; detects intent; auto-reply on the same channel; HubSpot upsert; hand-off to a trader |
+| 03 | Website visitor intent | `POST /webhook/wbf-events` | Logs consented events; scores each visitor's journey; alerts on a high-intent visitor |
+| 04 | Quote SLA watchdog | Hourly | Flags HubSpot RFQ deals left without a quote for more than 4 hours |
+| 05 | Supplier onboarding | `POST /webhook/wbf-supplier` | Validates and rates the exporter A/B/C; **appends to the WBF_Exporter_List sheet**; HubSpot company; acknowledgement email with NCNDA steps; team alert |
 
-### 01 · Website RFQ intake
-`POST /webhook/oceanora-rfq`
+Import each one with **n8n → Import from file**, then edit its **Config** node and attach credentials. Setup details for HubSpot, the WhatsApp Cloud API and Messenger are in `automation/SETUP.md`. Regenerate the workflow files with `python3 automation/build_workflows.py`.
 
-```
-Webhook → Config → Normalize & Score → Respond {ok, ref}
-                                        ├─ HubSpot upsert contact → create deal (associated)
-                                        ├─ Email confirmation to buyer
-                                        ├─ Has WhatsApp? → WhatsApp template "rfq_received"
-                                        ├─ Hot lead (score ≥ 60)? → WhatsApp template "new_lead_alert" to sales
-                                        ├─ Email to sales desk (full payload)
-                                        └─ Google Sheets "RFQ" log
-```
-The lead score (0–100) is based on volume, buyer type, a business email domain, how much detail the buyer gave, a WhatsApp number, and how many products they picked. Leads are tiered HOT / WARM / COLD, and each gets an estimated deal value.
+## Images and video still needed
+See `assets/ASSET-BRIEF.md` for the shot list with sizes and formats.
 
-### 02 · WhatsApp & Messenger inbox
-`GET + POST /webhook/oceanora-meta`. Use the same URL for the WhatsApp Business Account and Page webhooks in your Meta App.
-
-```
-GET  → verify token → return hub.challenge
-POST → parse (WA + Messenger) → intent: greeting | catalog | price | sample | compliance | human | other
-       → auto-reply on the same channel → HubSpot upsert (by whatsapp_id / messenger_psid)
-       → price/sample/compliance/human? → email hand-off to the export desk
-       → Google Sheets "Chats" log
-```
-
-### 03 · Website visitor intent
-`POST /webhook/oceanora-events`
-
-```
-Webhook → parse beacon → drop bots → score the visitor's journey (static data, 7-day TTL)
-        → Google Sheets "Events"
-        → score ≥ 50 (once per visitor)? → "hot visitor" email to sales
-```
-
-### 04 · Quote SLA watchdog
-This runs hourly. It finds HubSpot deals that have been in the first stage for more than 4 hours, from the last 7 days, and emails the manager a breach list.
-
-## One-time setup checklist
-
-**HubSpot**
-- Create a private app with these scopes: `crm.objects.contacts.read/write` and `crm.objects.deals.read/write`. In n8n, add it as a *HubSpot App Token* credential.
-- Create two contact properties as single-line text with **Unique value** ticked: `whatsapp_id` and `messenger_psid`.
-- Set `hubspotPipeline` and `hubspotStage` in Config. The defaults are `default` and `appointmentscheduled`.
-
-**WhatsApp Cloud API (Meta)**
-- Get a permanent System User token and add it in n8n as *Header Auth*: `Authorization: Bearer <token>`.
-- Put the phone number ID into `waPhoneNumberId` in Config.
-- Submit these templates for approval (language `en`):
-  - `rfq_received` (Utility): "Hi {{1}}, thank you for your quote request {{2}}. Our export desk will send your price offer within 24 hours."
-  - `new_lead_alert` (Utility): "New {{1}} lead: {{2}}. Products: {{3}}. Ref {{4}}."
-- Webhook: callback URL `…/webhook/oceanora-meta`. The verify token must match `VERIFY_TOKEN` in "Check verify token". Subscribe to the `messages` field.
-
-**Messenger**
-- Add a Page access token as *Header Auth* (`Authorization: Bearer <page token>`). Subscribe the Page webhook to `messages`.
-
-**Email / Sheets**
-- Add an SMTP credential (Google Workspace, SES, Brevo, etc.).
-- Create a Google Sheet with three tabs: `RFQ`, `Chats`, `Events`. Columns are auto-mapped from the first row. Put the sheet ID in Config.
-
-**Webhook CORS**: the webhooks allow `*`. Set `allowedOrigins` to your domain in production.
-
-## GDPR and data handling
-- Analytics only start after the visitor accepts the cookie banner.
-- The RFQ form needs explicit consent before it submits.
-- Visitor intent data in n8n expires after 7 days. For RFQ and chat rows, add a scheduled purge of unconverted leads, for example after 30 days.
-
-## Regenerating the workflows
-```bash
-python3 automation/build_workflows.py
-```
+## Before going live
+- Replace the contact details and email domain, which are placeholders.
+- Show only approvals your partner plants actually hold, and keep the network figures in `NET` up to date.
+- HS headings are indicative 4-digit codes. Confirm the full code for each shipment.
+- The "best broker in the world" line is phrased as WBF's mission. Keep it that way unless you have independent evidence (awards, rankings) to back a factual claim.

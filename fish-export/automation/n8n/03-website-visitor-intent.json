@@ -1,17 +1,17 @@
 {
-  "name": "Oceanora · 03 Website visitor intent",
+  "name": "WBF · 03 Website visitor intent",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "oceanora-events",
+        "path": "wbf-events",
         "responseMode": "onReceived",
         "options": {
           "allowedOrigins": "*",
           "rawBody": true
         }
       },
-      "id": "76e4a3be-27e4-4496-b9f8-b810e0aed4a3",
+      "id": "b5c8fdfe-652b-4c77-a059-229b428dac6a",
       "name": "Events Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -19,13 +19,13 @@
         0,
         300
       ],
-      "webhookId": "a90a2d95-4a1b-421e-af3d-2135ea9b356b"
+      "webhookId": "5e8994fa-831f-4d12-8b77-b935841daf0a"
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Oceanora Seafood',\n    salesEmail: 'export@oceanora-seafood.com',\n    managerEmail: 'manager@oceanora-seafood.com',\n    fromEmail: 'Oceanora Export Desk <export@oceanora-seafood.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://oceanora-seafood.com/#products'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Worldclass Bengal Fishers',\n    salesEmail: 'sales@worldclassbengalfishers.com',\n    managerEmail: 'manager@worldclassbengalfishers.com',\n    fromEmail: 'Worldclass Bengal Fishers <sales@worldclassbengalfishers.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.worldclassbengalfishers.com/products.html'\n  }\n}}];"
       },
-      "id": "e6a691d6-a898-4711-97f0-320c0ffc3bed",
+      "id": "bbfac06d-c93c-4a71-bbd3-3ee540046ce3",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -38,7 +38,7 @@
       "parameters": {
         "jsCode": "const cfg = $('Config').first().json.cfg;\nconst item = $('Events Webhook').first();\nlet b = item.json.body;\n// sendBeacon posts text/plain — parse whichever shape arrives\nif (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { b = {}; } }\nif ((!b || !b.event) && item.binary?.data) {\n  try { b = JSON.parse(Buffer.from(item.binary.data.data, 'base64').toString('utf8')); } catch (e) { b = {}; }\n}\nif (!b || !b.event) return [];\nconst h = item.json.headers || {};\nconst ua = h['user-agent'] || '';\nif (/bot|crawl|spider|slurp|headless|lighthouse/i.test(ua)) return [];\n\nconst WEIGHTS = { page_view: 1, catalogue_filter: 3, lot_trace: 8, rfq_item_added: 12, load_planner: 15,\n                  whatsapp_click: 25, messenger_click: 20, email_click: 15, rfq_started: 25, cta_hero: 5, cta_header: 5 };\nconst s = $getWorkflowStaticData('global');\ns.visitors = s.visitors || {};\nconst v = s.visitors[b.visitorId] || { score: 0, events: [], alerted: false, first: b.ts };\nv.score += WEIGHTS[b.event] ?? 1;\nv.events = [...v.events, b.event + (b.data?.product ? ':' + b.data.product : '')].slice(-25);\nv.last = b.ts;\n// prune visitors idle > 7 days (keeps static data small; GDPR data-minimisation)\nconst weekAgo = Date.now() - 7 * 864e5;\nfor (const [id, x] of Object.entries(s.visitors)) if (new Date(x.last).getTime() < weekAgo) delete s.visitors[id];\nconst alert = v.score >= 50 && !v.alerted;\nif (alert) v.alerted = true;\ns.visitors[b.visitorId] = v;\n\nreturn [{ json: {\n  Timestamp: b.ts, Event: b.event, Data: JSON.stringify(b.data || {}), VisitorId: b.visitorId, Page: b.page,\n  Referrer: b.referrer || '', UTMSource: b.utm?.utm_source || '', UTMCampaign: b.utm?.utm_campaign || '',\n  Country: h['cf-ipcountry'] || h['x-vercel-ip-country'] || '', Language: b.lang || '',\n  IntentScore: v.score, Alert: alert, Journey: v.events.join(' → ')\n} }];"
       },
-      "id": "cb0e4c95-5594-45ba-af64-ec150982a373",
+      "id": "d644aa09-3ec9-48a7-8e5b-54c2cfec6678",
       "name": "Parse, filter bots, score",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -68,7 +68,7 @@
         },
         "options": {}
       },
-      "id": "c0882160-b977-4fdd-92ed-97fc03c6d0c0",
+      "id": "dfc86253-e182-4b96-8a77-f3da1e13e4f9",
       "name": "Sheets · Events",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -94,7 +94,7 @@
           },
           "conditions": [
             {
-              "id": "6c584029-7138-443a-9b9e-f4eb6e8ae0e4",
+              "id": "802473c9-8cb9-466c-94be-75a78f3b40c2",
               "leftValue": "={{ $json.Alert }}",
               "operator": {
                 "type": "boolean",
@@ -107,7 +107,7 @@
         },
         "options": {}
       },
-      "id": "c3643079-afae-40f7-b25a-59fa50ba008b",
+      "id": "89258367-8e9b-43ca-856f-c0207a19d44d",
       "name": "High-intent visitor?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -127,7 +127,7 @@
           "appendAttribution": false
         }
       },
-      "id": "3c310898-0379-4315-b983-60daa5d5f97a",
+      "id": "4b592db5-27ab-463e-8cb3-666b7434419e",
       "name": "Email · Hot visitor alert",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -206,7 +206,7 @@
   },
   "tags": [
     {
-      "name": "oceanora"
+      "name": "wbf"
     },
     {
       "name": "analytics"

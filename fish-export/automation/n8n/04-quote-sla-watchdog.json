@@ -1,5 +1,5 @@
 {
-  "name": "Oceanora · 04 Quote SLA watchdog",
+  "name": "WBF · 04 Quote SLA watchdog",
   "nodes": [
     {
       "parameters": {
@@ -12,7 +12,7 @@
           ]
         }
       },
-      "id": "8be16a68-f27f-4043-9af6-437fa8806290",
+      "id": "17b624a8-482e-4055-9180-125fad63cac7",
       "name": "Every hour",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -23,9 +23,9 @@
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Oceanora Seafood',\n    salesEmail: 'export@oceanora-seafood.com',\n    managerEmail: 'manager@oceanora-seafood.com',\n    fromEmail: 'Oceanora Export Desk <export@oceanora-seafood.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://oceanora-seafood.com/#products'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Worldclass Bengal Fishers',\n    salesEmail: 'sales@worldclassbengalfishers.com',\n    managerEmail: 'manager@worldclassbengalfishers.com',\n    fromEmail: 'Worldclass Bengal Fishers <sales@worldclassbengalfishers.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.worldclassbengalfishers.com/products.html'\n  }\n}}];"
       },
-      "id": "8382b1a8-65e2-4dd2-a442-d5e377d7d77b",
+      "id": "3c259b45-9f82-44d8-92fd-220a63f23ff0",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -47,7 +47,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "39b4c5a6-ac31-45ac-ae5d-ea9b6311f582",
+      "id": "133cc8ae-58d3-4369-89b9-4653295ac7d9",
       "name": "HubSpot · Stale RFQ deals",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -70,7 +70,7 @@
       "parameters": {
         "jsCode": "const r = $input.first().json.results || [];\nif (!r.length) return [];\nconst rows = r.map(d => {\n  const hrs = Math.round((Date.now() - new Date(d.properties.createdate).getTime()) / 36e5);\n  return `<tr><td>${d.properties.dealname}</td><td style=\"text-align:right\">${hrs} h</td><td style=\"text-align:right\">$${Number(d.properties.amount || 0).toLocaleString()}</td></tr>`;\n}).join('');\nreturn [{ json: { count: r.length, html: `<p>${r.length} quote request(s) are past the 4-hour first-response target and still in the first stage.</p><table cellpadding=\"6\" style=\"border-collapse:collapse;font:14px Arial\">${rows}</table><p>Move the deal stage once a price offer is sent to clear it from this list.</p>` } }];"
       },
-      "id": "4884f781-de29-4d18-a67c-97ae8d95b159",
+      "id": "d998fef8-1fa0-4326-b168-4ab14795861c",
       "name": "Any breaches?",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -90,7 +90,7 @@
           "appendAttribution": false
         }
       },
-      "id": "ba540e2b-1e23-4929-9863-cf41d8537e2a",
+      "id": "a77d3dc9-ee68-489c-8212-3352a66d4bb1",
       "name": "Email · SLA breach to manager",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -164,7 +164,7 @@
   },
   "tags": [
     {
-      "name": "oceanora"
+      "name": "wbf"
     },
     {
       "name": "hubspot"
