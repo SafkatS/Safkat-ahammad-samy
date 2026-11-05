@@ -1,13 +1,14 @@
-# Worldclass Bengal Fishers: buyer's-broker website and n8n automation
+# GoodBuy Foods Global: buyer's-broker website and n8n automation
 
-The website for **Worldclass Bengal Fishers (WBF)**, a Bangladesh-based buyer's broker for seafood and food. WBF's mission is to be the best broker in the world for food importers. The site is written from the buyer's side: better landed cost, lower risk, compliance for the buyer's market and strict QC on every lot. Five n8n workflows capture every buyer and supplier enquiry from the website, WhatsApp and Messenger and send it into HubSpot, email and Google Sheets.
+The website for **GoodBuy Foods Global (GFG)**, a Bangladesh-based buyer's broker for seafood, food and crops. Tagline: "The best food to buy in the world." GFG's mission is to be the world's best and most trusted food sourcing company. The site is written from the buyer's side: better landed cost, lower risk, compliance for the buyer's market and strict QC on every lot. Five n8n workflows capture every buyer and supplier enquiry from the website, WhatsApp and Messenger and send it into HubSpot, email and Google Sheets.
 
 ## Pages
 | Page | Purpose |
 |---|---|
-| `index.html` | Buyer value (price, risk, compliance, QC), WBF vs a typical broker, landed-cost and margin calculator, catch videos, best sellers, process, FAQ |
-| `products.html` | **Bangladesh export product directory**: 103 products (63 seafood, 40 food) with scientific name, Bangla name, HS heading, forms and markets. Searchable and filterable |
-| `quality.html` | Five QC gates, a 13-risk import control matrix with the evidence for each, lab testing, lot trace, cold chain |
+| `index.html` | Buyer value (price, risk, compliance, QC), GFG vs a typical broker, landed-cost and margin calculator, catch videos, best sellers, process, FAQ |
+| `products.html` | **Bangladesh export product directory**: 138 products (63 seafood, 75 food and crop) with scientific name, Bangla name, HS heading, forms and markets. Searchable and filterable |
+| `food.html` | Food and crop sectors (rice, spices and tea, vegetables, fruit, frozen, packaged, sweeteners), sourcing regions, a 12-month harvest calendar and food-specific QC |
+| `quality.html` | Five QC gates, a 17-risk import control matrix (including pesticide residues, phytosanitary, aflatoxin and allergen labelling) with the evidence for each, lab testing, lot trace, cold chain |
 | `sourcing.html` | Supplier network (148 exporters mapped, priority tiers, verification steps) and the **supplier application form** |
 | `markets.html` | Transit times, reefer load planner, ordering steps, shipping FAQ |
 | `guide.html` | Bangladesh seafood and food export guide: the main page for search and AI answers |
@@ -21,7 +22,7 @@ The website for **Worldclass Bengal Fishers (WBF)**, a Bangladesh-based buyer's 
 
 ## SEO and AI-search (AEO) setup
 - A unique title, description, canonical URL, Open Graph tags and Twitter card on every page.
-- JSON-LD structured data: Organization, WebSite, BreadcrumbList, FAQPage, Article (guide) and ItemList of 103 Products (directory).
+- JSON-LD structured data: Organization, WebSite, BreadcrumbList, FAQPage, Article (guide) and ItemList of 138 Products, plus a food ItemList (directory).
 - The directory is plain HTML rather than built by JavaScript, so search engines and AI crawlers can read every product.
 - Each section opens with a direct answer, and the guide has a contents list, sources and a last-updated date.
 - `llms.txt` gives AI assistants a plain-text summary. `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended and other AI crawlers. `sitemap.xml` lists every page.
@@ -30,11 +31,11 @@ The website for **Worldclass Bengal Fishers (WBF)**, a Bangladesh-based buyer's 
 ## n8n workflows (`automation/n8n/`)
 | # | Workflow | Trigger | Does |
 |---|---|---|---|
-| 01 | Website RFQ intake | `POST /webhook/wbf-rfq` | Scores the lead; HubSpot contact and deal; email and WhatsApp confirmation; hot-lead WhatsApp alert; Sheets log |
-| 02 | WhatsApp & Messenger inbox | `GET/POST /webhook/wbf-meta` | Meta verification; detects intent; auto-reply on the same channel; HubSpot upsert; hand-off to a trader |
-| 03 | Website visitor intent | `POST /webhook/wbf-events` | Logs consented events; scores each visitor's journey; alerts on a high-intent visitor |
+| 01 | Website RFQ intake | `POST /webhook/gfg-rfq` | Scores the lead; HubSpot contact and deal; email and WhatsApp confirmation; hot-lead WhatsApp alert; Sheets log |
+| 02 | WhatsApp & Messenger inbox | `GET/POST /webhook/gfg-meta` | Meta verification; detects intent; auto-reply on the same channel; HubSpot upsert; hand-off to a trader |
+| 03 | Website visitor intent | `POST /webhook/gfg-events` | Logs consented events; scores each visitor's journey; alerts on a high-intent visitor |
 | 04 | Quote SLA watchdog | Hourly | Flags HubSpot RFQ deals left without a quote for more than 4 hours |
-| 05 | Supplier onboarding | `POST /webhook/wbf-supplier` | Validates and rates the exporter A/B/C; **appends to the WBF_Exporter_List sheet**; HubSpot company; acknowledgement email with NCNDA steps; team alert |
+| 05 | Supplier onboarding | `POST /webhook/gfg-supplier` | Validates and rates the exporter A/B/C; **appends to the WBF_Exporter_List sheet** (seafood → `Exporter List`, food and crops → `Food Exporter List`); HubSpot company; acknowledgement email with NCNDA steps; team alert |
 
 Import each one with **n8n → Import from file**, then edit its **Config** node and attach credentials. Setup details for HubSpot, the WhatsApp Cloud API and Messenger are in `automation/SETUP.md`. Regenerate the workflow files with `python3 automation/build_workflows.py`.
 
@@ -45,4 +46,4 @@ See `assets/ASSET-BRIEF.md` for the shot list with sizes and formats.
 - Replace the contact details and email domain, which are placeholders.
 - Show only approvals your partner plants actually hold, and keep the network figures in `NET` up to date.
 - HS headings are indicative 4-digit codes. Confirm the full code for each shipment.
-- The "best broker in the world" line is phrased as WBF's mission. Keep it that way unless you have independent evidence (awards, rankings) to back a factual claim.
+- The "world's best and most trusted" line is phrased as GFG's mission. Keep it that way unless you have independent evidence (awards, rankings) to back a factual claim.

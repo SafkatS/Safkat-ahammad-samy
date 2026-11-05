@@ -2,16 +2,16 @@
    CONFIG — edit these values to go live. Nothing else needs changing.
    ============================================================ */
 const CONFIG = {
-  brand: "Worldclass Bengal Fishers",
+  brand: "GoodBuy Foods Global",
   whatsappNumber: "8801700000000",        // international format, digits only
   whatsappDisplay: "+880 1700-000000",
-  email: "sales@worldclassbengalfishers.com",
-  messengerPage: "worldclassbengalfishers",       // facebook page username for m.me links
+  email: "sales@goodbuyfoodsglobal.com",
+  messengerPage: "goodbuyfoodsglobal",       // facebook page username for m.me links
   // n8n production webhook URLs (Webhook node → "Production URL").
   // Leave empty to run the site in demo mode (form shows success locally).
-  rfqWebhook: "",                          // e.g. https://n8n.yourdomain.com/webhook/wbf-rfq
-  eventsWebhook: "",                       // e.g. https://n8n.yourdomain.com/webhook/wbf-events
-  supplierWebhook: "",                     // e.g. https://n8n.yourdomain.com/webhook/wbf-supplier
+  rfqWebhook: "",                          // e.g. https://n8n.yourdomain.com/webhook/gfg-rfq
+  eventsWebhook: "",                       // e.g. https://n8n.yourdomain.com/webhook/gfg-events
+  supplierWebhook: "",                     // e.g. https://n8n.yourdomain.com/webhook/gfg-supplier
 };
 
 /* ---------- Helpers ---------- */
@@ -159,7 +159,7 @@ if(dir){
 function trace(code){
   code=code.trim().toUpperCase();
   const out=$("#traceOut");
-  if(!/^(WBF|OCN)-\d{2}-\d{3,5}$/.test(code)){out.innerHTML=`<li class="nodot">Lot codes look like <span class="mono">WBF-26-1187</span>. Check the carton side label.</li>`;return}
+  if(!/^(GFG|OCN)-\d{2}-\d{3,5}$/.test(code)){out.innerHTML=`<li class="nodot">Lot codes look like <span class="mono">GFG-26-1187</span>. Check the carton side label.</li>`;return}
   const n=parseInt(code.slice(-4),10)||1187;
   const farms=["Shyamnagar, Satkhira","Mongla, Bagerhat","Paikgachha, Khulna","Chakaria, Cox's Bazar"];
   out.innerHTML=[
@@ -171,7 +171,7 @@ function trace(code){
   ].map(([t,h,d])=>`<li><time>${t}</time><b>${h}</b><br>${d}</li>`).join("")+`<li class="nodot"><span class="sample-tag">Sample trace for demonstration</span></li>`;
   track("lot_trace",{code});
 }
-if($("#traceForm")){$("#traceForm").onsubmit=e=>{e.preventDefault();trace($("#lot").value)};trace("WBF-26-1187")}
+if($("#traceForm")){$("#traceForm").onsubmit=e=>{e.preventDefault();trace($("#lot").value)};trace("GFG-26-1187")}
 
 /* ---------- Reefer load planner ---------- */
 if($("#calc")){

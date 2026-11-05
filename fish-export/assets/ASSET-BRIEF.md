@@ -1,4 +1,4 @@
-# Image & video brief: Worldclass Bengal Fishers
+# Image & video brief: GoodBuy Foods Global
 
 Real footage from Bangladeshi landing sites and partner plants earns more trust than stock, and AI and search engines favour original images. Only show plants you have permission to film.
 

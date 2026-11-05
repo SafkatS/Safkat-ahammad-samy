@@ -457,3 +457,26 @@ footer .wrap.foot-grid{display:grid;padding-block:3.5rem 1.5rem}
 .dtable.compare th.us{color:var(--sea)}
 .dtable.compare td.us::before{content:"✓ ";color:var(--good);font-weight:700}
 .dtable.compare a{color:var(--sea)}
+
+/* Food & crops */
+.page-hero.novideo{background:linear-gradient(160deg,#F5FBFD 0%,#E6F4EA 45%,#D8EFF5 100%)}
+.page-hero.novideo .bg-field{position:absolute;inset:0;z-index:-3;background:radial-gradient(ellipse at 85% 20%,rgba(31,138,91,.14),transparent 55%),radial-gradient(ellipse at 70% 80%,rgba(25,167,206,.16),transparent 60%)}
+.sectors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.sector{display:flex;flex-direction:column;gap:.45rem;padding:1.3rem 1.3rem 1.1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);text-decoration:none;color:var(--fg);transition:border-color .2s,transform .2s;min-width:0}
+.sector:hover{border-color:var(--sea);transform:translateY(-2px)}
+.sector b{font:600 1.15rem var(--f-display)}
+.sector span{font-size:.88rem;color:var(--muted);flex:1}
+.sector em{font:600 .75rem var(--f-mono);font-style:normal;color:var(--sea);letter-spacing:.04em}
+@media (max-width:1000px){.sectors{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.sectors{grid-template-columns:1fr}}
+.cal{border-collapse:separate;border-spacing:3px;min-width:760px;width:100%;font-size:.85rem}
+.cal th{font:600 .7rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:.3rem;text-align:center}
+.cal tbody th{text-align:left;font:600 .9rem var(--f-body);text-transform:none;letter-spacing:0;color:var(--fg);white-space:nowrap;padding-right:1rem}
+.cal td{height:26px;border-radius:3px;background:var(--line)}
+.cal td.on{background:color-mix(in srgb,var(--aqua) 40%,#fff)}
+.cal td.pk{background:var(--sea)}
+.cal-key{display:flex;gap:.5rem 1.2rem;flex-wrap:wrap;align-items:center;font-size:.85rem;color:var(--muted);margin-top:1rem}
+.cal-key .k{display:inline-block;width:18px;height:12px;border-radius:2px;background:var(--line);vertical-align:middle;margin-right:.3rem}
+.cal-key .k.on{background:color-mix(in srgb,var(--aqua) 40%,#fff)}
+.cal-key .k.pk{background:var(--sea)}
+.nav{gap:1rem;font-size:.92rem}

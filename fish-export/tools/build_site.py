@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds the Worldclass Bengal Fishers static site.
+"""Builds the GoodBuy Foods Global static site.
 
   python3 tools/build_site.py
 
@@ -12,9 +12,9 @@ sys.path.insert(0, os.path.dirname(__file__))
 from catalog import CATEGORIES, P
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://www.worldclassbengalfishers.com"   # ← your live domain
-BRAND = "Worldclass Bengal Fishers"
-SHORT = "WBF"
+SITE = "https://www.goodbuyfoodsglobal.com"   # ← your live domain
+BRAND = "GoodBuy Foods Global"
+SHORT = "GFG"
 TODAY = datetime.date.today().isoformat()
 V = "assets/video/"
 E = html.escape
@@ -23,7 +23,7 @@ N_PRODUCTS = len(P)
 N_FISH = sum(1 for p in P if CAT[p[1]][2] == "fish")
 N_FOOD = N_PRODUCTS - N_FISH
 
-# Network figures from WBF research (EPB directory, SFDA list, BFFEA, Oct 2026)
+# Network figures from GFG research (EPB directory, SFDA list, BFFEA, Oct 2026)
 NET = dict(mapped=148, districts=17, shortlisted=54, tier_a=19, tier_b=16, tier_c=19)
 DISTRICTS = [("Dhaka", 37), ("Khulna", 33), ("Chattogram", 29), ("Brahmanbaria", 14), ("Jashore", 10),
              ("Cox's Bazar", 5), ("Sylhet", 4), ("Bagerhat", 3), ("Sunamganj", 3), ("Other districts", 10)]
@@ -33,19 +33,19 @@ HSCATS = [("0303", "Frozen fish", 78, "Sea fish, hilsa, pomfret"),
           ("0306", "Crustaceans (shrimp, prawn, crab)", 46, "Black tiger, freshwater prawn"),
           ("0305", "Dried & salted fish", 27, "Dried marine fish, salted fish")]
 
-LOGO = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0A2540"/><path d="M8 21c4-6 11-8 18-4l6-4-1.5 7 1.5 7-6-4c-7 4-14 2-18-2z" fill="#F5FBFD"/><circle cx="14" cy="19.5" r="1.4" fill="#0A2540"/><path d="M6 29c3 0 3-1.6 6-1.6s3 1.6 6 1.6 3-1.6 6-1.6 3 1.6 6 1.6 3-1.6 4-1.6" stroke="#19A7CE" stroke-width="1.4" fill="none"/></svg>'
+LOGO = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0A2540"/><path d="M7 23c4-5.5 10.5-7.3 17-3.7l5.5-3.6-1.4 6.4 1.4 6.4-5.5-3.6C17.5 28.5 11 27 7 23z" fill="#F5FBFD"/><circle cx="12.5" cy="22.4" r="1.3" fill="#0A2540"/><path d="M21 15.5c.5-5 4.5-8.3 10-8.5-.2 5.4-3.7 9.3-9 9.3" fill="#4CC28A"/><path d="M22 16c2.2-2.6 4.6-4.6 7.5-6.4" stroke="#0A2540" stroke-width=".9" fill="none"/></svg>'
 WA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3z"/></svg>'
 DIV = lambda a="#E4F5FA", b="#DFF3F8": f'<div class="divider" aria-hidden="true"><svg viewBox="0 0 2880 70" preserveAspectRatio="none"><path fill="{a}" fill-opacity=".55" d="M0 38 C240 8 480 8 720 38 S1200 68 1440 38 S1920 8 2160 38 S2640 68 2880 38 V70 H0Z"/><path fill="{b}" d="M0 46 C240 22 480 70 720 46 S1200 22 1440 46 S1920 70 2160 46 S2640 22 2880 46 V70 H0Z"/></svg></div>'
 BUB = '<div class="bubbles" aria-hidden="true">' + "".join(
     f'<span style="--x:{x}%;--s:{s}px;--d:{d}s;--dl:{dl}s"></span>' for x, s, d, dl in
     [(4,10,13,0),(12,16,17,3),(21,8,11,6),(33,14,15,1),(45,9,12,8),(57,18,19,2),(66,10,14,5),(74,13,16,9),(83,8,10,4),(92,15,18,7)]) + "</div>"
 
-NAV = [("index.html","home","Home"),("products.html","products","Products"),("quality.html","quality","Quality &amp; risk"),
-       ("sourcing.html","sourcing","Suppliers"),("markets.html","markets","Logistics"),("guide.html","guide","Export guide"),("contact.html","contact","Contact")]
+NAV = [("index.html","home","Home"),("products.html","products","Products"),("food.html","food","Food &amp; crops"),("quality.html","quality","Quality &amp; risk"),
+       ("sourcing.html","sourcing","Suppliers"),("markets.html","markets","Logistics"),("guide.html","guide","Guide"),("contact.html","contact","Contact")]
 
 ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": BRAND, "alternateName": SHORT, "url": SITE + "/",
        "logo": SITE + "/assets/img/logo.png",
-       "description": f"{BRAND} is a buyer's broker that sources frozen, chilled, live and dried seafood and Bangladeshi food products from licensed exporters for importers worldwide, with five-gate QC on every lot. Mission: to be the best broker in the world for food importers.",
+       "description": f"{BRAND} is a buyer's broker that sources frozen, chilled, live and dried seafood and Bangladeshi food products from licensed exporters for importers worldwide, with five-gate QC on every lot. Mission: to be the world's best and most trusted food sourcing company.",
        "areaServed": "Worldwide", "address": {"@type": "PostalAddress", "addressCountry": "BD"},
        "knowsAbout": ["Bangladesh seafood export", "Black tiger shrimp", "Hilsa", "Mud crab", "HS 0306", "HS 0303", "Cold chain logistics"],
        "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "availableLanguage": ["English", "Bengali", "Arabic"]}}
@@ -97,7 +97,7 @@ def header(page):
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="index.html" aria-label="{BRAND} home">{LOGO}<span><span data-brand>{BRAND}</span><small>Bangladesh seafood &amp; food export</small></span></a>
+    <a class="logo" href="index.html" aria-label="{BRAND} home">{LOGO}<span><span data-brand>{BRAND}</span><small>Best food to buy in the world</small></span></a>
     <nav class="nav" id="nav" aria-label="Main">
       {links}
     </nav>
@@ -109,8 +109,10 @@ def header(page):
 
 
 def page_hero(crumb, title, lede, video, level="0.74", extra=""):
-    return f'''  <section class="vid page-hero">
-    <video class="bg" data-auto autoplay muted loop playsinline preload="auto" poster="{V}{video}.jpg" aria-hidden="true"><source src="{V}{video}.mp4" type="video/mp4"></video>
+    vid = (f'<video class="bg" data-auto autoplay muted loop playsinline preload="auto" poster="{V}{video}.jpg" aria-hidden="true"><source src="{V}{video}.mp4" type="video/mp4"></video>'
+           if video else '<div class="bg-field" aria-hidden="true"></div>')
+    return f'''  <section class="vid page-hero{'' if video else ' novideo'}">
+    {vid}
     <canvas class="sea" data-level="{level}" aria-hidden="true"></canvas>
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><span>{crumb}</span></nav>
@@ -159,10 +161,10 @@ FOOT = f'''</main>
 <footer>
   <div class="wrap foot-grid">
     <div>
-      <a class="logo" href="index.html" style="color:var(--fg)">{LOGO}<span><span data-brand>{BRAND}</span><small>Bangladesh seafood &amp; food export</small></span></a>
+      <a class="logo" href="index.html" style="color:var(--fg)">{LOGO}<span><span data-brand>{BRAND}</span><small>Best food to buy in the world</small></span></a>
       <p style="margin-top:1rem;max-width:36ch">We source seafood and food from licensed Bangladeshi exporters and manage quality, documents and cold chain for importers worldwide.</p>
     </div>
-    <div><h4>Explore</h4><ul><li><a href="products.html">Product directory</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li></ul></div>
+    <div><h4>Explore</h4><ul><li><a href="products.html">Product directory</a></li><li><a href="food.html">Food &amp; crops</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li></ul></div>
     <div><h4>Work with us</h4><ul><li><a href="contact.html#rfq">Request a quote</a></li><li><a href="sourcing.html#apply">Become a supplier partner</a></li><li><a href="#" data-wa="Hello {BRAND}" data-track="whatsapp_click">WhatsApp</a></li><li><a href="#" data-messenger data-track="messenger_click">Messenger</a></li><li><a href="#" data-mail data-track="email_click">Email</a></li></ul></div>
     <div><h4>Office</h4><p>Dhaka, Bangladesh<br>Sunday–Thursday, 09:00–18:00 (UTC+6)<br>WhatsApp answered 7 days</p></div>
   </div>
@@ -236,14 +238,18 @@ RISKS = [
  ("Supplier default or delay", "The plant cannot deliver on time, so your shelves run empty.", "A second qualified plant held for each product; production slot confirmed in writing.", "Production schedule and weekly status updates"),
  ("Price volatility", "Raw material prices move between offer and contract.", "Price validity stated in every offer; seasonal booking advice; supply programmes at agreed prices.", "Written offer with validity date"),
  ("Export restrictions", "Products such as hilsa or aromatic rice can face permits, quotas or bans.", "Current export policy checked before we offer.", "Policy confirmation in the offer"),
+ ("Pesticide residues above limits", "Fresh produce exceeds the importing market's maximum residue limits (MRLs) and is destroyed or recalled.", "Farm spray records checked; pre-harvest interval enforced; multi-residue lab test per lot for fresh produce and spices.", "Pesticide residue report against your market's MRLs"),
+ ("Plant pests and phytosanitary failure", "Fruit fly or other quarantine pests found at the border; the whole consignment is refused.", "Sourcing from monitored orchards and farms; sorting, cleaning and treatment (hot water for mango); phytosanitary inspection by the DAE Plant Protection Wing.", "Phytosanitary certificate and treatment record"),
+ ("Aflatoxin and contaminants", "Aflatoxin, Sudan dyes or heavy metals in spices, rice or dried products.", "Lab tests for aflatoxin, illegal dyes and heavy metals; moisture control in storage.", "Lab certificate for the exact lot"),
+ ("Allergen and labelling errors", "Packaged food recalled for undeclared allergens or non-compliant labels.", "Labels checked against your market's rules (ingredients, allergens, nutrition, language) before printing.", "Approved label proof before production"),
  ("Claims after arrival", "A quality issue found at destination.", "Claim procedure written into the contract; we respond within 48 hours and pursue the exporter on your behalf.", "Written claim outcome: credit note or replacement"),
 ]
 
 # ------------------------------------------------------------------ FAQs
 FAQ_HOME = [
- ("What does Worldclass Bengal Fishers do?", f"{BRAND} is a Bangladesh-based sourcing and export partner that buys on the importer's behalf. We negotiate with licensed Bangladeshi plants, enforce five QC gates on every lot, check compliance for your market and manage documents and shipment, so each container lands at a profitable price."),
- ("Who does WBF represent?", "The buyer. We work to your specification, carry out QC on your behalf and release a shipment only when it meets the order you placed."),
- ("How does WBF lower my landed cost?", "By buying directly from processing plants, getting competing quotes from several qualified plants, loading containers to their payload limit, specifying glaze so you pay for fish rather than ice, and using preferential duty access for Bangladeshi origin where your market grants it."),
+ ("What does GoodBuy Foods Global do?", f"{BRAND} is a Bangladesh-based sourcing and export partner that buys on the importer's behalf. We negotiate with licensed Bangladeshi plants, enforce five QC gates on every lot, check compliance for your market and manage documents and shipment, so each container lands at a profitable price."),
+ ("Who does GFG represent?", "The buyer. We work to your specification, carry out QC on your behalf and release a shipment only when it meets the order you placed."),
+ ("How does GFG lower my landed cost?", "By buying directly from processing plants, getting competing quotes from several qualified plants, loading containers to their payload limit, specifying glaze so you pay for fish rather than ice, and using preferential duty access for Bangladeshi origin where your market grants it."),
  ("How do you reduce supply risk?", "We only use plants whose licence and market listing we have checked, qualify a backup plant for each product, use L/C or document-based payment, and require independent pre-shipment inspection before the container is sealed."),
  ("Which seafood does Bangladesh export?", "Mainly frozen black tiger shrimp and giant freshwater prawn (HS 0306), frozen marine fish such as hilsa, pomfret and ribbonfish (HS 0303), chilled freshwater fish (HS 0302), live mud crab and eel (HS 0301) and dried fish (HS 0305)."),
  ("What is the minimum order?", "Usually one 20-foot reefer for a single product, or one 40-foot reefer split across up to four products. Samples and trial lots can be arranged."),
@@ -251,22 +257,98 @@ FAQ_HOME = [
  ("How fast do you quote?", "Within 24 hours of receiving species, cut, grade, packing, quantity and destination port."),
 ]
 FAQ_GUIDE = [
- ("How many seafood exporters are registered in Bangladesh?", f"WBF's mapping of the Export Promotion Bureau directory lists {NET['mapped']} registered seafood and fisheries exporters across {NET['districts']} districts. Dhaka (37), Khulna (33) and Chattogram (29) together account for about two-thirds."),
+ ("How many seafood exporters are registered in Bangladesh?", f"GFG's mapping of the Export Promotion Bureau directory lists {NET['mapped']} registered seafood and fisheries exporters across {NET['districts']} districts. Dhaka (37), Khulna (33) and Chattogram (29) together account for about two-thirds."),
  ("Who certifies Bangladeshi fish for export?", "The Department of Fisheries' Fish Inspection and Quality Control (FIQC) wing licenses fish export plants and issues health certificates. Plants must also be on the importing country's approved list, for example the EU list of approved establishments, the SFDA list for Saudi Arabia or GACC registration for China."),
  ("What are the HS codes for Bangladeshi seafood?", "0301 live fish (including eel), 0302 fresh or chilled fish, 0303 frozen fish, 0304 fillets, 0305 dried or salted fish, 0306 crustaceans (shrimp, prawn, crab) and 0307 molluscs (squid, cuttlefish)."),
  ("Can hilsa be exported from Bangladesh?", "Only with a government permit, within quotas and seasons that the government announces. Volumes and timing change each year."),
+ ("What food does Bangladesh export besides fish?", "Aromatic rice, tea, spices, potatoes, fresh vegetables (gourds, beans, leafy greens), mango, jackfruit, pineapple and lychee, frozen paratha and snacks, and processed foods such as biscuits, juices, noodles, pickles and sauces."),
+ ("What certificate is needed to export fruit and vegetables from Bangladesh?", "A phytosanitary certificate from the Plant Protection Wing of the Department of Agricultural Extension (DAE), plus any treatment or orchard-registration requirements set by the importing country."),
  ("Which trade associations represent Bangladeshi seafood exporters?", "BFFEA (Bangladesh Frozen Foods Exporters Association) for shrimp and frozen fish processors, BLCFEA (Bangladesh Live & Chilled Food Exporters Association) for live crab and eel, and BMFA (Bangladesh Marine Fisheries Association) for deep-sea fishing companies."),
 ]
 FAQ_SUP = [
- ("Who can join the WBF supplier network?", "Bangladeshi exporters with a valid export licence and, for fish, a DoF FIQC-approved plant. Approvals for target markets (EU, SFDA, GACC, US FDA) and certifications such as HACCP or BRCGS raise your priority."),
+ ("Who can join the GFG supplier network?", "Bangladeshi exporters with a valid export licence and, for fish, a DoF FIQC-approved plant. Approvals for target markets (EU, SFDA, GACC, US FDA) and certifications such as HACCP or BRCGS raise your priority."),
  ("Do you share buyer details?", "Buyer details are shared after a signed NCNDA (non-circumvention, non-disclosure agreement) and commission agreement."),
- ("Is there a fee to join?", "No. WBF earns an agreed commission on completed shipments."),
+ ("Is there a fee to join?", "No. GFG earns an agreed commission on completed shipments."),
 ]
 FAQ_MARKETS = [
  ("How long does a reefer take from Chattogram to Europe?", "Typically 28–35 days to Rotterdam, Antwerp or Hamburg via a transshipment hub such as Colombo or Singapore."),
  ("Which Incoterms do you quote?", "FOB Chattogram, CFR or CIF to your port. Air freight for live crab, eel, chilled fish and fresh produce is quoted CPT or CIP to the destination airport."),
  ("How many cartons fit in a 40-foot reefer?", "About 1,900–2,100 master cartons of 10 kg frozen shrimp, or roughly 19–21 tonnes net, depending on carton size."),
 ]
+
+
+SECTORS = [  # title, category ids, blurb, link anchor
+ ("Seafood & fish", ["shrimp","shell","marine","fresh","live","dried"], "Shrimp, prawn, hilsa, pomfret, crab, eel, freshwater and dried fish", "cat-shrimp"),
+ ("Rice & grains", ["rice"], "Aromatic rice, puffed and flattened rice, semai", "cat-rice"),
+ ("Spices & tea", ["spice"], "Turmeric, chilli, coriander, nigella, Sylhet tea", "cat-spice"),
+ ("Fresh vegetables", ["veg"], "Potato, gourds, beans, okra, leafy greens", "cat-veg"),
+ ("Fresh fruits", ["fruit"], "Mango, jackfruit, pineapple, lychee, seasonal fruit", "cat-fruit"),
+ ("Frozen & ready-to-cook", ["frozen"], "IQF vegetables, jackfruit, paratha, snacks, meals", "cat-frozen"),
+ ("Processed & packaged", ["processed"], "Biscuits, noodles, juices, pulp, pickles, oils", "cat-processed"),
+ ("Sugar & sweeteners", ["sweet"], "Date-palm and cane jaggery, molasses, honey", "cat-sweet"),
+]
+REGIONS = [
+ ("Shrimp & prawn", "Khulna, Satkhira, Bagerhat, Cox's Bazar"),
+ ("Marine fish", "Chattogram, Cox's Bazar, Barguna, Patuakhali"),
+ ("Mango", "Rajshahi, Chapainawabganj, Naogaon, Satkhira"),
+ ("Lychee", "Dinajpur, Rajshahi, Pabna (Ishwardi)"),
+ ("Jackfruit & pineapple", "Gazipur, Tangail (Madhupur), Moulvibazar"),
+ ("Potato", "Munshiganj, Bogura, Rangpur, Joypurhat"),
+ ("Vegetables", "Jashore, Bogura, Narsingdi, Cumilla"),
+ ("Aromatic rice", "Dinajpur, Naogaon, Sherpur, Netrokona"),
+ ("Tea", "Moulvibazar, Habiganj, Sylhet, Chattogram, Panchagarh"),
+ ("Turmeric & chilli", "Bogura, Chattogram Hill Tracts, river char lands"),
+ ("Date-palm jaggery", "Jashore, Jhenaidah"),
+ ("Honey", "Sundarbans; mustard fields of Sirajganj and Tangail"),
+ ("Processed food", "Dhaka, Gazipur, Narayanganj, Chattogram, Habiganj"),
+]
+FOOD_BODIES = [
+ ("BFVAPEA", "Bangladesh Fruits, Vegetables & Allied Products Exporters' Association, for fresh produce exporters"),
+ ("BAPA", "Bangladesh Agro-Processors' Association, for processed food exporters"),
+ ("Bangladesh Tea Board", "Regulates tea; the Chattogram auction sets prices"),
+ ("DAE Plant Protection Wing", "Issues phytosanitary certificates for plants and produce"),
+ ("BFSA and BSTI", "Food safety authority and standards institution"),
+ ("EPB and CCI&amp;E", "Export statistics and Export Registration Certificates (ERC)"),
+]
+# product, active months, peak months (1–12)
+CALENDAR = [
+ ("Black tiger shrimp", range(3, 12), [5, 6, 7, 8, 9]),
+ ("Hilsa", range(6, 12), [8, 9, 10]),
+ ("Aromatic rice", range(1, 13), [11, 12, 1]),
+ ("Potato", range(1, 13), [2, 3, 4]),
+ ("Winter vegetables", [11, 12, 1, 2, 3], [12, 1, 2]),
+ ("Summer gourds", range(4, 11), [5, 6, 7, 8]),
+ ("Mango", range(5, 9), [6, 7]),
+ ("Lychee", [5, 6], [5, 6]),
+ ("Jackfruit", range(5, 9), [6, 7]),
+ ("Pineapple", range(5, 10), [6, 7, 8]),
+ ("Tea", range(4, 13), [6, 7, 8, 9, 10]),
+ ("Turmeric", range(1, 13), [1, 2, 3]),
+ ("Date-palm jaggery", [12, 1, 2], [1]),
+]
+MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
+
+
+def sectors_html():
+    out = []
+    for title, cats, blurb, anchor in SECTORS:
+        n = sum(1 for p in P if p[1] in cats)
+        out.append(f'        <a class="sector" href="products.html#{anchor}" data-sector="{cats[0]}"><b>{E(title)}</b><span>{E(blurb)}</span><em>{n} products →</em></a>')
+    return "\n".join(out)
+
+
+def regions_rows():
+    return "".join(f"<tr><td><b>{E(a)}</b></td><td>{E(b)}</td></tr>" for a, b in REGIONS)
+
+
+def calendar_html():
+    head_ = "".join(f"<th>{m}</th>" for m in MONTHS)
+    rows = []
+    for name, act, peak in CALENDAR:
+        act, peak = set(act), set(peak)
+        cells = "".join(f'<td class="{"pk" if m in peak else "on" if m in act else ""}" title="{MONTHS[m-1]}"></td>' for m in range(1, 13))
+        rows.append(f"<tr><th scope=\"row\">{E(name)}</th>{cells}</tr>")
+    return f'<table class="cal"><thead><tr><th></th>{head_}</tr></thead><tbody>{"".join(rows)}</tbody></table>'
 
 
 # ------------------------------------------------------------------ PAGES
@@ -279,16 +361,16 @@ def write(name, text):
 def build():
     # ---------- HOME
     home = head(f"{BRAND} | Bangladesh Seafood & Food Exporter",
-                f"Source shrimp, hilsa, pomfret, mud crab, pangasius and {N_PRODUCTS} Bangladeshi seafood and food products from licensed exporters. Quotes in 24 hours, FOB or CFR.",
+                f"Buyer's broker for {N_PRODUCTS} Bangladeshi seafood, food and crop products: shrimp, hilsa, crab, aromatic rice, spices, tea, vegetables, mango and packaged foods. Five-gate QC, quotes in 24 hours.",
                 "index.html", [{"@type": "WebSite", "@id": SITE + "/#web", "url": SITE + "/", "name": BRAND, "publisher": {"@id": SITE + "/#org"}}, faq_ld(FAQ_HOME)]) + header("home") + f'''
   <section class="hero vid" style="padding:0">
     <video class="bg" data-auto autoplay muted loop playsinline preload="auto" poster="{V}iced-snapper.jpg" aria-hidden="true"><source src="{V}iced-snapper.mp4" type="video/mp4"></video>
     <canvas class="sea" data-level="0.7" aria-hidden="true"></canvas>
     <div class="wrap">
       <div>
-        <p class="eyebrow">Our mission: the best broker in the world for food importers</p>
-        <h1>Better margins on Bangladeshi seafood, <em>with the risk taken out</em>.</h1>
-        <p class="lede">{BRAND} buys for importers, distributors and retailers from the best-qualified plants in Bangladesh. We negotiate price at source, enforce strict QC on every lot and keep every shipment compliant with your market, so each container sells at a profit and the next order is easy.</p>
+        <p class="eyebrow">Our mission: the world's best and most trusted food sourcing company</p>
+        <h1>Better margins on Bangladeshi seafood and food, <em>with the risk taken out</em>.</h1>
+        <p class="lede">{BRAND} buys seafood, fresh produce, rice, spices, tea and packaged foods for importers, distributors and retailers from the best-qualified exporters in Bangladesh. We negotiate price at source, enforce strict QC on every lot and keep every shipment compliant with your market, so each container sells at a profit and the next order is easy.</p>
         <div class="actions">
           <a class="btn btn-primary" href="contact.html#rfq" data-track="cta_hero">Request a price offer</a>
           <a class="btn btn-ghost" href="products.html" style="color:var(--fg)">Browse {N_PRODUCTS} products</a>
@@ -320,9 +402,21 @@ def build():
     <div class="wrap">
       <div class="statband">
         <div><b>{NET['mapped']}</b><span>licensed seafood exporters mapped</span><cite>EPB directory</cite></div>
-        <div><b>{NET['districts']}</b><span>sourcing districts, coast to haor</span><cite>WBF research</cite></div>
+        <div><b>{NET['districts']}</b><span>sourcing districts, coast to haor</span><cite>GFG research</cite></div>
         <div><b>{N_PRODUCTS}</b><span>export products in our directory</span><cite>{N_FISH} seafood · {N_FOOD} food</cite></div>
         <div><b>24 h</b><span>quote turnaround</span><cite>Working days</cite></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sectors" style="padding-top:1rem">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">What we source</p><h2>Every food Bangladesh exports, from one trusted partner.</h2></div>
+        <p class="lede">Seafood is where we started. Today we source across {len(SECTORS)} food and crop sectors, with the same buyer-side QC and compliance checks for every product.</p>
+      </div>
+      <div class="sectors">
+{sectors_html()}
       </div>
     </div>
   </section>
@@ -366,7 +460,7 @@ def build():
       </div>
       <div class="broker">
         <div><p class="eyebrow">We work for the buyer</p><h3>Your broker in Bangladesh, on your side of the table.</h3>
-        <p>Every lot shipped through WBF passes all five QC gates and a full document check before the container is sealed. We control 13 food-import risks, from border residues to payment fraud, and send you the evidence for each.</p></div>
+        <p>Every lot shipped through GFG passes all five QC gates and a full document check before the container is sealed. We control {len(RISKS)} food-import risks, from border residues to payment fraud, and send you the evidence for each.</p></div>
         <a class="btn btn-navy" href="quality.html#risk">See the import risk controls</a>
       </div>
     </div>
@@ -375,11 +469,11 @@ def build():
   <section id="compare">
     <div class="wrap">
       <div class="sec-head">
-        <div><p class="eyebrow">What sets WBF apart</p><h2>Built to be the world's best broker for buyers.</h2></div>
-        <p class="lede">That is our standard, and this is how we hold ourselves to it. Most intermediaries pass on an offer and a certificate. We take responsibility for what arrives at your port.</p>
+        <div><p class="eyebrow">Why buyers trust GFG</p><h2>Built to be the world's best and most trusted food sourcing company.</h2></div>
+        <p class="lede">Trust is earned shipment by shipment, so we make every promise checkable. Most intermediaries pass on an offer and a certificate. We take responsibility for what arrives at your port.</p>
       </div>
       <div class="tbl"><table class="dtable compare">
-        <thead><tr><th></th><th>Typical trading intermediary</th><th class="us">Worldclass Bengal Fishers</th></tr></thead>
+        <thead><tr><th></th><th>Typical trading intermediary</th><th class="us">GoodBuy Foods Global</th></tr></thead>
         <tbody>
           <tr><td>Who we act for</td><td>Usually the seller</td><td class="us">The buyer: your specification and your approval</td></tr>
           <tr><td>Quality control</td><td>The exporter's own certificate</td><td class="us">Five QC gates on every lot, by our officers or an independent inspector</td></tr>
@@ -388,7 +482,8 @@ def build():
           <tr><td>Pricing</td><td>One bundled price</td><td class="us">Competing plant quotes, with FOB, freight, insurance and duty shown separately</td></tr>
           <tr><td>Supply security</td><td>One supplier</td><td class="us">A second qualified plant held for each product</td></tr>
           <tr><td>Claims</td><td>Buyer chases the exporter</td><td class="us">Answered within 48 hours; we pursue the exporter on your behalf</td></tr>
-          <tr><td>Risk coverage</td><td>Not documented</td><td class="us">13 import risks controlled, with evidence for each (<a href="quality.html#risk">see the table</a>)</td></tr>
+          <tr><td>Transparency</td><td>Supplier and costs hidden</td><td class="us">Supplier plant named in your contract; open cost breakdown; references from existing buyers on request</td></tr>
+          <tr><td>Risk coverage</td><td>Not documented</td><td class="us">{len(RISKS)} import risks controlled, with evidence for each (<a href="quality.html#risk">see the table</a>)</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -521,17 +616,17 @@ def build():
     bars = "\n".join(f'<li><span>{E(d)}</span><span class="bar"><i style="width:{n/maxd*100:.0f}%"></i></span><b>{n}</b></li>' for d, n in DISTRICTS)
     hsrows = "\n".join(f'<tr><td class="mono">{h}</td><td>{E(t)}</td><td>{E(k)}</td><td class="num">{n}</td></tr>' for h, t, n, k in HSCATS)
     sup = head(f"Bangladesh Supplier Network: Licensed Seafood Exporters | {SHORT}",
-               f"How {BRAND} selects Bangladeshi seafood and food exporters: {NET['mapped']} licensed exporters mapped, approval checks (DoF FIQC, EU, SFDA, GACC) and a priority rating. Exporters can apply to join.",
+               f"How {BRAND} selects Bangladeshi seafood, food and crop exporters: {NET['mapped']} licensed exporters mapped, approval checks (DoF FIQC, EU, SFDA, GACC) and a priority rating. Exporters can apply to join.",
                "sourcing.html", [crumbs_ld("Supplier network", "sourcing.html"), faq_ld(FAQ_SUP)], "catch-carp.jpg") + header("sourcing") + "\n" + page_hero(
-        "Supplier network", "A vetted network of Bangladesh's licensed exporters.",
+        "Supplier network", "A vetted network of Bangladesh's seafood, food and crop exporters.",
         f"We have mapped {NET['mapped']} registered seafood exporters across {NET['districts']} districts and rate every supplier against the approvals and records your market requires.", "catch-carp",
-        extra='\n      <div class="actions" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.6rem"><a class="btn btn-primary" href="#apply">Apply as a supplier</a><a class="btn btn-ghost" href="contact.html#rfq" style="color:var(--fg)">Source through WBF</a></div>') + f'''
+        extra='\n      <div class="actions" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.6rem"><a class="btn btn-primary" href="#apply">Apply as a supplier</a><a class="btn btn-ghost" href="contact.html#rfq" style="color:var(--fg)">Source through GFG</a></div>') + f'''
 
   <section style="padding-top:2rem">
     <div class="wrap">
       <div class="statband">
         <div><b>{NET['mapped']}</b><span>registered seafood exporters mapped</span><cite>EPB directory</cite></div>
-        <div><b>{NET['shortlisted']}</b><span>exporters on our shortlist</span><cite>WBF research, Oct 2026</cite></div>
+        <div><b>{NET['shortlisted']}</b><span>exporters on our shortlist</span><cite>GFG research, Oct 2026</cite></div>
         <div><b>{NET['tier_a']}</b><span>Priority A: on an official approval list or BFFEA leadership</span><cite>SFDA list · BFFEA</cite></div>
         <div><b>5</b><span>HS categories covered</span><cite>0301 – 0306</cite></div>
       </div>
@@ -544,7 +639,7 @@ def build():
         <p class="eyebrow">Where exporters are</p>
         <h2 style="margin:.6rem 0 1.5rem">Registered exporters by district</h2>
         <ul class="bars">{bars}</ul>
-        <p class="src">Source: Export Promotion Bureau (EPB) directory of seafood and fisheries exporters, compiled by WBF. n = {NET['mapped']}.</p>
+        <p class="src">Source: Export Promotion Bureau (EPB) directory of seafood and fisheries exporters, compiled by GFG. n = {NET['mapped']}.</p>
       </div>
       <div>
         <p class="eyebrow">What they export</p>
@@ -578,16 +673,32 @@ def build():
     </div>
   </section>
 
+  <section id="food-network">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">Food &amp; crop exporters</p><h2>Beyond seafood: rice, produce, spices, tea and packaged food.</h2></div>
+        <p class="lede">We apply the same rating to food and crop exporters. Our mapping draws on the member lists of the trade bodies below and on the exporters' own certifications.</p>
+      </div>
+      <div class="cols2">
+        <div class="tbl"><table class="dtable"><thead><tr><th>Sector</th><th>Main sourcing regions</th></tr></thead><tbody>{regions_rows()}</tbody></table></div>
+        <div>
+          <h3 style="margin-bottom:1rem">Trade bodies and authorities we work through</h3>
+          <ul class="ticks">{''.join(f'<li><b>{a}</b>: {b}</li>' for a, b in FOOD_BODIES)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   {DIV()}
   <section id="apply" class="band">
     {BUB}
     <div class="wrap rfq">
       <div>
         <p class="eyebrow">For Bangladeshi exporters</p>
-        <h2 style="margin-top:.8rem">Join the WBF supplier network</h2>
+        <h2 style="margin-top:.8rem">Join the GFG supplier network: seafood, food and crops</h2>
         <p class="lede" style="margin-top:1.2rem">We bring you qualified buyers from Europe, the Gulf, East Asia and North America. Joining is free; we earn an agreed commission on completed shipments.</p>
         <ul class="contact-list">
-          <li><span>You need</span><a>A valid export licence. For fish, a DoF FIQC-approved plant.</a></li>
+          <li><span>You need</span><a>An Export Registration Certificate (ERC). For fish, a DoF FIQC-approved plant; for fresh produce, phytosanitary registration with DAE.</a></li>
           <li><span>We review</span><a>Within 3 working days. We call to confirm details.</a></li>
           <li><span>Then</span><a>NCNDA and commission agreement, then buyer introductions.</a></li>
         </ul>
@@ -600,14 +711,14 @@ def build():
         <div class="f"><label for="s_email">Email</label><input id="s_email" name="email" type="email" required autocomplete="email"></div>
         <div class="f"><label for="s_district">District</label>
           <select id="s_district" name="district">{''.join(f'<option>{d}</option>' for d in ['Khulna','Chattogram','Dhaka','Bagerhat','Satkhira','Jashore',"Cox's Bazar",'Brahmanbaria','Sylhet','Sunamganj','Barishal','Mymensingh','Rajshahi','Other'])}</select></div>
-        <div class="f"><label for="s_licence">DoF approval / export licence no.</label><input id="s_licence" name="licence" placeholder="e.g. KLN-57"></div>
+        <div class="f"><label for="s_licence">ERC, DoF approval or licence no.</label><input id="s_licence" name="licence" placeholder="e.g. KLN-57"></div>
         <div class="f"><label for="s_capacity">Monthly export capacity</label>
           <select id="s_capacity" name="capacity"><option value="<20">Under 20 MT</option><option value="20-100">20–100 MT</option><option value="100-500">100–500 MT</option><option value="500+">500 MT +</option></select></div>
         <fieldset class="f full checks-inline"><legend>Product categories</legend>
           {''.join(f'<label><input type="checkbox" name="categories" value="{c}"> {E(t)}</label>' for c, t, g, i in CATEGORIES)}
         </fieldset>
         <fieldset class="f full checks-inline"><legend>Approvals &amp; certifications held</legend>
-          {''.join(f'<label><input type="checkbox" name="approvals" value="{a}"> {a}</label>' for a in ['EU approved list','SFDA (Saudi)','GACC (China)','US FDA','HACCP','BRCGS','ISO 22000','BAP','ASC','Halal'])}
+          {''.join(f'<label><input type="checkbox" name="approvals" value="{a}"> {a}</label>' for a in ['EU approved list','SFDA (Saudi)','GACC (China)','US FDA','HACCP','BRCGS','ISO 22000','FSSC 22000','GLOBALG.A.P.','BAP','ASC','Organic','BSTI','Halal'])}
         </fieldset>
         <div class="f full"><label for="s_web">Website</label><input id="s_web" name="website_url" type="url" placeholder="https://"></div>
         <div class="f full"><label for="s_notes">Main products and grades</label><textarea id="s_notes" name="notes" placeholder="e.g. HLSO black tiger 8/12–31/40, 6×1.8 kg block; silver pomfret IQF"></textarea></div>
@@ -625,7 +736,7 @@ def build():
 
     # ---------- QUALITY
     qual = head(f"Food Import Risk Control & QC for Bangladeshi Seafood | {SHORT}",
-                "13 food-import risks controlled for buyers, five QC gates on every lot, lab testing (antibiotic residues, heavy metals, microbiology), DoF health certificates, EU/SFDA/GACC plant approvals and a −18 °C cold chain from pond to port.",
+                f"{len(RISKS)} food-import risks controlled for buyers, five QC gates on every lot, lab testing (antibiotic residues, heavy metals, microbiology), DoF health certificates, EU/SFDA/GACC plant approvals and a −18 °C cold chain from pond to port.",
                 "quality.html", [crumbs_ld("Quality & risk", "quality.html")], "ice-holding.jpg") + header("quality") + "\n" + page_hero(
         "Quality &amp; risk", "Every lot verified. Every import risk controlled.",
         "We act for the buyer. Every lot passes five QC gates and a document check before shipment, and you receive the evidence for each import risk.", "ice-holding") + f'''
@@ -650,7 +761,7 @@ def build():
           <h3 style="margin-top:.5rem">Where did this carton come from?</h3>
           <form id="traceForm" autocomplete="off">
             <label class="sr" for="lot">Lot code</label>
-            <input id="lot" name="lot" value="WBF-26-1187" aria-describedby="lotHint">
+            <input id="lot" name="lot" value="GFG-26-1187" aria-describedby="lotHint">
             <button class="btn btn-primary" type="submit">Trace lot</button>
           </form>
           <p class="hint" id="lotHint" style="margin-top:-.6rem;margin-bottom:1rem">The lot code is printed on the side of every master carton.</p>
@@ -667,10 +778,10 @@ def build():
         <p class="lede">Our QC officers or an independent inspector check each gate against your purchase specification, not just the exporter's own standard.</p>
       </div>
       <ol class="gates">
-        <li><span class="g">Gate 1</span><h3>Raw material</h3><p>Farm or landing records, residue screening of pond samples, and temperature on arrival at the plant (≤ 4 °C).</p></li>
-        <li><span class="g">Gate 2</span><h3>Processing</h3><p>Count and grade, cut, deveining and freshness (organoleptic) checked in process. Sulphite-free where specified.</p></li>
-        <li><span class="g">Gate 3</span><h3>Lab release</h3><p>Antibiotic residues, heavy metals and microbiology tested at an accredited lab for the exact lot.</p></li>
-        <li><span class="g">Gate 4</span><h3>Pre-shipment inspection</h3><p>AQL sampling of cartons: deglazed net weight, count, glaze %, packing and labels, with photos and video sent to you.</p></li>
+        <li><span class="g">Gate 1</span><h3>Raw material</h3><p>Farm, orchard or landing records; residue screening (antibiotics for aquaculture, pesticides for crops); temperature and condition on arrival.</p></li>
+        <li><span class="g">Gate 2</span><h3>Processing</h3><p>Grade, size, cut, moisture and freshness checked in process against your specification. Sorting and treatment of fresh produce.</p></li>
+        <li><span class="g">Gate 3</span><h3>Lab release</h3><p>Residues, heavy metals, aflatoxin and microbiology tested at an accredited lab for the exact lot.</p></li>
+        <li><span class="g">Gate 4</span><h3>Pre-shipment inspection</h3><p>AQL sampling of cartons: net weight, grade, count or glaze, packing and labels, with photos and video sent to you.</p></li>
         <li><span class="g">Gate 5</span><h3>Loading</h3><p>Reefer pre-cooled and set point verified. Loading supervised, core temperatures logged, seal number recorded.</p></li>
       </ol>
       <p class="src">You receive the inspection report, lab certificate and loading photos before the balance payment or document release.</p>
@@ -680,11 +791,11 @@ def build():
   <section id="risk">
     <div class="wrap">
       <div class="sec-head">
-        <div><p class="eyebrow">Import risk control</p><h2>13 risks a food importer faces, and how we control each one.</h2></div>
+        <div><p class="eyebrow">Import risk control</p><h2>{len(RISKS)} risks a food importer faces, and how we control each one.</h2></div>
         <p class="lede">Before you pay the balance or the documents are released, you hold evidence for every line in this table.</p>
       </div>
       <div class="tbl"><table class="dtable risk">
-        <thead><tr><th>Risk</th><th>What can go wrong</th><th>How WBF controls it</th><th>Evidence you receive</th></tr></thead>
+        <thead><tr><th>Risk</th><th>What can go wrong</th><th>How GFG controls it</th><th>Evidence you receive</th></tr></thead>
         <tbody>{''.join(f'<tr><td><b>{E(a)}</b></td><td>{E(b)}</td><td>{E(c)}</td><td>{E(d)}</td></tr>' for a, b, c, d in RISKS)}</tbody>
       </table></div>
       <p class="src">Risk can be reduced, not removed entirely. These controls are written into each purchase contract so responsibility is clear if something goes wrong.</p>
@@ -792,7 +903,7 @@ def build():
                "author": {"@id": SITE + "/#org"}, "publisher": {"@id": SITE + "/#org"}, "mainEntityOfPage": SITE + "/guide.html",
                "about": ["Bangladesh seafood exports", "HS codes for fish", "Fish export certification in Bangladesh"]}
     guide = head("Bangladesh Seafood & Food Export Guide: Exporters, HS Codes, Approvals",
-                 f"How Bangladesh exports seafood and food: {NET['mapped']} registered exporters by district, HS codes 0301–0307, DoF FIQC licensing, EU, SFDA and GACC approvals, hilsa rules, trade associations and shipping.",
+                 f"How Bangladesh exports seafood, food and crops: {NET['mapped']} registered seafood exporters by district, food sourcing regions, HS codes 0301–0307, DoF FIQC licensing, EU, SFDA and GACC approvals, hilsa rules, trade associations and shipping.",
                  "guide.html", [crumbs_ld("Export guide", "guide.html"), article, faq_ld(FAQ_GUIDE)], "school-underwater.jpg") + header("guide") + "\n" + page_hero(
         "Export guide", "Bangladesh seafood &amp; food export guide",
         "A buyer's reference to who exports what from Bangladesh, how it is certified, and how it reaches your port.", "school-underwater",
@@ -805,7 +916,7 @@ def build():
         <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
           <li><a href="#what">What Bangladesh exports</a></li><li><a href="#who">Who the exporters are</a></li><li><a href="#hs">HS codes</a></li>
           <li><a href="#cert">Licences and market approvals</a></li><li><a href="#hilsa">Hilsa export rules</a></li><li><a href="#assoc">Trade associations</a></li>
-          <li><a href="#ship">Shipping and terms</a></li><li><a href="#faq-guide">Frequently asked questions</a></li></ol></nav>
+          <li><a href="#food">Food and crop exports</a></li><li><a href="#ship">Shipping and terms</a></li><li><a href="#faq-guide">Frequently asked questions</a></li></ol></nav>
 
         <h2 id="what">What Bangladesh exports</h2>
         <p>Frozen shrimp is the country's leading seafood export. Black tiger shrimp (<i>Penaeus monodon</i>, locally <i>bagda</i>) and giant freshwater prawn (<i>Macrobrachium rosenbergii</i>, <i>golda</i>) are farmed in the south-west and processed in Khulna, Satkhira and Bagerhat. Whiteleg shrimp (vannamei) farming started recently.</p>
@@ -849,6 +960,17 @@ def build():
           <li><b>EPB</b>: Export Promotion Bureau, which keeps the national exporter directory and export statistics.</li>
         </ul>
 
+        <h2 id="food">Food and crop exports</h2>
+        <p>Bangladesh's food exports range from fresh vegetables and seasonal fruit to aromatic rice, tea, spices and a large processed-food industry (biscuits, snacks, juices, noodles, frozen paratha) that reaches more than 100 countries, often through South Asian retail networks.</p>
+        <ul>
+          <li><b>Export registration:</b> every exporter needs an Export Registration Certificate (ERC) from the Office of the Chief Controller of Imports and Exports.</li>
+          <li><b>Fresh produce:</b> each consignment needs a phytosanitary certificate from the Plant Protection Wing of the Department of Agricultural Extension (DAE). Mango for the EU and other strict markets comes from monitored orchards and may need hot-water treatment.</li>
+          <li><b>Processed food:</b> buyers usually ask for HACCP, ISO 22000, FSSC 22000 or BRCGS, plus Halal certification for Muslim markets. BSTI certification applies to many products sold in Bangladesh.</li>
+          <li><b>Policy limits:</b> some staples, including aromatic rice, can be subject to export bans or permits when domestic prices rise. Check the current position before you contract.</li>
+        </ul>
+        <div class="tbl"><table class="dtable"><thead><tr><th>Sector</th><th>Main sourcing regions</th></tr></thead><tbody>{regions_rows()}</tbody></table></div>
+        <p>See the <a href="food.html">food &amp; crops page</a> for the harvest calendar.</p>
+
         <h2 id="ship">Shipping and terms</h2>
         <p>Frozen seafood moves in 20- or 40-foot reefers from Chattogram or Mongla, usually transshipped in Colombo or Singapore. Europe takes 28–35 days and the Gulf 14–20 days. Live and chilled products fly from Dhaka. Common terms are FOB Chattogram or CFR to the destination port, paid by L/C at sight or T/T with a deposit. See <a href="markets.html">markets &amp; logistics</a>.</p>
       </article>
@@ -858,6 +980,71 @@ def build():
 {faq_html(FAQ_GUIDE, "Frequently asked questions").replace('id="faq"', 'id="faq-guide"')}
 ''' + FOOT
     write("guide.html", guide)
+
+    # ---------- FOOD & CROPS
+    food_items = [p for p in P if CAT[p[1]][2] == "food"]
+    food_list = {"@type": "ItemList", "name": "Bangladeshi food and crop exports", "numberOfItems": len(food_items),
+                 "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{SITE}/products.html#p-{p[0]}", "name": p[2]} for i, p in enumerate(food_items)]}
+    FAQ_FOOD = [
+     ("Can GFG source food products as well as seafood?", f"Yes. We source {N_FOOD} food and crop lines from Bangladesh, including aromatic rice, spices, tea, fresh vegetables and fruit, frozen foods and packaged foods, with the same QC gates and compliance checks as seafood."),
+     ("When is Bangladeshi mango available for export?", "From May to August. Himsagar and Langra peak in June, Amrapali and Fazli in July."),
+     ("How is fresh produce shipped from Bangladesh?", "Mostly by air from Dhaka for leafy greens, gourds and fruit, and by reefer container for potato, pumpkin, frozen food and packaged goods."),
+    ]
+    food = head(f"Bangladesh Food & Crop Exports: Rice, Produce, Spices, Tea | {SHORT}",
+                f"Buyer's broker for {N_FOOD} Bangladeshi food and crop products: aromatic rice, tea, spices, potato, vegetables, mango, jackfruit, frozen and packaged foods. Sourcing regions, harvest calendar and QC.",
+                "food.html", [crumbs_ld("Food & crops", "food.html"), food_list, faq_ld(FAQ_FOOD)]) + header("food") + "\n" + page_hero(
+        "Food &amp; crops", "Bangladeshi food and crops, sourced to your specification.",
+        f"{N_FOOD} food and crop lines, from Sylhet tea and aromatic rice to Rajshahi mango and packaged foods, with the same QC and compliance as our seafood.", None, level="0.72") + f'''
+
+  <section style="padding-top:1.5rem">
+    <div class="wrap">
+      <p class="answer"><b>In short:</b> Bangladesh exports aromatic rice, tea, spices, potatoes, fresh vegetables, seasonal fruit such as mango and lychee, frozen paratha and snacks, and a wide range of packaged foods. Fresh produce needs a DAE phytosanitary certificate; processed food buyers usually require HACCP, BRCGS or FSSC 22000, plus Halal for Muslim markets.</p>
+      <div class="sectors" style="margin-top:2rem">
+{sectors_html()}
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">Harvest calendar</p><h2>Book at the right time, at the right price.</h2></div>
+        <p class="lede">Prices are lowest and quality highest at peak harvest. We tell you when to book, and hold stock in cold storage for year-round lines.</p>
+      </div>
+      <div class="tbl">{calendar_html()}</div>
+      <p class="cal-key"><span class="k pk"></span> Peak season <span class="k on"></span> Available <span class="k"></span> Off season or limited</p>
+      <p class="src">Indicative calendar. Weather, fishing bans and export policy can shift timing each year.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap cols2">
+      <div>
+        <p class="eyebrow">Where it grows</p>
+        <h2 style="margin:.6rem 0 1.5rem">Sourcing regions</h2>
+        <div class="tbl"><table class="dtable"><thead><tr><th>Sector</th><th>Main regions</th></tr></thead><tbody>{regions_rows()}</tbody></table></div>
+      </div>
+      <div>
+        <p class="eyebrow">Food-specific QC</p>
+        <h2 style="margin:.6rem 0 1.5rem">What we check on food</h2>
+        <ul class="ticks">
+          <li><b>Pesticide residues</b> tested against your market's maximum residue limits.</li>
+          <li><b>Phytosanitary certificate</b> from the DAE Plant Protection Wing for every fresh consignment.</li>
+          <li><b>Aflatoxin, illegal dyes and heavy metals</b> tested in spices, rice and dried products.</li>
+          <li><b>Moisture, grade and foreign matter</b> checked for rice, spices and tea.</li>
+          <li><b>Labels and allergens</b> checked against your market's rules before printing.</li>
+          <li><b>Factory certification</b> (HACCP, BRCGS, FSSC 22000, Halal) verified for processed food.</li>
+        </ul>
+        <a class="btn btn-navy" style="margin-top:1.5rem" href="quality.html#risk">See all import risk controls</a>
+      </div>
+    </div>
+  </section>
+
+{faq_html(FAQ_FOOD, "Food sourcing questions")}
+
+{cta_band('school-underwater','Food &amp; crops','Need rice, produce, spices or packaged food?','Tell us the product, specification, volume and destination. You get a price offer within 24 hours.')}
+''' + FOOT
+    write("food.html", food)
 
     # ---------- CONTACT
     ct = head(f"Request a Quote: Bangladesh Seafood & Food | {SHORT}",
@@ -909,7 +1096,7 @@ def build():
     # ---------- catalog.js, sitemap, robots, llms.txt
     cat_js = {p[0]: {"n": p[2], "hs": p[5], "c": CAT[p[1]][1]} for p in P}
     write("assets/js/catalog.js", "/* Generated by tools/build_site.py from tools/catalog.py */\nwindow.CATALOG=" + json.dumps(cat_js, ensure_ascii=False) + ";\n")
-    pages = ["index.html", "products.html", "sourcing.html", "quality.html", "markets.html", "guide.html", "contact.html"]
+    pages = ["index.html", "products.html", "food.html", "sourcing.html", "quality.html", "markets.html", "guide.html", "contact.html"]
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
         f'  <url><loc>{SITE}/{"" if p == "index.html" else p}</loc><lastmod>{TODAY}</lastmod></url>\n' for p in pages) + "</urlset>\n")
     write("robots.txt", f"""User-agent: *
@@ -938,7 +1125,7 @@ Sitemap: {SITE}/sitemap.xml
     groups = "\n".join(f"- {t}: " + ", ".join(p[2] for p in P if p[1] == c) for c, t, g, i in CATEGORIES)
     write("llms.txt", f"""# {BRAND}
 
-> {BRAND} ({SHORT}) is a Bangladesh-based buyer's broker for seafood and food. Its mission is to be the best broker in the world for food importers. We match importers worldwide with licensed Bangladeshi exporters, verify plant approvals (DoF FIQC, EU, SFDA, GACC, US FDA) and lab results, and manage quotes, inspection, documents and reefer or air shipment.
+> {BRAND} ({SHORT}) is a Bangladesh-based food sourcing company that works for buyers, covering seafood, food and crops. Its mission is to be the world's best and most trusted food sourcing company. We match importers worldwide with licensed Bangladeshi exporters, verify plant approvals (DoF FIQC, EU, SFDA, GACC, US FDA) and lab results, and manage quotes, inspection, documents and reefer or air shipment.
 
 Key facts
 - Network: {NET['mapped']} registered Bangladeshi seafood exporters mapped across {NET['districts']} districts (EPB directory); {NET['shortlisted']} on our shortlist, {NET['tier_a']} rated Priority A.
@@ -948,6 +1135,7 @@ Key facts
 
 Pages
 - [Product directory]({SITE}/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
+- [Food & crops]({SITE}/food.html): food and crop sectors, sourcing regions and a harvest calendar
 - [Bangladesh export guide]({SITE}/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
 - [Supplier network]({SITE}/sourcing.html): how suppliers are rated; exporters can apply to join
 - [Quality]({SITE}/quality.html): lab testing per lot and the cold chain

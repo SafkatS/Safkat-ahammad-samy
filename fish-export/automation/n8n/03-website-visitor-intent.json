@@ -1,17 +1,17 @@
 {
-  "name": "WBF · 03 Website visitor intent",
+  "name": "GFG · 03 Website visitor intent",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "wbf-events",
+        "path": "gfg-events",
         "responseMode": "onReceived",
         "options": {
           "allowedOrigins": "*",
           "rawBody": true
         }
       },
-      "id": "b5c8fdfe-652b-4c77-a059-229b428dac6a",
+      "id": "ec67a4a4-b79a-457e-b1c2-8e451562905f",
       "name": "Events Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -19,13 +19,13 @@
         0,
         300
       ],
-      "webhookId": "5e8994fa-831f-4d12-8b77-b935841daf0a"
+      "webhookId": "8fb32bbb-326a-40c5-8e0b-989d034d6f51"
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Worldclass Bengal Fishers',\n    salesEmail: 'sales@worldclassbengalfishers.com',\n    managerEmail: 'manager@worldclassbengalfishers.com',\n    fromEmail: 'Worldclass Bengal Fishers <sales@worldclassbengalfishers.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.worldclassbengalfishers.com/products.html'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoodsglobal.com',\n    managerEmail: 'manager@goodbuyfoodsglobal.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'\n  }\n}}];"
       },
-      "id": "bbfac06d-c93c-4a71-bbd3-3ee540046ce3",
+      "id": "ae94ff30-7437-4118-b613-585b2898b31a",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -38,7 +38,7 @@
       "parameters": {
         "jsCode": "const cfg = $('Config').first().json.cfg;\nconst item = $('Events Webhook').first();\nlet b = item.json.body;\n// sendBeacon posts text/plain — parse whichever shape arrives\nif (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { b = {}; } }\nif ((!b || !b.event) && item.binary?.data) {\n  try { b = JSON.parse(Buffer.from(item.binary.data.data, 'base64').toString('utf8')); } catch (e) { b = {}; }\n}\nif (!b || !b.event) return [];\nconst h = item.json.headers || {};\nconst ua = h['user-agent'] || '';\nif (/bot|crawl|spider|slurp|headless|lighthouse/i.test(ua)) return [];\n\nconst WEIGHTS = { page_view: 1, catalogue_filter: 3, lot_trace: 8, rfq_item_added: 12, load_planner: 15,\n                  whatsapp_click: 25, messenger_click: 20, email_click: 15, rfq_started: 25, cta_hero: 5, cta_header: 5 };\nconst s = $getWorkflowStaticData('global');\ns.visitors = s.visitors || {};\nconst v = s.visitors[b.visitorId] || { score: 0, events: [], alerted: false, first: b.ts };\nv.score += WEIGHTS[b.event] ?? 1;\nv.events = [...v.events, b.event + (b.data?.product ? ':' + b.data.product : '')].slice(-25);\nv.last = b.ts;\n// prune visitors idle > 7 days (keeps static data small; GDPR data-minimisation)\nconst weekAgo = Date.now() - 7 * 864e5;\nfor (const [id, x] of Object.entries(s.visitors)) if (new Date(x.last).getTime() < weekAgo) delete s.visitors[id];\nconst alert = v.score >= 50 && !v.alerted;\nif (alert) v.alerted = true;\ns.visitors[b.visitorId] = v;\n\nreturn [{ json: {\n  Timestamp: b.ts, Event: b.event, Data: JSON.stringify(b.data || {}), VisitorId: b.visitorId, Page: b.page,\n  Referrer: b.referrer || '', UTMSource: b.utm?.utm_source || '', UTMCampaign: b.utm?.utm_campaign || '',\n  Country: h['cf-ipcountry'] || h['x-vercel-ip-country'] || '', Language: b.lang || '',\n  IntentScore: v.score, Alert: alert, Journey: v.events.join(' → ')\n} }];"
       },
-      "id": "d644aa09-3ec9-48a7-8e5b-54c2cfec6678",
+      "id": "58dc915f-3d04-48c9-969b-35d3f966bd03",
       "name": "Parse, filter bots, score",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -68,7 +68,7 @@
         },
         "options": {}
       },
-      "id": "dfc86253-e182-4b96-8a77-f3da1e13e4f9",
+      "id": "01523ccd-8713-48af-ae7f-e1626436974f",
       "name": "Sheets · Events",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -94,7 +94,7 @@
           },
           "conditions": [
             {
-              "id": "802473c9-8cb9-466c-94be-75a78f3b40c2",
+              "id": "4e246f7f-c094-49e6-82cd-fd996a97a174",
               "leftValue": "={{ $json.Alert }}",
               "operator": {
                 "type": "boolean",
@@ -107,7 +107,7 @@
         },
         "options": {}
       },
-      "id": "89258367-8e9b-43ca-856f-c0207a19d44d",
+      "id": "7570d28b-fb96-4128-b8ef-2793a7264505",
       "name": "High-intent visitor?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -127,7 +127,7 @@
           "appendAttribution": false
         }
       },
-      "id": "4b592db5-27ab-463e-8cb3-666b7434419e",
+      "id": "29d9dcb8-4e3a-4863-af5c-c1404426601c",
       "name": "Email · Hot visitor alert",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -206,7 +206,7 @@
   },
   "tags": [
     {
-      "name": "wbf"
+      "name": "gfg"
     },
     {
       "name": "analytics"

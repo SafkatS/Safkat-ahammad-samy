@@ -19,4 +19,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://www.worldclassbengalfishers.com/sitemap.xml
+Sitemap: https://www.goodbuyfoodsglobal.com/sitemap.xml

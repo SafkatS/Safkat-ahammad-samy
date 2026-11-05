@@ -24,17 +24,17 @@ CONFIG_JS = r"""// ⚙ Edit once after import. Read by every node via $('Config'
 return [{ json: {
   ...$input.first().json,
   cfg: {
-    brand: 'Worldclass Bengal Fishers',
-    salesEmail: 'sales@worldclassbengalfishers.com',
-    managerEmail: 'manager@worldclassbengalfishers.com',
-    fromEmail: 'Worldclass Bengal Fishers <sales@worldclassbengalfishers.com>',
+    brand: 'GoodBuy Foods Global',
+    salesEmail: 'sales@goodbuyfoodsglobal.com',
+    managerEmail: 'manager@goodbuyfoodsglobal.com',
+    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',
     waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',
     salesWhatsApp: '8801700000000',
     sheetId: 'REPLACE_GOOGLE_SHEET_ID',
     hubspotPipeline: 'default',
     hubspotStage: 'appointmentscheduled',
     hotScore: 60,
-    catalogueUrl: 'https://www.worldclassbengalfishers.com/products.html'
+    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'
   }
 }}];"""
 
@@ -138,8 +138,8 @@ def wa_body(to_expr, template, params_exprs):
 # =====================================================================
 # 01 — Website RFQ → HubSpot + WhatsApp + Email + Sheets
 # =====================================================================
-wf = WF("WBF · 01 Website RFQ intake")
-webhook(wf, "RFQ Webhook", "wbf-rfq", "POST", [0, 300], "responseNode")
+wf = WF("GFG · 01 Website RFQ intake")
+webhook(wf, "RFQ Webhook", "gfg-rfq", "POST", [0, 300], "responseNode")
 code(wf, "Config", CONFIG_JS, [220, 300])
 code(wf, "Normalize & Score", r"""const cfg = $('Config').first().json.cfg;
 const b = $('RFQ Webhook').first().json.body || {};
@@ -247,14 +247,14 @@ for a, b in [("RFQ Webhook", "Config"), ("Config", "Normalize & Score"), ("Norma
 for b in ["HubSpot · Upsert contact", "Email · Buyer confirmation", "Has WhatsApp?", "Hot lead?",
           "Email · Sales desk", "Flatten for sheet"]:
     wf.link("Respond 200", b)
-wf.save("01-website-rfq-intake.json", ["wbf", "rfq", "hubspot", "whatsapp"])
+wf.save("01-website-rfq-intake.json", ["gfg", "rfq", "hubspot", "whatsapp"])
 
 
 # =====================================================================
 # 02 — Meta inbox: WhatsApp + Messenger auto-reply, CRM, human hand-off
 # =====================================================================
-wf = WF("WBF · 02 WhatsApp & Messenger inbox")
-webhook(wf, "Meta verify (GET)", "wbf-meta", "GET", [0, 0], "responseNode")
+wf = WF("GFG · 02 WhatsApp & Messenger inbox")
+webhook(wf, "Meta verify (GET)", "gfg-meta", "GET", [0, 0], "responseNode")
 code(wf, "Check verify token", r"""const VERIFY_TOKEN = 'REPLACE_WITH_YOUR_VERIFY_TOKEN';   // same value you enter in Meta App → Webhooks
 const q = $input.first().json.query || {};
 const ok = q['hub.mode'] === 'subscribe' && q['hub.verify_token'] === VERIFY_TOKEN;
@@ -265,7 +265,7 @@ wf.node("Return challenge", "n8n-nodes-base.respondToWebhook",
 wf.link("Meta verify (GET)", "Check verify token")
 wf.link("Check verify token", "Return challenge")
 
-webhook(wf, "Meta events (POST)", "wbf-meta", "POST", [0, 300], "onReceived")
+webhook(wf, "Meta events (POST)", "gfg-meta", "POST", [0, 300], "onReceived")
 code(wf, "Config", CONFIG_JS, [220, 300])
 code(wf, "Parse & detect intent", r"""const cfg = $('Config').first().json.cfg;
 const body = $('Meta events (POST)').first().json.body || {};
@@ -364,15 +364,15 @@ for a, b in [("Meta events (POST)", "Config"), ("Config", "Parse & detect intent
 wf.link("Route by channel", "WhatsApp · Auto-reply", 0)
 wf.link("Route by channel", "Messenger · Auto-reply", 1)
 wf.link("Parse & detect intent", "Sheets · Chat log")
-wf.save("02-whatsapp-messenger-inbox.json", ["wbf", "whatsapp", "messenger", "hubspot"])
+wf.save("02-whatsapp-messenger-inbox.json", ["gfg", "whatsapp", "messenger", "hubspot"])
 
 
 # =====================================================================
 # 03 — Website visitor events → log + hot-visitor alert
 # =====================================================================
-wf = WF("WBF · 03 Website visitor intent")
+wf = WF("GFG · 03 Website visitor intent")
 wf.node("Events Webhook", "n8n-nodes-base.webhook",
-        {"httpMethod": "POST", "path": "wbf-events", "responseMode": "onReceived",
+        {"httpMethod": "POST", "path": "gfg-events", "responseMode": "onReceived",
          "options": {"allowedOrigins": "*", "rawBody": True}}, [0, 300], 2, webhookId=str(uuid.uuid4()))
 code(wf, "Config", CONFIG_JS, [220, 300])
 code(wf, "Parse, filter bots, score", r"""const cfg = $('Config').first().json.cfg;
@@ -421,13 +421,13 @@ for a, b in [("Events Webhook", "Config"), ("Config", "Parse, filter bots, score
              ("Parse, filter bots, score", "Sheets · Events"), ("Parse, filter bots, score", "High-intent visitor?"),
              ("High-intent visitor?", "Email · Hot visitor alert")]:
     wf.link(a, b)
-wf.save("03-website-visitor-intent.json", ["wbf", "analytics"])
+wf.save("03-website-visitor-intent.json", ["gfg", "analytics"])
 
 
 # =====================================================================
 # 04 — Hourly SLA watchdog: RFQs with no quote after 4 h
 # =====================================================================
-wf = WF("WBF · 04 Quote SLA watchdog")
+wf = WF("GFG · 04 Quote SLA watchdog")
 wf.node("Every hour", "n8n-nodes-base.scheduleTrigger",
         {"rule": {"interval": [{"field": "hours", "hoursInterval": 1}]}}, [0, 300], 1.2)
 code(wf, "Config", CONFIG_JS, [220, 300])
@@ -452,14 +452,14 @@ email(wf, "Email · SLA breach to manager", "={{ $('Config').first().json.cfg.ma
 for a, b in [("Every hour", "Config"), ("Config", "HubSpot · Stale RFQ deals"),
              ("HubSpot · Stale RFQ deals", "Any breaches?"), ("Any breaches?", "Email · SLA breach to manager")]:
     wf.link(a, b)
-wf.save("04-quote-sla-watchdog.json", ["wbf", "hubspot", "sla"])
+wf.save("04-quote-sla-watchdog.json", ["gfg", "hubspot", "sla"])
 
 
 # =====================================================================
 # 05 — Supplier (exporter) application → score → WBF_Exporter_List + HubSpot
 # =====================================================================
-wf = WF("WBF · 05 Supplier onboarding")
-webhook(wf, "Supplier Webhook", "wbf-supplier", "POST", [0, 300], "responseNode")
+wf = WF("GFG · 05 Supplier onboarding")
+webhook(wf, "Supplier Webhook", "gfg-supplier", "POST", [0, 300], "responseNode")
 code(wf, "Config", CONFIG_JS.replace("REPLACE_GOOGLE_SHEET_ID", "1JyiuxvECPbww8jFOmU0Bf-TR6JToa4XhYi_iQhXa0eA"), [220, 300])
 code(wf, "Validate & rate supplier", r"""const b = $('Supplier Webhook').first().json.body || {};
 const clean = s => String(s ?? '').trim().slice(0, 1500);
@@ -469,16 +469,18 @@ if (b.website) throw new Error('Honeypot');
 const approvals = Array.isArray(b.approvals) ? b.approvals : [];
 const cats = Array.isArray(b.categories) ? b.categories : [];
 const licence = clean(b.licence);
-// Same tiers as the WBF exporter list: A = official approval list / leadership, B = credible to confirm, C = verify first
+// Same tiers as the GFG exporter list: A = official approval list / leadership, B = credible to confirm, C = verify first
 let score = 0;
 if (licence) score += 25;                                             // DoF approval / export licence number given
 score += ['EU approved list','SFDA (Saudi)','GACC (China)','US FDA'].filter(a => approvals.includes(a)).length * 12;
-score += ['HACCP','BRCGS','ISO 22000','BAP','ASC','Halal'].filter(a => approvals.includes(a)).length * 4;
+score += ['HACCP','BRCGS','ISO 22000','FSSC 22000','GLOBALG.A.P.','BAP','ASC','Organic','BSTI','Halal'].filter(a => approvals.includes(a)).length * 4;
+const FISH = ['shrimp','shell','marine','fresh','live','dried'];
+const isFish = cats.length === 0 || cats.some(c => FISH.includes(c));   // fish/seafood → Exporter List, food & crops → Food Exporter List
 score += ({ '<20': 0, '20-100': 8, '100-500': 15, '500+': 20 })[b.capacity] ?? 0;
 if (/^https?:\/\//.test(clean(b.website_url))) score += 5;
 const priority = score >= 60 ? 'A' : score >= 35 ? 'B' : 'C';
 const ref = 'SUP-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
-return [{ json: { ref, score, priority, email, company: clean(b.company), name: clean(b.name), designation: clean(b.designation),
+return [{ json: { ref, score, priority, isFish, email, company: clean(b.company), name: clean(b.name), designation: clean(b.designation),
   phone: clean(b.phone), district: clean(b.district), licence, capacity: clean(b.capacity), approvals, categories: cats,
   website: clean(b.website_url), notes: clean(b.notes), submittedAt: b.submittedAt || new Date().toISOString() } }];""", [440, 300])
 wf.node("Respond 200", "n8n-nodes-base.respondToWebhook",
@@ -494,25 +496,25 @@ return [{ json: {
   'Website': s.website, 'Priority': s.priority, 'Status': 'Applied via website',
   'Contact Name of the Bangladeshi fish exporter ': s.name + (s.designation ? ' (' + s.designation + ')' : ''),
   'Phone / WhatsApp': s.phone, 'Email': s.email, 'NCNDA Signed': 'No',
-  'Notes': 'Capacity ' + s.capacity + ' MT/month · score ' + s.score + ' · verify licence with DoF FIQC before any deal'
+  'Notes': 'Capacity ' + s.capacity + ' MT/month · score ' + s.score + (s.isFish ? ' · verify licence with DoF FIQC before any deal' : ' · verify ERC, phytosanitary registration and factory certificates before any deal')
 } }];""", [900, 160])
 wf.node("Sheets · Add to Exporter List", "n8n-nodes-base.googleSheets",
         {"operation": "append",
          "documentId": {"__rl": True, "mode": "id", "value": "={{ $('Config').first().json.cfg.sheetId }}"},
-         "sheetName": {"__rl": True, "mode": "name", "value": "Exporter List"},
+         "sheetName": {"__rl": True, "mode": "name", "value": "={{ $('Validate & rate supplier').first().json.isFish ? 'Exporter List' : 'Food Exporter List' }}"},
          "columns": {"mappingMode": "autoMapInputData", "value": {}, "matchingColumns": [], "schema": []}, "options": {}},
         [1120, 160], 4.5, creds=CRED_SHEETS, on_error="continueRegularOutput")
 http(wf, "HubSpot · Create supplier company", "POST", HUBSPOT + "/crm/v3/objects/companies",
      "={{ JSON.stringify({ properties: { name: $('Validate & rate supplier').first().json.company, phone: $('Validate & rate supplier').first().json.phone,"
      " city: $('Validate & rate supplier').first().json.district, country: 'Bangladesh', domain: ($('Validate & rate supplier').first().json.website || '').replace(/^https?:\\/\\//,'').replace(/\\/.*$/,''),"
-     " type: 'VENDOR', description: 'WBF supplier application ' + $('Validate & rate supplier').first().json.ref + ' · Priority ' + $('Validate & rate supplier').first().json.priority + ' · ' + $('Validate & rate supplier').first().json.categories.join(', ') } }) }}",
+     " type: 'VENDOR', description: 'GFG supplier application ' + $('Validate & rate supplier').first().json.ref + ' · Priority ' + $('Validate & rate supplier').first().json.priority + ' · ' + $('Validate & rate supplier').first().json.categories.join(', ') } }) }}",
      [900, 320], CRED_HUBSPOT, "hubspot")
 email(wf, "Email · Acknowledge supplier", "={{ $('Validate & rate supplier').first().json.email }}",
-      "=Your WBF supplier application {{ $('Validate & rate supplier').first().json.ref }}",
+      "=Your GFG supplier application {{ $('Validate & rate supplier').first().json.ref }}",
       "=<div style=\"font-family:Arial,sans-serif;max-width:560px;color:#0A2540\"><p>Dear {{ $('Validate & rate supplier').first().json.name }},</p>"
-      "<p>Thank you for applying to join the Worldclass Bengal Fishers supplier network. Your reference is <b>{{ $('Validate & rate supplier').first().json.ref }}</b>.</p>"
-      "<p>Next steps:</p><ol><li>We call you within 3 working days to confirm your details.</li><li>Please have ready: your current DoF FIQC export licence, plant approval number and any market listings (EU, SFDA, GACC, FDA).</li>"
-      "<li>We sign an NCNDA and commission agreement, then introduce qualified buyers.</li></ol><p>Worldclass Bengal Fishers</p></div>", [900, 480])
+      "<p>Thank you for applying to join the GoodBuy Foods Global supplier network. Your reference is <b>{{ $('Validate & rate supplier').first().json.ref }}</b>.</p>"
+      "<p>Next steps:</p><ol><li>We call you within 3 working days to confirm your details.</li><li>Please have ready: your Export Registration Certificate (ERC); for fish, your DoF FIQC licence and plant approval number; for fresh produce, your phytosanitary registration; and any certificates or market listings (EU, SFDA, GACC, FDA, HACCP, BRCGS, FSSC 22000, Halal).</li>"
+      "<li>We sign an NCNDA and commission agreement, then introduce qualified buyers.</li></ol><p>GoodBuy Foods Global</p></div>", [900, 480])
 email(wf, "Email · Notify sourcing team", "={{ $('Config').first().json.cfg.salesEmail }}",
       "=[Supplier {{ $('Validate & rate supplier').first().json.priority }}] {{ $('Validate & rate supplier').first().json.company }} · {{ $('Validate & rate supplier').first().json.district }}",
       "=<pre style=\"font:13px/1.5 monospace\">{{ JSON.stringify($('Validate & rate supplier').first().json, null, 2) }}</pre><p>Before any deal: verify the DoF licence with FIQC and the plant's listing for the buyer's market.</p>", [900, 640])
@@ -521,4 +523,4 @@ for a, b in [("Supplier Webhook", "Config"), ("Config", "Validate & rate supplie
     wf.link(a, b)
 for b in ["Map to Exporter List columns", "HubSpot · Create supplier company", "Email · Acknowledge supplier", "Email · Notify sourcing team"]:
     wf.link("Respond 200", b)
-wf.save("05-supplier-onboarding.json", ["wbf", "suppliers", "hubspot", "sheets"])
+wf.save("05-supplier-onboarding.json", ["gfg", "suppliers", "hubspot", "sheets"])

@@ -1,4 +1,4 @@
-"""Worldclass Bengal Fishers — Bangladesh export product directory.
+"""GoodBuy Foods Global — Bangladesh export product directory.
 
 Edit this list, then run:  python3 tools/build_site.py
 HS = 4-digit heading (indicative). Confirm the full 8-digit code with your customs broker per shipment.
@@ -18,7 +18,8 @@ CATEGORIES = [
   ("veg", "Fresh vegetables", "food", "Air- and sea-freighted vegetables for South Asian diaspora markets and nearby Asian buyers."),
   ("fruit", "Fresh fruits", "food", "Seasonal mango, jackfruit, pineapple and lychee. Mango is shipped under the Department of Agricultural Extension's quarantine protocol."),
   ("frozen", "Frozen & ready-to-cook", "food", "IQF vegetables, frozen paratha and frozen snacks from Bangladeshi food processors."),
-  ("processed", "Processed & packaged foods", "food", "Biscuits, noodles, snacks, juices, pickles, sauces, spice mixes, edible oils and honey from Bangladeshi brands."),
+  ("sweet", "Sugar, jaggery & sweeteners", "food", "Traditional date-palm and cane jaggery, molasses and honey from Jashore, the Sundarbans and the mustard belt."),
+  ("processed", "Processed & packaged foods", "food", "Biscuits, noodles, snacks, juices, fruit pulp, pickles, sauces, spice mixes, ready mixes and edible oils from Bangladeshi food processors, many with international distribution."),
 ]
 
 # id, cat, name, local (Bangla name), scientific, HS heading, forms, markets, note, featured
@@ -136,6 +137,52 @@ P = [
  ("sa","processed","Sauces & ketchup","","Tomato, chilli","2103","Bottles, sachets","Middle East · Africa","",False),
  ("sm","processed","Spice mixes (masala)","Moshla","Assorted spices","0910","Retail packs","UK · Middle East · USA","",False),
  ("mo2","processed","Mustard oil","Shorisha tel","Brassica juncea","1514","PET, tins","UK · Middle East","",False),
- ("hn","processed","Honey (Sundarbans, mustard)","Modhu","Apis spp.","0409","Glass, PET","Middle East · UK","",False),
- ("jg","processed","Date-palm jaggery","Khejur gur","Phoenix sylvestris","1702","Blocks, liquid (seasonal)","UK · Middle East · USA","HS heading to be confirmed per product form.",False),
+ ("hn","sweet","Honey (Sundarbans, mustard)","Modhu","Apis spp.","0409","Glass, PET","Middle East · UK","",False),
+ ("jg","sweet","Date-palm jaggery","Khejur gur","Phoenix sylvestris","1702","Blocks, liquid (seasonal, December–February)","UK · Middle East · USA","HS heading to be confirmed per product form.",False),
+]
+
+# ---- Additional food & crop lines
+P += [
+ # Rice & grains
+ ("kh","rice","Popped rice","Khoi","Oryza sativa","1904","Retail packs","UK · Middle East · USA","",False),
+ ("rf","rice","Rice flour & pitha mixes","Chaler gura","Oryza sativa","1102 / 1901","Retail packs","UK · Middle East · USA","",False),
+ # Spices, tea & leaf
+ ("pp","spice","Panch phoron & whole spice blends","Panch phoron","Fenugreek, nigella, cumin, fennel, mustard","0910","Retail packs","UK · Middle East · USA","",False),
+ ("gt2","spice","Green & organic tea","Sobuj cha","Camellia sinensis","0902","Loose leaf, tea bags","EU · USA · Japan · Middle East","Organic estates in Panchagarh and Sylhet.",False),
+ # Fresh vegetables
+ ("cb","veg","Cabbage & cauliflower","Bandhakopi, phulkopi","Brassica oleracea","0704","Fresh (winter season)","Malaysia · Singapore · Middle East · UK","",False),
+ ("tm","veg","Tomato","Tomato","Solanum lycopersicum","0702","Fresh (winter season)","Middle East · Nepal","",False),
+ ("pk2","veg","Pumpkin","Mishti kumra","Cucurbita moschata","0709","Fresh, whole","Middle East · Malaysia · UK","",False),
+ ("ag","veg","Ash gourd","Chalkumra","Benincasa hispida","0709","Fresh","UK · Middle East","",False),
+ ("sg","veg","Snake gourd","Chichinga","Trichosanthes cucumerina","0709","Fresh","UK · Middle East","",False),
+ ("rg","veg","Ridge & sponge gourd","Jhinga, dhundul","Luffa acutangula / L. aegyptiaca","0709","Fresh","UK · Middle East","",False),
+ ("ds2","veg","Drumstick","Sajna","Moringa oleifera","0709","Fresh pods","UK · Middle East","",False),
+ ("gp2","veg","Green banana (plantain)","Kacha kola","Musa spp.","0803","Fresh","UK · Middle East","",False),
+ ("gpa","veg","Green papaya","Kacha pepe","Carica papaya","0807","Fresh","UK · Middle East","",False),
+ ("cl2","veg","Coriander leaves & herbs","Dhonepata","Coriandrum sativum","0709","Fresh bunches (air freight)","UK · Middle East","",False),
+ ("lm","veg","Lemon & lime","Kagoji lebu","Citrus aurantiifolia","0805","Fresh","UK · Middle East","",False),
+ # Fresh fruits
+ ("bn","fruit","Banana","Kola (Sagor, Shabri)","Musa spp.","0803","Fresh","Middle East","",False),
+ ("pw","fruit","Papaya (ripe)","Pepe","Carica papaya","0807","Fresh","Middle East · UK","",False),
+ ("wm","fruit","Watermelon","Tormuj","Citrullus lanatus","0807","Fresh, seasonal (March–May)","Middle East","",False),
+ ("cn","fruit","Green coconut","Daab","Cocos nucifera","0801","Fresh","Middle East · UK","",False),
+ ("pm","fruit","Pomelo","Jambura","Citrus maxima","0805","Fresh, seasonal","UK · Middle East","",False),
+ ("jj","fruit","Jujube","Boroi","Ziziphus mauritiana","0810","Fresh, seasonal (January–March)","Middle East · UK","",False),
+ ("hp","fruit","Hog plum","Amra","Spondias pinnata","0810","Fresh, seasonal","UK · Middle East","",False),
+ ("sf2","fruit","Star fruit","Kamranga","Averrhoa carambola","0810","Fresh","UK · Middle East","",False),
+ ("wa2","fruit","Wood apple","Bel","Aegle marmelos","0810","Fresh, seasonal","UK · Middle East","",False),
+ ("ol","fruit","Indian olive","Jolpai","Elaeocarpus serratus","0810","Fresh, seasonal (August–October)","UK · Middle East","",False),
+ # Frozen & ready-to-cook
+ ("fj","frozen","Frozen jackfruit (young & ripe)","Echor, kathal","Artocarpus heterophyllus","0811","IQF pieces, retail packs","UK · EU · USA","Young jackfruit is in demand as a plant-based meat alternative.",False),
+ ("fu","frozen","Frozen puri, roti & pitha","","Wheat, rice flour","1905","Retail packs","UK · Middle East · USA","",False),
+ ("fr","frozen","Frozen ready meals (biryani, curries)","","Assorted","1604 / 2106","Retail trays","UK · Middle East","Meat and fish meals need extra import approvals in most markets.",False),
+ # Sugar & sweeteners
+ ("cj","sweet","Cane jaggery","Akher gur","Saccharum officinarum","1701","Blocks","UK · Middle East","",False),
+ ("ms","sweet","Molasses","Chitagur","Saccharum officinarum","1703","Bulk","Asia","",False),
+ # Processed & packaged
+ ("mp","processed","Mango pulp & purée","Aamer pulp","Mangifera indica","2008","Aseptic drums, cans","Middle East · EU · Asia","",False),
+ ("cf","processed","Confectionery & candy","","Assorted","1704","Retail packs","Middle East · Africa · Asia","",False),
+ ("rm","processed","Ready mixes (halim, kheer, firni)","","Assorted","1901","Retail packs","UK · Middle East · USA","",False),
+ ("sw","processed","Traditional sweets (canned rasgulla, chomchom)","Mishti","Milk-based","0406 / 2106","Cans, tins","UK · Middle East · USA","Dairy products need a veterinary health certificate in most markets.",False),
+ ("rbo","processed","Rice bran oil","Rice bran tel","Oryza sativa","1515","PET, tins","Asia","",False),
 ]

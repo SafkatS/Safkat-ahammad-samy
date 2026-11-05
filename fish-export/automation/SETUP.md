@@ -13,7 +13,7 @@ Open the **Config** node and set the brand, the emails, `waPhoneNumberId`, `sale
 - Submit these templates for approval (category Utility, language `en`):
   - `rfq_received`: "Hi {{1}}, thank you for your quote request {{2}}. Our team will send your price offer within 24 hours."
   - `new_lead_alert`: "New {{1}} lead: {{2}}. Products: {{3}}. Ref {{4}}."
-- Webhook: callback URL `…/webhook/wbf-meta`. The verify token must match `VERIFY_TOKEN` in the "Check verify token" node. Subscribe to `messages`.
+- Webhook: callback URL `…/webhook/gfg-meta`. The verify token must match `VERIFY_TOKEN` in the "Check verify token" node. Subscribe to `messages`.
 
 ## Messenger
 - Add a Page access token as *Header Auth* and subscribe the Page webhook to `messages`.
@@ -21,7 +21,7 @@ Open the **Config** node and set the brand, the emails, `waPhoneNumberId`, `sale
 ## Email and Sheets
 - Add an SMTP credential.
 - RFQ, chat and event logs: create a Google Sheet with three tabs named `RFQ`, `Chats` and `Events`, and put its ID in `sheetId` for workflows 01–03.
-- Supplier applications (workflow 05) go to the `Exporter List` tab of WBF_Exporter_List. Columns match by header name.
+- Supplier applications (workflow 05) go to WBF_Exporter_List: seafood exporters to the `Exporter List` tab, food and crop exporters to a **`Food Exporter List`** tab. Create that tab with the same header row as `Exporter List`. Columns match by header name.
 
 ## Production
 - Set the webhooks' `allowedOrigins` to your domain instead of `*`.
