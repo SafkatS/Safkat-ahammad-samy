@@ -47,3 +47,6 @@ See `assets/ASSET-BRIEF.md` for the shot list with sizes and formats.
 - Show only approvals your partner plants actually hold, and keep the network figures in `NET` up to date.
 - HS headings are indicative 4-digit codes. Confirm the full code for each shipment.
 - The "world's best and most trusted" line is phrased as GFG's mission. Keep it that way unless you have independent evidence (awards, rankings) to back a factual claim.
+
+## Photography
+`assets/img/` holds 22 royalty-free photos supplied by GFG, each in three sizes: `-lg` (≤1600×1200) for headers and galleries, `-md` (800×600) for cards, and `-sq` (200×200) for directory thumbnails. Alt text and the product-to-photo mapping live in `PHOTO`, `PROD_IMG` and `SECTOR_IMG` in `tools/build_site.py`. To add a photo, export the three sizes with the same name pattern, add it to `PHOTO`, then rebuild.

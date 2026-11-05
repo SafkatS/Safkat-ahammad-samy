@@ -120,10 +120,12 @@ def header(page):
 <main id="main">'''
 
 
-def page_hero(crumb, title, lede, video, level="0.74", extra=""):
-    vid = (f'<video class="bg" data-auto autoplay muted loop playsinline preload="auto" poster="{V}{video}.jpg" aria-hidden="true"><source src="{V}{video}.mp4" type="video/mp4"></video>'
+def page_hero(crumb, title, lede, video, level="0.74", extra="", image=None):
+    if image:
+        video = None
+    vid = (f'<img class="bg" src="{IMG}{image}-lg.jpg" alt="" aria-hidden="true" fetchpriority="high">' if image else None) or (f'<video class="bg" data-auto autoplay muted loop playsinline preload="auto" poster="{V}{video}.jpg" aria-hidden="true"><source src="{V}{video}.mp4" type="video/mp4"></video>'
            if video else '<div class="bg-field" aria-hidden="true"></div>')
-    return f'''  <section class="vid page-hero{'' if video else ' novideo'}">
+    return f'''  <section class="vid page-hero{'' if (video or image) else ' novideo'}">
     {vid}
     <canvas class="sea" data-level="{level}" aria-hidden="true"></canvas>
     <div class="wrap">
@@ -208,7 +210,7 @@ def item(p):
     search = " ".join([name, local, sci, hs, forms, markets, CAT[cat][1]]).lower()
     sub = f'<i>{E(sci)}</i>' + (f' · {E(local)}' if local else "")
     return f'''        <article class="item" id="p-{pid}" data-cat="{cat}" data-search="{E(search)}">
-          <div class="item-main"><h3>{E(name)}</h3><p class="sci">{sub}</p>{f'<p class="note">{E(note)}</p>' if note else ''}</div>
+          <div class="item-main">{photo(PROD_IMG[pid], "sq", "thumb") if pid in PROD_IMG else f'<span class="thumb ph {CAT[cat][2]}" aria-hidden="true"></span>'}<div><h3>{E(name)}</h3><p class="sci">{sub}</p>{f'<p class="note">{E(note)}</p>' if note else ''}</div></div>
           <dl><div><dt>HS</dt><dd class="mono">{E(hs)}</dd></div><div><dt>Forms</dt><dd>{E(forms)}</dd></div><div><dt>Main markets</dt><dd>{E(markets)}</dd></div></dl>
           <button class="add" type="button" data-add="{pid}" aria-pressed="false">Add to quote</button>
         </article>'''
@@ -396,7 +398,9 @@ def sectors_html():
     out = []
     for title, cats, blurb, anchor in SECTORS:
         n = sum(1 for p in P if p[1] in cats)
-        out.append(f'        <a class="sector" href="products.html#{anchor}" data-sector="{cats[0]}"><b>{E(title)}</b><span>{E(blurb)}</span><em>{n} products →</em></a>')
+        im = SECTOR_IMG.get(title)
+        pic = photo(im, "md") if im else '<span class="ph" aria-hidden="true"></span>'
+        out.append(f'        <a class="sector" href="products.html#{anchor}" data-sector="{cats[0]}"><span class="pic">{pic}</span><span class="txt"><b>{E(title)}</b><span>{E(blurb)}</span><em>{n} products →</em></span></a>')
     return "\n".join(out)
 
 
@@ -412,6 +416,52 @@ def calendar_html():
         cells = "".join(f'<td class="{"pk" if m in peak else "on" if m in act else ""}" title="{MONTHS[m-1]}"></td>' for m in range(1, 13))
         rows.append(f"<tr><th scope=\"row\">{E(name)}</th>{cells}</tr>")
     return f'<table class="cal"><thead><tr><th></th>{head_}</tr></thead><tbody>{"".join(rows)}</tbody></table>'
+
+
+# Photos (assets/img/<name>-lg|md|sq.jpg). Royalty-free, supplied by GFG.
+PHOTO = {
+ "vegetable-market-chillies-potatoes": "Market stall with carrots, chillies and potatoes in bowls",
+ "hilsa-on-ice": "Whole hilsa fish on crushed ice",
+ "pointed-gourd-brinjal-beans": "Pointed gourd, brinjal and long beans at a vegetable market",
+ "bitter-gourd": "Fresh bitter gourd stacked at a market",
+ "green-red-chillies": "Green and red chillies in a woven basket",
+ "rice-grains-falling": "Rice grains falling onto a pile",
+ "rohu-carp-catch": "Fresh rohu and carp in a basket after landing",
+ "rice-varieties": "Bowls of black, red and white rice varieties",
+ "mud-crab-live": "Live mud crabs in a crate",
+ "table-potatoes": "Washed table potatoes",
+ "aromatic-rice-spoon": "Aromatic rice grains on a wooden spoon",
+ "cauliflower-broccoli": "Fresh cauliflower and broccoli",
+ "blue-swimming-crab": "Blue swimming crabs tied for live export",
+ "buyer-checking-greens": "Buyer checking fresh leafy greens",
+ "fresh-mangoes": "Fresh green and ripening mangoes",
+ "tomatoes-beans-market": "Tomatoes, beans and chillies in market baskets",
+ "grain-sacks-market": "Open sacks of rice and grain at a wholesale market",
+ "packed-cartons-warehouse": "Rows of packed produce cartons in a warehouse ready for inspection",
+ "white-rice": "Polished white rice grains",
+ "potato-harvest": "Freshly harvested potatoes spilling from a sack",
+ "red-rice": "Red rice grains",
+ "jackfruit-pods": "Ripe jackfruit pods in a bowl",
+}
+PROD_IMG = {"hl": "hilsa-on-ice", "rh": "rohu-carp-catch", "ct": "rohu-carp-catch", "mc": "mud-crab-live", "bsc": "blue-swimming-crab",
+            "po": "table-potatoes", "ar": "aromatic-rice-spoon", "rr": "red-rice", "gc": "green-red-chillies", "rc": "green-red-chillies",
+            "pt": "pointed-gourd-brinjal-beans", "bj": "pointed-gourd-brinjal-beans", "bg": "bitter-gourd", "cb": "cauliflower-broccoli",
+            "tm": "tomatoes-beans-market", "yb": "tomatoes-beans-market", "mn": "fresh-mangoes", "jf": "jackfruit-pods", "fj": "jackfruit-pods"}
+SECTOR_IMG = {"Seafood & fish": "hilsa-on-ice", "Rice & grains": "aromatic-rice-spoon", "Spices & tea": "green-red-chillies",
+              "Fresh vegetables": "pointed-gourd-brinjal-beans", "Fresh fruits": "fresh-mangoes", "Frozen & ready-to-cook": "jackfruit-pods",
+              "Processed & packaged": "packed-cartons-warehouse", "Sugar & sweeteners": None}
+IMG = "assets/img/"
+
+
+def photo(name, size="md", cls="", lazy=True, w=None, h=None):
+    dims = {"md": (800, 600), "sq": (200, 200)}.get(size, (w or 1600, h or 1067))
+    extra = ' loading="lazy" decoding="async"' if lazy else ''
+    klass = f' class="{cls}"' if cls else ''
+    return f'<img src="{IMG}{name}-{size}.jpg" alt="{E(PHOTO[name])}" width="{dims[0]}" height="{dims[1]}"{extra}{klass}>'
+
+
+def figure(name, caption, cls="photo"):
+    return f'<figure class="{cls}">{photo(name, "lg")}<figcaption>{caption}</figcaption></figure>'
 
 
 # ------------------------------------------------------------------ PAGES
@@ -601,6 +651,12 @@ def build():
         {tile('catch-pangasius','Pangasius','Farm harvest · to plant in 3 h')}
         {tile('ice-holding','Ice holding','Flake ice 1:1 · core ≤ 4 °C')}
       </div>
+      <div class="band-photos">
+        {figure("mud-crab-live", "Live mud crab, graded for air freight")}
+        {figure("blue-swimming-crab", "Blue swimming crab, tied for live export")}
+        {figure("fresh-mangoes", "Mango, May–August")}
+        {figure("aromatic-rice-spoon", "Aromatic rice, under export permit")}
+      </div>
     </div>
   </section>
 
@@ -645,7 +701,7 @@ def build():
         f'<button class="chip" aria-pressed="false" data-filter="{c}">{E(t)} <span>{sum(1 for p in P if p[1]==c)}</span></button>' for c, t, g, i in CATEGORIES)
     item_list = {"@type": "ItemList", "name": "Bangladesh export product directory", "numberOfItems": N_PRODUCTS,
                  "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{SITE}/products.html#p-{p[0]}",
-                                      "item": {"@type": "Product", "name": p[2], "description": f"{p[2]} ({p[4]}) from Bangladesh. HS {p[5]}. Forms: {p[6]}.",
+                                      "item": {"@type": "Product", "name": p[2], **({"image": f"{SITE}/{IMG}{PROD_IMG[p[0]]}-lg.jpg"} if p[0] in PROD_IMG else {}), "description": f"{p[2]} ({p[4]}) from Bangladesh. HS {p[5]}. Forms: {p[6]}.",
                                                "category": CAT[p[1]][1], "countryOfOrigin": {"@type": "Country", "name": "Bangladesh"}}}
                                      for i, p in enumerate(P)]}
     prod = head("Bangladesh Export Product Directory: Seafood & Food | " + SHORT,
@@ -783,7 +839,8 @@ def build():
       <div class="cols2">
         <div class="tbl"><table class="dtable"><thead><tr><th>Sector</th><th>Main sourcing regions</th></tr></thead><tbody>{regions_rows()}</tbody></table></div>
         <div>
-          <h3 style="margin-bottom:1rem">Trade bodies and authorities we work through</h3>
+          {figure("grain-sacks-market", "Sourcing at wholesale markets and mills")}
+          <h3 style="margin:1.5rem 0 1rem">Trade bodies and authorities we work through</h3>
           <ul class="ticks">{''.join(f'<li><b>{a}</b>: {b}</li>' for a, b in FOOD_BODIES)}</ul>
         </div>
       </div>
@@ -885,6 +942,10 @@ def build():
         <li><span class="g">Gate 4</span><h3>Pre-shipment inspection</h3><p>AQL sampling of cartons: net weight, grade, count or glaze, packing and labels, with photos and video sent to you.</p></li>
         <li><span class="g">Gate 5</span><h3>Loading</h3><p>Reefer pre-cooled and set point verified. Loading supervised, core temperatures logged, seal number recorded.</p></li>
       </ol>
+      <div class="duo">
+        {figure("packed-cartons-warehouse", "Gate 4: cartons counted, weighed and sampled before loading")}
+        {figure("hilsa-on-ice", "Gate 1: fish iced at 0–2 °C from landing")}
+      </div>
       <p class="src">You receive the inspection report, lab certificate and loading photos before the balance payment or document release.</p>
     </div>
   </section>
@@ -1062,6 +1123,7 @@ def build():
         </ul>
 
         <h2 id="food">Food and crop exports</h2>
+        {figure("white-rice", "Bangladesh is a major rice producer; aromatic varieties are exported under government permit")}
         <p>Bangladesh's food exports range from fresh vegetables and seasonal fruit to aromatic rice, tea, spices and a large processed-food industry (biscuits, snacks, juices, noodles, frozen paratha) that reaches more than 100 countries, often through South Asian retail networks.</p>
         <ul>
           <li><b>Export registration:</b> every exporter needs an Export Registration Certificate (ERC) from the Office of the Chief Controller of Imports and Exports.</li>
@@ -1139,6 +1201,7 @@ def build():
           <li><b>Claims are handled for you.</b> We deal with the exporter so you don't have to.</li>
           <li><b>Our fee is at stake.</b> Under Complete, if released goods miss the agreed specification, you get our service fee back.</li>
         </ul>
+        {figure("buyer-checking-greens", "What arrives is what you specified")}
       </div>
       <div>
         <p class="eyebrow">Add-ons</p>
@@ -1188,15 +1251,31 @@ def build():
     ]
     food = head(f"Bangladesh Food & Crop Exports: Rice, Produce, Spices, Tea | {SHORT}",
                 f"Buyer's broker for {N_FOOD} Bangladeshi food and crop products: aromatic rice, tea, spices, potato, vegetables, mango, jackfruit, frozen and packaged foods. Sourcing regions, harvest calendar and QC.",
-                "food.html", [crumbs_ld("Food & crops", "food.html"), food_list, faq_ld(FAQ_FOOD)]) + header("food") + "\n" + page_hero(
+                "food.html", [crumbs_ld("Food & crops", "food.html"), food_list, faq_ld(FAQ_FOOD)], "../img/vegetable-market-chillies-potatoes-lg.jpg") + header("food") + "\n" + page_hero(
         "Food &amp; crops", "Bangladeshi food and crops, sourced to your specification.",
-        f"{N_FOOD} food and crop lines, from Sylhet tea and aromatic rice to Rajshahi mango and packaged foods, with the same QC and compliance as our seafood.", None, level="0.72") + f'''
+        f"{N_FOOD} food and crop lines, from Sylhet tea and aromatic rice to Rajshahi mango and packaged foods, with the same QC and compliance as our seafood.", None, level="0.72", image="vegetable-market-chillies-potatoes") + f'''
 
   <section style="padding-top:1.5rem">
     <div class="wrap">
       <p class="answer"><b>In short:</b> Bangladesh exports aromatic rice, tea, spices, potatoes, fresh vegetables, seasonal fruit such as mango and lychee, frozen paratha and snacks, and a wide range of packaged foods. Fresh produce needs a DAE phytosanitary certificate; processed food buyers usually require HACCP, BRCGS or FSSC 22000, plus Halal for Muslim markets.</p>
       <div class="sectors" style="margin-top:2rem">
 {sectors_html()}
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">From Bangladeshi fields</p><h2>Graded at source, packed to your specification.</h2></div>
+        <p class="lede">Rice, vegetables and fruit from the farms and wholesale markets our suppliers buy from.</p></div>
+      <div class="mosaic">
+        {figure("rice-grains-falling", "Aromatic and fine rice, milled to your grade", "photo m-wide")}
+        {figure("bitter-gourd", "Bitter gourd and summer gourds")}
+        {figure("cauliflower-broccoli", "Winter vegetables, November–March")}
+        {figure("potato-harvest", "Table potato, harvested February–April")}
+        {figure("rice-varieties", "Black, red and white rice varieties", "photo m-tall")}
+        {figure("red-rice", "Red and brown rice")}
+        {figure("tomatoes-beans-market", "Tomatoes, beans and green chilli", "photo m-wide2")}
       </div>
     </div>
   </section>

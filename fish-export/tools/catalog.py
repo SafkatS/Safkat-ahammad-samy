@@ -186,3 +186,8 @@ P += [
  ("sw","processed","Traditional sweets (canned rasgulla, chomchom)","Mishti","Milk-based","0406 / 2106","Cans, tins","UK · Middle East · USA","Dairy products need a veterinary health certificate in most markets.",False),
  ("rbo","processed","Rice bran oil","Rice bran tel","Oryza sativa","1515","PET, tins","Asia","",False),
 ]
+
+P += [
+ ("bsc","shell","Blue swimming crab","Samudrik kakra","Portunus pelagicus","0306","Live, whole frozen, crab meat","China · Malaysia · Thailand · USA","",False),
+ ("rr","rice","Red & brown rice","Lal chal","Oryza sativa","1006","Husked brown, red parboiled; 1–25 kg","UK · Middle East · USA","Export subject to current rice policy.",False),
+]
