@@ -10,7 +10,7 @@
           "allowedOrigins": "*"
         }
       },
-      "id": "2284713c-9609-4451-983e-07ac8448035e",
+      "id": "43871425-69c8-4a07-8e9a-d2d19a38c6bf",
       "name": "Supplier Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -18,13 +18,13 @@
         0,
         300
       ],
-      "webhookId": "83ae3405-1450-4351-99ff-08735c853176"
+      "webhookId": "61f5fee4-abf2-4219-9aa3-6c110d50b034"
     },
     {
       "parameters": {
         "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoodsglobal.com',\n    managerEmail: 'manager@goodbuyfoodsglobal.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: '1JyiuxvECPbww8jFOmU0Bf-TR6JToa4XhYi_iQhXa0eA',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'\n  }\n}}];"
       },
-      "id": "278934ab-690a-4341-be36-07f4ea91b0ea",
+      "id": "85aec8dc-5378-48fe-98dd-80f5fea03b67",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -37,7 +37,7 @@
       "parameters": {
         "jsCode": "const b = $('Supplier Webhook').first().json.body || {};\nconst clean = s => String(s ?? '').trim().slice(0, 1500);\nconst email = clean(b.email).toLowerCase();\nif (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) throw new Error('Invalid email');\nif (b.website) throw new Error('Honeypot');\nconst approvals = Array.isArray(b.approvals) ? b.approvals : [];\nconst cats = Array.isArray(b.categories) ? b.categories : [];\nconst licence = clean(b.licence);\n// Same tiers as the GFG exporter list: A = official approval list / leadership, B = credible to confirm, C = verify first\nlet score = 0;\nif (licence) score += 25;                                             // DoF approval / export licence number given\nscore += ['EU approved list','SFDA (Saudi)','GACC (China)','US FDA'].filter(a => approvals.includes(a)).length * 12;\nscore += ['HACCP','BRCGS','ISO 22000','FSSC 22000','GLOBALG.A.P.','BAP','ASC','Organic','BSTI','Halal'].filter(a => approvals.includes(a)).length * 4;\nconst FISH = ['shrimp','shell','marine','fresh','live','dried'];\nconst isFish = cats.length === 0 || cats.some(c => FISH.includes(c));   // fish/seafood → Exporter List, food & crops → Food Exporter List\nscore += ({ '<20': 0, '20-100': 8, '100-500': 15, '500+': 20 })[b.capacity] ?? 0;\nif (/^https?:\\/\\//.test(clean(b.website_url))) score += 5;\nconst priority = score >= 60 ? 'A' : score >= 35 ? 'B' : 'C';\nconst ref = 'SUP-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();\nreturn [{ json: { ref, score, priority, isFish, email, company: clean(b.company), name: clean(b.name), designation: clean(b.designation),\n  phone: clean(b.phone), district: clean(b.district), licence, capacity: clean(b.capacity), approvals, categories: cats,\n  website: clean(b.website_url), notes: clean(b.notes), submittedAt: b.submittedAt || new Date().toISOString() } }];"
       },
-      "id": "3c85641b-7c15-480c-bc0b-1c36b128f201",
+      "id": "447222f0-630c-4b69-8579-a1e973209aab",
       "name": "Validate & rate supplier",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -54,7 +54,7 @@
           "responseCode": 200
         }
       },
-      "id": "8c3e0ec7-b2c7-4047-8343-e4c6465e057d",
+      "id": "67a372ee-8d1f-4ac0-9182-4c88976e4c2d",
       "name": "Respond 200",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -67,7 +67,7 @@
       "parameters": {
         "jsCode": "const s = $('Validate & rate supplier').first().json;\n// Keys match the header row of WBF_Exporter_List → 'Exporter List' exactly\nreturn [{ json: {\n  'Bangladesh Fish exporter Company': s.company,\n  'Location': s.district, 'Region': s.district,\n  'DoF Approval No.': s.licence,\n  'Products': s.categories.join(', ') + (s.notes ? ' | ' + s.notes : ''),\n  'Evidence / Source': 'Website application ' + s.ref + ' · approvals: ' + (s.approvals.join(', ') || 'none stated'),\n  'Website': s.website, 'Priority': s.priority, 'Status': 'Applied via website',\n  'Contact Name of the Bangladeshi fish exporter ': s.name + (s.designation ? ' (' + s.designation + ')' : ''),\n  'Phone / WhatsApp': s.phone, 'Email': s.email, 'NCNDA Signed': 'No',\n  'Notes': 'Capacity ' + s.capacity + ' MT/month · score ' + s.score + (s.isFish ? ' · verify licence with DoF FIQC before any deal' : ' · verify ERC, phytosanitary registration and factory certificates before any deal')\n} }];"
       },
-      "id": "487f61b7-b065-47c0-8f2b-141579feb3c9",
+      "id": "ca194660-53a1-479b-a42c-4aa6dfd55b6f",
       "name": "Map to Exporter List columns",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -97,7 +97,7 @@
         },
         "options": {}
       },
-      "id": "6ca62526-3ae3-4d93-bfac-4bea6e3bcb3b",
+      "id": "96f7ce2e-1c40-408d-8441-801d96d39edf",
       "name": "Sheets · Add to Exporter List",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -126,7 +126,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "450d1703-9ddf-47ef-a874-6bef74e2d926",
+      "id": "5bcdd585-6ae8-446b-937f-42da3cc0531e",
       "name": "HubSpot · Create supplier company",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -156,7 +156,7 @@
           "appendAttribution": false
         }
       },
-      "id": "2be8613c-0465-4020-b942-d5b40029799f",
+      "id": "5486e0a4-b574-4899-8e2b-1c420ca99750",
       "name": "Email · Acknowledge supplier",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -183,7 +183,7 @@
           "appendAttribution": false
         }
       },
-      "id": "3f1bcf7a-1e25-445c-8928-a0aaac7cf2b5",
+      "id": "1fc44907-061f-4780-8858-c35a6b229e5e",
       "name": "Email · Notify sourcing team",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,

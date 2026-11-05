@@ -261,3 +261,6 @@ if($("#landed")){
     d.details=(d.details?d.details+"\n":"")+`Target: landed US$${r.landed}/kg (FOB US$${r.fob}/kg, ${r.kg} kg), selling at US$${r.sell}/kg for ${r.margin}% gross margin.`;
     store.set("oc_draft",d);location.href="contact.html#rfq"};
 }
+
+/* ---------- Preselect service package from ?package= ---------- */
+(function(){const sel=$("#servicePackage");if(!sel)return;const pk=qs.get("package");if(pk&&[...sel.options].some(o=>o.value===pk))sel.value=pk})();

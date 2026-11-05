@@ -24,7 +24,19 @@ N_FISH = sum(1 for p in P if CAT[p[1]][2] == "fish")
 N_FOOD = N_PRODUCTS - N_FISH
 
 # Network figures from GFG research (EPB directory, SFDA list, BFFEA, Oct 2026)
-NET = dict(mapped=148, districts=17, shortlisted=54, tier_a=19, tier_b=16, tier_c=19)
+NET = dict(mapped=148, districts=17, shortlisted=54, tier_a=19, tier_b=16, tier_c=19,
+           food_short=21, bapa=479, bfvapea=500)
+NET["all_short"] = NET["shortlisted"] + NET["food_short"]
+# Supplier channels by sector: sector, supplier types, channel / source, status
+SUPPLY = [
+ ("Seafood & fish", "Processing plants; chilled, live and dried fish exporters", "EPB directory, BFFEA, BLCFEA, SFDA approved list", f"{NET['mapped']} mapped · {NET['shortlisted']} shortlisted"),
+ ("Processed & packaged food", "Biscuit, snack, juice, noodle, condiment and oil manufacturers", f"BAPA (about {NET['bapa']} members), BAPA FoodPro Expo", "15 shortlisted"),
+ ("Spices & aromatic rice", "Spice processors, rice millers and packers", "BAPA, brand owners, Ministry of Food export permits", "Covered within the processed shortlist"),
+ ("Tea", "Tea estates, blenders and packers, including organic", "Bangladesh Tea Board, Chattogram tea auction", "4 shortlisted"),
+ ("Fresh vegetables & fruit", "Produce exporters and packhouses; mango orchards", f"BFVAPEA (about {NET['bfvapea']} exporting members), DAE Plant Protection Wing", "Member directory requested"),
+ ("Frozen & ready-to-cook", "Frozen paratha, snack and ready-meal makers; IQF vegetable and jackfruit packers", "BAPA", "2 shortlisted"),
+ ("Sugar, jaggery & honey", "Date-palm and cane jaggery makers, honey processors", "Producer groups in Jashore, Sundarbans and the mustard belt", "Mapping in progress"),
+]
 DISTRICTS = [("Dhaka", 37), ("Khulna", 33), ("Chattogram", 29), ("Brahmanbaria", 14), ("Jashore", 10),
              ("Cox's Bazar", 5), ("Sylhet", 4), ("Bagerhat", 3), ("Sunamganj", 3), ("Other districts", 10)]
 HSCATS = [("0303", "Frozen fish", 78, "Sea fish, hilsa, pomfret"),
@@ -40,12 +52,12 @@ BUB = '<div class="bubbles" aria-hidden="true">' + "".join(
     f'<span style="--x:{x}%;--s:{s}px;--d:{d}s;--dl:{dl}s"></span>' for x, s, d, dl in
     [(4,10,13,0),(12,16,17,3),(21,8,11,6),(33,14,15,1),(45,9,12,8),(57,18,19,2),(66,10,14,5),(74,13,16,9),(83,8,10,4),(92,15,18,7)]) + "</div>"
 
-NAV = [("index.html","home","Home"),("products.html","products","Products"),("food.html","food","Food &amp; crops"),("quality.html","quality","Quality &amp; risk"),
-       ("sourcing.html","sourcing","Suppliers"),("markets.html","markets","Logistics"),("guide.html","guide","Guide"),("contact.html","contact","Contact")]
+NAV = [("index.html","home","Home"),("products.html","products","Products"),("food.html","food","Food &amp; crops"),("services.html","services","Services &amp; fees"),("quality.html","quality","Quality &amp; risk"),
+       ("sourcing.html","sourcing","Suppliers"),("guide.html","guide","Guide"),("contact.html","contact","Contact")]
 
 ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": BRAND, "alternateName": SHORT, "url": SITE + "/",
        "logo": SITE + "/assets/img/logo.png",
-       "description": f"{BRAND} is a buyer's broker that sources frozen, chilled, live and dried seafood and Bangladeshi food products from licensed exporters for importers worldwide, with five-gate QC on every lot. Mission: to be the world's best and most trusted food sourcing company.",
+       "slogan": "One-stop food sourcing services", "description": f"{BRAND} is a one-stop food sourcing company and buyer's broker that sources frozen, chilled, live and dried seafood and Bangladeshi food products from licensed exporters for importers worldwide, with five-gate QC on every lot. Mission: to be the world's best and most trusted food sourcing company.",
        "areaServed": "Worldwide", "address": {"@type": "PostalAddress", "addressCountry": "BD"},
        "knowsAbout": ["Bangladesh seafood export", "Black tiger shrimp", "Hilsa", "Mud crab", "HS 0306", "HS 0303", "Cold chain logistics"],
        "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "availableLanguage": ["English", "Bengali", "Arabic"]}}
@@ -164,7 +176,7 @@ FOOT = f'''</main>
       <a class="logo" href="index.html" style="color:var(--fg)">{LOGO}<span><span data-brand>{BRAND}</span><small>Best food to buy in the world</small></span></a>
       <p style="margin-top:1rem;max-width:36ch">We source seafood and food from licensed Bangladeshi exporters and manage quality, documents and cold chain for importers worldwide.</p>
     </div>
-    <div><h4>Explore</h4><ul><li><a href="products.html">Product directory</a></li><li><a href="food.html">Food &amp; crops</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li></ul></div>
+    <div><h4>Explore</h4><ul><li><a href="products.html">Product directory</a></li><li><a href="food.html">Food &amp; crops</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="services.html">Services &amp; fees</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li></ul></div>
     <div><h4>Work with us</h4><ul><li><a href="contact.html#rfq">Request a quote</a></li><li><a href="sourcing.html#apply">Become a supplier partner</a></li><li><a href="#" data-wa="Hello {BRAND}" data-track="whatsapp_click">WhatsApp</a></li><li><a href="#" data-messenger data-track="messenger_click">Messenger</a></li><li><a href="#" data-mail data-track="email_click">Email</a></li></ul></div>
     <div><h4>Office</h4><p>Dhaka, Bangladesh<br>Sunday–Thursday, 09:00–18:00 (UTC+6)<br>WhatsApp answered 7 days</p></div>
   </div>
@@ -245,13 +257,64 @@ RISKS = [
  ("Claims after arrival", "A quality issue found at destination.", "Claim procedure written into the contract; we respond within 48 hours and pursue the exporter on your behalf.", "Written claim outcome: credit note or replacement"),
 ]
 
+# Price reference points: only figures with a public source. product, spec, price, basis, period, source label, url
+PRICES = [
+ ("Hilsa", "Whole, about 900 g (\"LC size\")", "US$12.50 / kg", "Government minimum export price (FOB)", "Sept–Oct 2025 export window", "Prothom Alo", "https://en.prothomalo.com/business/local/cigk04qwto"),
+ ("Aromatic rice", "Kalijira, Chinigura and similar", "US$1.60 / kg (US$1,600 / t)", "Government minimum export price (FOB)", "2025–26 export windows", "The Daily Star", "https://online91.thedailystar.net/business/economy/news/aromatic-rice-export-deadline-extended-april-30-4116076"),
+ ("Frozen shrimp", "All types and grades, Bangladesh origin", "US$8.25 – 15.20 / kg", "Reported export price range", "2024", "Tridge", "https://dir.tridge.com/prices/frozen-common-shrimp-and-prawn/BD"),
+ ("Table potato", "50 kg bags, bulk", "About US$300 / t", "Reported export price", "2025 season", "FreshPlaza", "https://www.freshplaza.com/asia/article/9790713/bangladesh-potato-exports-hit-a-three-year-peak"),
+]
+# How grade and compliance move price: driver, higher price, lower price
+DRIVERS = [
+ ("Size and count grade", "Larger grades (shrimp U/10–16/20, hilsa 1 kg+, mango A-grade)", "Small grades (shrimp 51/60 and smaller, mixed sizes)"),
+ ("Product form", "Peeled, deveined, cooked or value-added; fillets", "Whole or head-on (HOSO), block frozen"),
+ ("Glaze and net weight", "Low glaze, quoted on true net weight", "High glaze that inflates gross weight"),
+ ("Plant listing", "Plants listed for the EU, US or Japan", "Plants approved only for regional markets"),
+ ("Certification", "ASC, BAP, Organic, GLOBALG.A.P., BRCGS, FSSC 22000", "Basic HACCP only"),
+ ("Season", "Off-season and festival demand (e.g. hilsa before Durga Puja)", "Peak harvest (shrimp May–Sept, mango June–July, potato Feb–April)"),
+ ("Volume and commitment", "Spot orders, mixed small lots", "Full containers and monthly supply programmes"),
+ ("Packing", "Retail and private-label packs", "Bulk master cartons"),
+]
+
+# Service packages: EDIT FEES HERE. id, name, tagline, fee, fee basis, includes, responsibility, featured
+SERVICES = [
+ ("verify", "Verify", "Supplier verification", "US$150", "per supplier, one-time",
+  ["Export Registration Certificate (ERC) and licence check", "DoF FIQC plant approval (fish) or DAE phytosanitary registration (produce)",
+   "Plant listing checked for your market: EU, SFDA, GACC, US FDA", "Certificates validated with the issuing body (HACCP, BRCGS, FSSC 22000, Halal…)",
+   "Factory or packhouse visit with photo and video report", "Risk rating (A / B / C) and a written verification report in 5 working days"],
+  "We certify what we checked; you decide whether to buy.", False),
+ ("assure", "Assure", "Per-shipment QC & compliance", "US$290", "per container · lab tests at cost, no markup",
+  ["All five QC gates: raw material, processing, lab release, pre-shipment inspection, loading", "Lab testing for the lot at an accredited lab (residues, heavy metals, microbiology or pesticides), billed at cost with no markup",
+   "AQL inspection against your specification, with photos and video", "Document check: health or phytosanitary certificate, origin, invoice, packing list, B/L drafts",
+   "Supervised loading, reefer temperature log and seal record", "You approve before the balance payment or document release"],
+  "Quality checking is our responsibility. A lot that fails any gate does not ship.", False),
+ ("complete", "Complete", "End-to-end buyer's agent", "1.5% of FOB value", "per shipment · minimum US$450 per container",
+  ["Everything in Verify and Assure", "Competing offers from qualified plants and price negotiation for you", "Contract, specification and label management",
+   "Freight booking and shipment tracking to your port", "Claims handled with the exporter on your behalf, answered within 48 hours",
+   "Quality guarantee: if a lot we released does not match the agreed specification, we refund our full service fee for that shipment and pursue the exporter for you"],
+  "We carry the full quality and compliance responsibility, from supplier to port.", True),
+ ("programme", "Programme", "Recurring supply programme", "From US$750", "per month · includes up to 3 containers of Assure",
+  ["A dedicated GFG QC officer for your account", "Priority production slots and a backup plant for each product", "Seasonal buying plan and price-lock windows",
+   "Monthly quality and supplier performance report", "US$240 per container from the fourth container"],
+  "Your own QC team in Bangladesh, without the overhead.", False),
+]
+ADDONS = [
+ ("Extended lab panel (aflatoxin, Sudan dyes, DNA species ID, extra residues)", "At lab cost, no markup"),
+ ("Sample sourcing and courier on dry ice", "From US$120 per shipment, plus courier at cost"),
+ ("Label and artwork compliance review for your market", "US$75 per label"),
+ ("Social or ethical audit (amfori BSCI-style)", "Quoted per site"),
+ ("Container-loading video call with you, live", "Included in Assure and Complete"),
+]
+
 # ------------------------------------------------------------------ FAQs
 FAQ_HOME = [
  ("What does GoodBuy Foods Global do?", f"{BRAND} is a Bangladesh-based sourcing and export partner that buys on the importer's behalf. We negotiate with licensed Bangladeshi plants, enforce five QC gates on every lot, check compliance for your market and manage documents and shipment, so each container lands at a profitable price."),
  ("Who does GFG represent?", "The buyer. We work to your specification, carry out QC on your behalf and release a shipment only when it meets the order you placed."),
+ ("What does GFG charge?", "Supplier verification is US$150 per supplier; per-shipment QC and compliance (Assure) is US$290 per container, with lab tests at cost; the end-to-end Complete service is 1.5% of FOB value with a minimum of US$450 per container. Buying agents commonly charge 5–10%."),
  ("How does GFG lower my landed cost?", "By buying directly from processing plants, getting competing quotes from several qualified plants, loading containers to their payload limit, specifying glaze so you pay for fish rather than ice, and using preferential duty access for Bangladeshi origin where your market grants it."),
  ("How do you reduce supply risk?", "We only use plants whose licence and market listing we have checked, qualify a backup plant for each product, use L/C or document-based payment, and require independent pre-shipment inspection before the container is sealed."),
  ("Which seafood does Bangladesh export?", "Mainly frozen black tiger shrimp and giant freshwater prawn (HS 0306), frozen marine fish such as hilsa, pomfret and ribbonfish (HS 0303), chilled freshwater fish (HS 0302), live mud crab and eel (HS 0301) and dried fish (HS 0305)."),
+ ("How much does Bangladeshi seafood and food cost?", "It depends on grade, form, packing and the approvals your market needs. Public reference points include the government minimum export prices of US$12.50/kg for hilsa and US$1.60/kg FOB for aromatic rice; our price guide lists more. We return a firm, competing-plant offer within 24 hours of your specification."),
  ("What is the minimum order?", "Usually one 20-foot reefer for a single product, or one 40-foot reefer split across up to four products. Samples and trial lots can be arranged."),
  ("Which payment terms are used?", "Irrevocable L/C at sight or T/T with a deposit. Terms are agreed with the exporter in the proforma invoice."),
  ("How fast do you quote?", "Within 24 hours of receiving species, cut, grade, packing, quantity and destination port."),
@@ -360,7 +423,7 @@ def write(name, text):
 
 def build():
     # ---------- HOME
-    home = head(f"{BRAND} | Bangladesh Seafood & Food Exporter",
+    home = head(f"{BRAND} | One-Stop Food Sourcing from Bangladesh",
                 f"Buyer's broker for {N_PRODUCTS} Bangladeshi seafood, food and crop products: shrimp, hilsa, crab, aromatic rice, spices, tea, vegetables, mango and packaged foods. Five-gate QC, quotes in 24 hours.",
                 "index.html", [{"@type": "WebSite", "@id": SITE + "/#web", "url": SITE + "/", "name": BRAND, "publisher": {"@id": SITE + "/#org"}}, faq_ld(FAQ_HOME)]) + header("home") + f'''
   <section class="hero vid" style="padding:0">
@@ -373,9 +436,9 @@ def build():
         <p class="lede">{BRAND} buys seafood, fresh produce, rice, spices, tea and packaged foods for importers, distributors and retailers from the best-qualified exporters in Bangladesh. We negotiate price at source, enforce strict QC on every lot and keep every shipment compliant with your market, so each container sells at a profit and the next order is easy.</p>
         <div class="actions">
           <a class="btn btn-primary" href="contact.html#rfq" data-track="cta_hero">Request a price offer</a>
-          <a class="btn btn-ghost" href="products.html" style="color:var(--fg)">Browse {N_PRODUCTS} products</a>
+          <a class="btn btn-ghost" href="products.html#prices" style="color:var(--fg)">See indicative prices</a>
         </div>
-        <div class="trust-row"><span>Price negotiated at source</span><span>Five-gate QC on every lot</span><span>Compliant for your market</span></div>
+        <div class="trust-row"><span>One-stop food sourcing</span><span>Price negotiated at source</span><span>Five-gate QC on every lot</span><span>Compliant for your market</span></div>
       </div>
       <aside class="reefer" aria-label="Example reefer container readout">
         <div class="reefer-head"><span>Reefer · example shipment</span><span class="live"><i></i>Live</span></div>
@@ -412,7 +475,7 @@ def build():
   <section id="sectors" style="padding-top:1rem">
     <div class="wrap">
       <div class="sec-head">
-        <div><p class="eyebrow">What we source</p><h2>Every food Bangladesh exports, from one trusted partner.</h2></div>
+        <div><p class="eyebrow">One-stop food sourcing</p><h2>Every food Bangladesh exports, from one trusted partner.</h2></div>
         <p class="lede">Seafood is where we started. Today we source across {len(SECTORS)} food and crop sectors, with the same buyer-side QC and compliance checks for every product.</p>
       </div>
       <div class="sectors">
@@ -461,7 +524,7 @@ def build():
       <div class="broker">
         <div><p class="eyebrow">We work for the buyer</p><h3>Your broker in Bangladesh, on your side of the table.</h3>
         <p>Every lot shipped through GFG passes all five QC gates and a full document check before the container is sealed. We control {len(RISKS)} food-import risks, from border residues to payment fraud, and send you the evidence for each.</p></div>
-        <a class="btn btn-navy" href="quality.html#risk">See the import risk controls</a>
+        <div style="display:flex;flex-direction:column;gap:.6rem"><a class="btn btn-navy" href="services.html">See services &amp; fees</a><a class="btn btn-ghost" href="quality.html#risk" style="color:#fff">Import risk controls</a></div>
       </div>
     </div>
   </section>
@@ -500,6 +563,7 @@ def build():
           <li><b>Seasonal buying advice:</b> we tell you when to book harvest-season grades at the best price.</li>
           <li><b>Consistent specification:</b> the same count, glaze and packing on every shipment, so customers keep re-ordering.</li>
           <li><b>Open costing:</b> FOB, freight, insurance and duty shown separately in every offer.</li>
+          <li><b>Price guide:</b> <a href="products.html#prices" style="color:var(--sea)">public reference prices and what moves them</a>, by grade and compliance.</li>
         </ul>
       </div>
       <form class="calc" id="landed" onsubmit="return false" aria-labelledby="landedTitle">
@@ -585,7 +649,7 @@ def build():
                                                "category": CAT[p[1]][1], "countryOfOrigin": {"@type": "Country", "name": "Bangladesh"}}}
                                      for i, p in enumerate(P)]}
     prod = head("Bangladesh Export Product Directory: Seafood & Food | " + SHORT,
-                f"Directory of {N_PRODUCTS} products exported from Bangladesh: shrimp, prawn, hilsa, pomfret, mud crab, eel, dried fish, rice, spices, vegetables, fruit and processed food, with HS codes and main markets.",
+                f"Indicative prices and a directory of {N_PRODUCTS} products exported from Bangladesh: shrimp, prawn, hilsa, pomfret, mud crab, eel, dried fish, rice, spices, vegetables, fruit and processed food, with HS codes and main markets.",
                 "products.html", [crumbs_ld("Product directory", "products.html"), item_list], "catch-pangasius.jpg") + header("products") + "\n" + page_hero(
         "Product directory", "Bangladesh export product directory",
         f"{N_FISH} seafood and {N_FOOD} food products exported from Bangladesh, with scientific names, Bangla names, HS headings, product forms and main buyer markets.", "catch-pangasius") + f'''
@@ -593,6 +657,29 @@ def build():
   <section style="padding-top:1.5rem">
     <div class="wrap">
       <p class="answer"><b>In short:</b> Bangladesh's main seafood exports are frozen shrimp and prawn (HS 0306), frozen marine fish (0303), chilled freshwater fish (0302), live crab and eel (0301) and dried fish (0305). Food exports include aromatic rice, spices, fresh vegetables, mango, frozen snacks and packaged foods.</p>
+      <div class="price-guide" id="prices">
+        <div class="sec-head" style="margin:2.5rem 0 1.5rem">
+          <div><p class="eyebrow">Price guide</p><h2>Indicative prices, by grade and compliance.</h2></div>
+          <p class="lede">Public reference points help you plan. Your firm offer depends on grade, form, packing and the approvals your market requires. Send your specification and we return a competing-plant price within 24 hours.</p>
+        </div>
+        <div class="tbl"><table class="dtable prices">
+          <thead><tr><th>Product</th><th>Specification</th><th>Reference price</th><th>Basis</th><th>Period</th><th>Source</th></tr></thead>
+          <tbody>{''.join(f'<tr><td><b>{E(a)}</b></td><td>{E(b)}</td><td class="num">{E(c)}</td><td>{E(d)}</td><td>{E(e)}</td><td><a href="{u}" rel="noopener" target="_blank">{E(src)}</a></td></tr>' for a, b, c, d, e, src, u in PRICES)}</tbody>
+        </table></div>
+        <h3 style="margin:2.2rem 0 1rem">What moves the price</h3>
+        <div class="tbl"><table class="dtable drivers">
+          <thead><tr><th>Factor</th><th>Higher price</th><th>Lower price</th></tr></thead>
+          <tbody>{''.join(f'<tr><td><b>{E(a)}</b></td><td>{E(b)}</td><td>{E(c)}</td></tr>' for a, b, c in DRIVERS)}</tbody>
+        </table></div>
+        <div class="broker" style="margin-top:2rem">
+          <div><p class="eyebrow">How we get you a better price</p><h3>Several qualified plants quote every order.</h3>
+          <p>We match your grade and compliance needs to the plants that meet them, collect competing offers, and show FOB, freight, insurance and duty separately. You see exactly what you pay for.</p></div>
+          <a class="btn btn-navy" href="contact.html#rfq">Get today's price</a>
+        </div>
+        <p class="src">Reference prices are public figures for planning only, not offers. Prices move weekly with harvest, exchange rates and freight. Updated <time datetime="{TODAY}">{TODAY}</time>.</p>
+      </div>
+
+      <h2 style="margin-top:3.5rem">Product directory</h2>
       <div class="dir-tools">
         <label class="sr" for="dirSearch">Search products</label>
         <input id="dirSearch" type="search" placeholder="Search by name, Bangla name, scientific name or HS code" autocomplete="off">
@@ -619,31 +706,45 @@ def build():
                f"How {BRAND} selects Bangladeshi seafood, food and crop exporters: {NET['mapped']} licensed exporters mapped, approval checks (DoF FIQC, EU, SFDA, GACC) and a priority rating. Exporters can apply to join.",
                "sourcing.html", [crumbs_ld("Supplier network", "sourcing.html"), faq_ld(FAQ_SUP)], "catch-carp.jpg") + header("sourcing") + "\n" + page_hero(
         "Supplier network", "A vetted network of Bangladesh's seafood, food and crop exporters.",
-        f"We have mapped {NET['mapped']} registered seafood exporters across {NET['districts']} districts and rate every supplier against the approvals and records your market requires.", "catch-carp",
+        f"Seafood plants, food processors, tea estates and fresh-produce packhouses across Bangladesh. We rate every supplier against the approvals and records your market requires.", "catch-carp",
         extra='\n      <div class="actions" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.6rem"><a class="btn btn-primary" href="#apply">Apply as a supplier</a><a class="btn btn-ghost" href="contact.html#rfq" style="color:var(--fg)">Source through GFG</a></div>') + f'''
 
   <section style="padding-top:2rem">
     <div class="wrap">
       <div class="statband">
-        <div><b>{NET['mapped']}</b><span>registered seafood exporters mapped</span><cite>EPB directory</cite></div>
-        <div><b>{NET['shortlisted']}</b><span>exporters on our shortlist</span><cite>GFG research, Oct 2026</cite></div>
-        <div><b>{NET['tier_a']}</b><span>Priority A: on an official approval list or BFFEA leadership</span><cite>SFDA list · BFFEA</cite></div>
-        <div><b>5</b><span>HS categories covered</span><cite>0301 – 0306</cite></div>
+        <div><b>{NET['mapped']}</b><span>seafood exporters mapped</span><cite>EPB directory</cite></div>
+        <div><b>~{NET['bapa'] + NET['bfvapea']:,}</b><span>food &amp; produce exporters in our trade-body channels</span><cite>BAPA ~{NET['bapa']} · BFVAPEA ~{NET['bfvapea']}</cite></div>
+        <div><b>{NET['all_short']}</b><span>suppliers on our shortlist</span><cite>{NET['shortlisted']} seafood · {NET['food_short']} food</cite></div>
+        <div><b>{len(SECTORS)}</b><span>food and crop sectors covered</span><cite>Seafood to sweeteners</cite></div>
       </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">Suppliers by sector</p><h2>Every food and crop sector, one vetting standard.</h2></div>
+        <p class="lede">From seafood plants to tea estates and mango packhouses, every supplier goes through the same licence, certification and lab checks before we offer their product to you.</p>
+      </div>
+      <div class="tbl"><table class="dtable">
+        <thead><tr><th>Sector</th><th>Supplier types</th><th>Where we find them</th><th>Network status</th></tr></thead>
+        <tbody>{''.join(f'<tr><td><b>{E(a)}</b></td><td>{E(b)}</td><td>{E(c)}</td><td class="status-cell">{E(d)}</td></tr>' for a, b, c, d in SUPPLY)}</tbody>
+      </table></div>
+      <p class="src">Association member counts as reported in 2025 (BAPA) and by the association (BFVAPEA). Shortlists from GFG research, November 2026.</p>
     </div>
   </section>
 
   <section style="padding-top:0">
     <div class="wrap cols2">
       <div>
-        <p class="eyebrow">Where exporters are</p>
-        <h2 style="margin:.6rem 0 1.5rem">Registered exporters by district</h2>
+        <p class="eyebrow">Where seafood exporters are</p>
+        <h2 style="margin:.6rem 0 1.5rem">Registered seafood exporters by district</h2>
         <ul class="bars">{bars}</ul>
         <p class="src">Source: Export Promotion Bureau (EPB) directory of seafood and fisheries exporters, compiled by GFG. n = {NET['mapped']}.</p>
       </div>
       <div>
         <p class="eyebrow">What they export</p>
-        <h2 style="margin:.6rem 0 1.5rem">Exporters by product category</h2>
+        <h2 style="margin:.6rem 0 1.5rem">Seafood exporters by HS category</h2>
         <div class="tbl"><table class="dtable"><thead><tr><th>HS</th><th>Category</th><th>Key items</th><th style="text-align:right">Exporters</th></tr></thead><tbody>{hsrows}</tbody></table></div>
         <p class="src">Many exporters ship more than one category, so the column adds up to more than {NET['mapped']}.</p>
       </div>
@@ -654,19 +755,19 @@ def build():
     <div class="wrap">
       <div class="sec-head">
         <div><p class="eyebrow">How we rate suppliers</p><h2>Three priority tiers, checked before every deal.</h2></div>
-        <p class="lede">A rating is where we start, not a guarantee. Before any contract we ask for a current DoF fish export licence and proof of listing for the buyer's market.</p>
+        <p class="lede">A rating is where we start, not a guarantee. Before any contract we ask for current licences (ERC; DoF FIQC for fish; DAE phytosanitary for produce), factory certificates and proof of listing for the buyer's market.</p>
       </div>
       <div class="tiers">
-        <div class="tier"><span class="badge">PRIORITY A</span><h3>Approved &amp; established</h3><p>On an official approval list (for example SFDA) or in BFFEA leadership, with products that match current buyer demand.</p><b class="n">{NET['tier_a']}</b></div>
-        <div class="tier b"><span class="badge">PRIORITY B</span><h3>Credible, to confirm</h3><p>An established exporter with a narrower range, or with details still to confirm.</p><b class="n">{NET['tier_b']}</b></div>
-        <div class="tier c"><span class="badge">PRIORITY C</span><h3>Verify first</h3><p>Found in a database only, or a very narrow range. We verify the licence before any deal.</p><b class="n">{NET['tier_c']}</b></div>
+        <div class="tier"><span class="badge">PRIORITY A</span><h3>Approved &amp; established</h3><p>On an official approval list (for example SFDA), in trade-body leadership, or a major established exporter, with products that match current buyer demand.</p><b class="n">{NET['tier_a'] + 5}</b></div>
+        <div class="tier b"><span class="badge">PRIORITY B</span><h3>Credible, to confirm</h3><p>An established exporter with a narrower range, or with details still to confirm.</p><b class="n">{NET['tier_b'] + 12}</b></div>
+        <div class="tier c"><span class="badge">PRIORITY C</span><h3>Verify first</h3><p>Found in a database only, or a very narrow range. We verify the licence before any deal.</p><b class="n">{NET['tier_c'] + 4}</b></div>
       </div>
       <h3 style="margin:3rem 0 1rem">What we check</h3>
       <ol class="steps">
-        <li><h3>Licence</h3><p>A current DoF Fish Inspection &amp; Quality Control (FIQC) export licence and plant approval number.</p></li>
+        <li><h3>Licence</h3><p>Export Registration Certificate (ERC), plus a DoF FIQC plant approval for fish or DAE phytosanitary registration for fresh produce.</p></li>
         <li><h3>Market listing</h3><p>The plant appears on the importing market's list: EU approved establishments, SFDA, GACC or US FDA.</p></li>
-        <li><h3>Certification</h3><p>HACCP is required. BRCGS, ISO 22000, BAP, ASC and Halal are recorded where held.</p></li>
-        <li><h3>Lab capability</h3><p>Antibiotic residue, heavy metal and microbiology testing per lot, in-house or at an accredited lab.</p></li>
+        <li><h3>Certification</h3><p>HACCP is required for processors. BRCGS, ISO 22000, FSSC 22000, GLOBALG.A.P., BAP, ASC, Organic and Halal are recorded where held.</p></li>
+        <li><h3>Lab capability</h3><p>Residue (antibiotic or pesticide), heavy metal, aflatoxin and microbiology testing per lot, in-house or at an accredited lab.</p></li>
         <li><h3>Track record</h3><p>Shipment history, claims record and references from existing buyers.</p></li>
         <li><h3>Agreement</h3><p>A signed NCNDA and commission agreement before any buyer details are shared.</p></li>
       </ol>
@@ -981,6 +1082,101 @@ def build():
 ''' + FOOT
     write("guide.html", guide)
 
+    # ---------- SERVICES & FEES
+    def svc_card(v):
+        sid, name, tag, fee, basis, inc, resp, feat = v
+        items = "".join(f"<li>{E(i)}</li>" for i in inc)
+        return f'''        <article class="pkg{' feat' if feat else ''}" id="pkg-{sid}">
+          {'<span class="ribbon">Most chosen · tension-free</span>' if feat else ''}
+          <p class="eyebrow">{E(tag)}</p><h3>{E(name)}</h3>
+          <p class="fee"><b>{E(fee)}</b><span>{E(basis)}</span></p>
+          <ul>{items}</ul>
+          <p class="resp">{E(resp)}</p>
+          <a class="btn {'btn-primary' if feat else 'btn-navy'}" href="contact.html?package={sid}#rfq" data-track="package_{sid}">Choose {E(name)}</a>
+        </article>'''
+    FAQ_SVC = [
+     ("Who is responsible for quality checking?", "We are. Under Assure and Complete, our QC officers or an independent inspector check every gate against your specification, and a lot that fails does not ship. You approve the evidence before you pay the balance."),
+     ("What happens if the goods do not match the specification on arrival?", "Under Complete, we handle the claim with the exporter within 48 hours and refund our full service fee for that shipment. Under Assure, we handle the claim with you and provide all inspection evidence."),
+     ("Do I still pay the exporter directly?", "Yes. You pay the exporter by L/C or T/T against documents, so your payment is protected by the banking process. Our service fee is invoiced separately."),
+     ("Can I use only the verification service?", "Yes. Verify is a one-time check of a supplier you have found yourself, with a written report in 5 working days."),
+    ]
+    svc_ld = [{"@type": "Service", "name": f"{BRAND} {v[1]}: {v[2]}", "provider": {"@id": SITE + "/#org"}, "areaServed": "Worldwide",
+               "description": "; ".join(v[5]), "offers": {"@type": "Offer", "description": f"{v[3]} {v[4]}"}} for v in SERVICES]
+    svc = head(f"One-Stop Food Sourcing Services & Fees: QC and Compliance Verification | {SHORT}",
+               "Low fixed fees: US$150 supplier verification, US$290 per-container QC and compliance, 1.5% end-to-end sourcing, end-to-end buyer's agent and supply programmes for importers of Bangladeshi seafood and food. Quality responsibility stays with GFG.",
+               "services.html", [crumbs_ld("Services & fees", "services.html"), faq_ld(FAQ_SVC), *svc_ld], "ice-holding.jpg") + header("services") + "\n" + page_hero(
+        "Services &amp; fees", "One-stop food sourcing services.",
+        "You place the order. We carry the quality responsibility, with low, fixed fees for supplier verification, compliance checks and QC on every shipment, so you can buy from Bangladesh without the worry.", "ice-holding") + f'''
+
+  <section style="padding-top:2rem">
+    <div class="wrap">
+      <div class="pkgs">
+{chr(10).join(svc_card(v) for v in SERVICES)}
+      </div>
+      <p class="src">Fees exclude the goods, freight and duty, which you pay under your contract with the exporter. Fees are in US dollars and invoiced by {BRAND}. Third-party inspection agencies (SGS, Bureau Veritas, Intertek) can be used on request at their published rates.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="broker">
+        <div><p class="eyebrow">Low fees, by design</p><h3>Buying agents commonly charge 5–10 % of order value. Our end-to-end service is 1.5 %.</h3>
+        <p>We keep fees low because we work for the buyer and earn by keeping you re-ordering. Lab tests are passed on at cost with no markup, and every fee is fixed and published here before you order.</p></div>
+        <a class="btn btn-navy" href="contact.html?package=complete#rfq">Start with Complete</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap cols2">
+      <div>
+        <p class="eyebrow">Our responsibility, in writing</p>
+        <h2 style="margin:.7rem 0 1.2rem">What "tension-free" means.</h2>
+        <ul class="ticks">
+          <li><b>We check, you approve.</b> Every QC gate is our job. You receive the evidence and give the final go-ahead.</li>
+          <li><b>Nothing ships on trust.</b> A lot that fails a gate is reworked, replaced or rejected before loading.</li>
+          <li><b>Compliance is on us.</b> We confirm the plant listing, certificates and documents your market requires before production.</li>
+          <li><b>Claims are handled for you.</b> We deal with the exporter so you don't have to.</li>
+          <li><b>Our fee is at stake.</b> Under Complete, if released goods miss the agreed specification, you get our service fee back.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow">Add-ons</p>
+        <h2 style="margin:.7rem 0 1.2rem">Extra checks when you need them</h2>
+        <div class="tbl"><table class="dtable"><thead><tr><th>Service</th><th>Fee</th></tr></thead>
+          <tbody>{''.join(f'<tr><td>{E(a)}</td><td><b>{E(b)}</b></td></tr>' for a, b in ADDONS)}</tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">What a package covers</p><h2>Verification steps, step by step.</h2></div>
+        <p class="lede">The steps behind the fees, for buyers who want to know exactly what is checked.</p></div>
+      <div class="tbl"><table class="dtable compare">
+        <thead><tr><th>Step</th><th>Verify</th><th>Assure</th><th class="us">Complete</th></tr></thead>
+        <tbody>{''.join(f'<tr><td>{E(a)}</td><td>{b}</td><td>{c}</td><td class="us">{d}</td></tr>' for a, b, c, d in [
+          ("Licence, ERC and plant approval", "✓", "✓", "Included"),
+          ("Market listing (EU, SFDA, GACC, FDA)", "✓", "✓", "Included"),
+          ("Factory or packhouse visit", "✓", "On request", "Included"),
+          ("Raw-material and in-process QC", "—", "✓", "Included"),
+          ("Lab release for the lot", "—", "✓", "Included"),
+          ("AQL pre-shipment inspection", "—", "✓", "Included"),
+          ("Document check before issue", "—", "✓", "Included"),
+          ("Loading supervision and temperature log", "—", "✓", "Included"),
+          ("Competing plant offers and negotiation", "—", "—", "Included"),
+          ("Freight booking and tracking", "—", "—", "Included"),
+          ("Claims handled for you", "—", "Support", "Included"),
+          ("Service-fee refund if released goods miss specification", "—", "—", "Included"),
+        ])}</tbody>
+      </table></div>
+    </div>
+  </section>
+
+{faq_html(FAQ_SVC, "Service questions")}
+''' + FOOT
+    write("services.html", svc)
+
     # ---------- FOOD & CROPS
     food_items = [p for p in P if CAT[p[1]][2] == "food"]
     food_list = {"@type": "ItemList", "name": "Bangladeshi food and crop exports", "numberOfItems": len(food_items),
@@ -1079,6 +1275,7 @@ def build():
         <div class="f"><label for="incoterm">Incoterm</label><select id="incoterm" name="incoterm"><option>CFR</option><option>CIF</option><option>FOB Chattogram</option><option>CPT / CIP (air)</option><option>Not sure yet</option></select></div>
         <div class="f"><label for="volume">Volume</label><select id="volume" name="volume"><option value="sample">Samples only</option><option value="lcl">Less than 1 container</option><option value="1" selected>1 × 40′ reefer</option><option value="2-4">2–4 containers / month</option><option value="5+">5+ containers / month</option></select></div>
         <div class="f"><label for="buyerType">You are a</label><select id="buyerType" name="buyerType"><option>Importer / distributor</option><option>Retail chain</option><option>Food service</option><option>Processor / re-packer</option><option>Trading agent</option></select></div>
+        <div class="f"><label for="servicePackage">Service package</label><select id="servicePackage" name="servicePackage"><option value="complete">Complete: end-to-end, tension-free</option><option value="assure">Assure: QC &amp; compliance per container</option><option value="verify">Verify: supplier check only</option><option value="programme">Programme: recurring supply</option><option value="advise">Not sure, advise me</option></select></div>
         <div class="f"><label for="shipMonth">Target shipment</label><input id="shipMonth" name="shipMonth" type="month"></div>
         <div class="f full"><label for="details">Specification details</label><textarea id="details" name="details" placeholder="Cut, count grade, glaze %, packing, label, certificates required…"></textarea></div>
         <label class="consent full" for="consent"><input type="checkbox" id="consent" name="consent" required> I agree that {BRAND} may store these details to prepare a quote and contact me about it. We do not share your data with third parties.</label>
@@ -1096,7 +1293,7 @@ def build():
     # ---------- catalog.js, sitemap, robots, llms.txt
     cat_js = {p[0]: {"n": p[2], "hs": p[5], "c": CAT[p[1]][1]} for p in P}
     write("assets/js/catalog.js", "/* Generated by tools/build_site.py from tools/catalog.py */\nwindow.CATALOG=" + json.dumps(cat_js, ensure_ascii=False) + ";\n")
-    pages = ["index.html", "products.html", "food.html", "sourcing.html", "quality.html", "markets.html", "guide.html", "contact.html"]
+    pages = ["index.html", "products.html", "food.html", "services.html", "sourcing.html", "quality.html", "markets.html", "guide.html", "contact.html"]
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
         f'  <url><loc>{SITE}/{"" if p == "index.html" else p}</loc><lastmod>{TODAY}</lastmod></url>\n' for p in pages) + "</urlset>\n")
     write("robots.txt", f"""User-agent: *
@@ -1125,16 +1322,18 @@ Sitemap: {SITE}/sitemap.xml
     groups = "\n".join(f"- {t}: " + ", ".join(p[2] for p in P if p[1] == c) for c, t, g, i in CATEGORIES)
     write("llms.txt", f"""# {BRAND}
 
-> {BRAND} ({SHORT}) is a Bangladesh-based food sourcing company that works for buyers, covering seafood, food and crops. Its mission is to be the world's best and most trusted food sourcing company. We match importers worldwide with licensed Bangladeshi exporters, verify plant approvals (DoF FIQC, EU, SFDA, GACC, US FDA) and lab results, and manage quotes, inspection, documents and reefer or air shipment.
+> {BRAND} ({SHORT}) is a Bangladesh-based one-stop food sourcing company that works for buyers, covering seafood, food and crops. Its mission is to be the world's best and most trusted food sourcing company. We match importers worldwide with licensed Bangladeshi exporters, verify plant approvals (DoF FIQC, EU, SFDA, GACC, US FDA) and lab results, and manage quotes, inspection, documents and reefer or air shipment.
 
 Key facts
-- Network: {NET['mapped']} registered Bangladeshi seafood exporters mapped across {NET['districts']} districts (EPB directory); {NET['shortlisted']} on our shortlist, {NET['tier_a']} rated Priority A.
+- Network: {NET['mapped']} registered Bangladeshi seafood exporters mapped across {NET['districts']} districts (EPB directory); food and produce exporters reached through BAPA (~{NET['bapa']} members) and BFVAPEA (~{NET['bfvapea']} members); {NET['all_short']} suppliers on our shortlist ({NET['shortlisted']} seafood, {NET['food_short']} food).
 - Products: {N_PRODUCTS} export lines ({N_FISH} seafood, {N_FOOD} food).
+- Reference prices (public): hilsa government minimum export price US$12.50/kg (2025); aromatic rice minimum export price US$1.60/kg FOB (2025–26); Bangladeshi frozen shrimp US$8.25–15.20/kg (2024, Tridge); table potato about US$300/t (2025). Firm offers depend on grade and compliance.
 - Terms: FOB Chattogram, CFR or CIF; air freight from Dhaka for live and chilled products. Quotes within 24 hours.
 - Minimum order: usually one 20-foot reefer per product.
 
 Pages
 - [Product directory]({SITE}/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
+- [Services & fees]({SITE}/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests at cost); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
 - [Food & crops]({SITE}/food.html): food and crop sectors, sourcing regions and a harvest calendar
 - [Bangladesh export guide]({SITE}/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
 - [Supplier network]({SITE}/sourcing.html): how suppliers are rated; exporters can apply to join

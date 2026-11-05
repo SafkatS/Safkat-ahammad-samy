@@ -8,7 +8,7 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "cc71479c-01d5-42df-a117-0fc49435f1d0",
+      "id": "928a8ad8-db52-4cb5-938d-55a4147285bf",
       "name": "Meta verify (GET)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,13 +16,13 @@
         0,
         0
       ],
-      "webhookId": "19335501-257e-4e65-8e20-e66d8c32ced0"
+      "webhookId": "5f11c011-2433-40dc-bd32-c397f0ab02bd"
     },
     {
       "parameters": {
         "jsCode": "const VERIFY_TOKEN = 'REPLACE_WITH_YOUR_VERIFY_TOKEN';   // same value you enter in Meta App → Webhooks\nconst q = $input.first().json.query || {};\nconst ok = q['hub.mode'] === 'subscribe' && q['hub.verify_token'] === VERIFY_TOKEN;\nreturn [{ json: { ok, challenge: ok ? String(q['hub.challenge']) : 'forbidden' } }];"
       },
-      "id": "f7c145c2-47d9-489c-bc69-4a58a3cd62d4",
+      "id": "2e03ed1d-83b5-47d4-885a-6e33521ab2b3",
       "name": "Check verify token",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -39,7 +39,7 @@
           "responseCode": "={{ $json.ok ? 200 : 403 }}"
         }
       },
-      "id": "ef311289-5e27-4f97-b229-bc91246e9d36",
+      "id": "7ad03494-a6cc-4e9b-b9fd-19c1329b45e7",
       "name": "Return challenge",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -57,7 +57,7 @@
           "allowedOrigins": "*"
         }
       },
-      "id": "dc12c856-38b5-483e-b2bf-4ad464790603",
+      "id": "0bc9f0b1-7810-4785-a973-50c426d55985",
       "name": "Meta events (POST)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -65,13 +65,13 @@
         0,
         300
       ],
-      "webhookId": "d59e2773-9b42-42e5-8e76-b083e5278e0d"
+      "webhookId": "f8e75c9b-5ce3-4a55-9e64-ff62f8eb8145"
     },
     {
       "parameters": {
         "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoodsglobal.com',\n    managerEmail: 'manager@goodbuyfoodsglobal.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'\n  }\n}}];"
       },
-      "id": "615a4a67-c532-4a86-9aad-5d3b8c95db44",
+      "id": "3aa62c32-8285-4693-82b2-39f1df767ce4",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -84,7 +84,7 @@
       "parameters": {
         "jsCode": "const cfg = $('Config').first().json.cfg;\nconst body = $('Meta events (POST)').first().json.body || {};\nconst out = [];\nconst intentOf = t => {\n  const s = (t || '').toLowerCase();\n  if (/(human|agent|call me|talk to|someone|person)/.test(s)) return 'human';\n  if (/(price|rate|quote|offer|cfr|fob|cif|\\$|usd|eur|দাম)/.test(s)) return 'price';\n  if (/(sample)/.test(s)) return 'sample';\n  if (/(catalog|catalogue|product|list|spec|size|grade)/.test(s)) return 'catalog';\n  if (/(certif|haccp|brc|eu approv|fda|halal|asc|bap)/.test(s)) return 'compliance';\n  if (/^(hi|hello|hey|salam|assalam|good (morning|evening))/.test(s)) return 'greeting';\n  return 'other';\n};\nconst replies = {\n  greeting: `Hello from ${cfg.brand} 👋 We source Bangladeshi seafood and food for importers, with QC on every lot. Reply with:\\n1️⃣ CATALOGUE\\n2️⃣ PRICE + product, size and port\\n3️⃣ SAMPLE\\n4️⃣ HUMAN to talk to the export desk`,\n  catalog: `Our export product directory (100+ products with HS codes and markets): ${cfg.catalogueUrl}\\nTell us the product, size and destination port and we will quote.`,\n  price: `Thanks! To quote CFR/FOB we need: product & cut, count grade, pack, quantity (MT or containers) and destination port. A trader will reply with today's price shortly.`,\n  sample: `We send frozen samples on dry ice by courier. Please share company name, delivery address and products. A trader will confirm cost and timing.`,\n  compliance: `We work with plants approved for your market (EU, SFDA, GACC, US FDA) and certified to HACCP, BRCGS or Halal as required. A trader will send the relevant certificates.`,\n  human: `Connecting you to our export desk now. Hours: Sun–Thu 09:00–18:00 Bangladesh time (UTC+6).`,\n  other: `Thanks for your message. A member of our export desk will reply shortly. Meanwhile, browse our catalogue: ${cfg.catalogueUrl}`\n};\nfor (const entry of body.entry || []) {\n  if (body.object === 'whatsapp_business_account') {\n    for (const ch of entry.changes || []) {\n      const v = ch.value || {};\n      const contact = (v.contacts || [])[0] || {};\n      for (const m of v.messages || []) {\n        const text = m.text?.body || m.button?.text || m.interactive?.button_reply?.title || m.interactive?.list_reply?.title || `[${m.type}]`;\n        const intent = intentOf(text);\n        out.push({ json: { channel: 'whatsapp', from: m.from, name: contact.profile?.name || '', text, msgId: m.id, intent, reply: replies[intent], ts: m.timestamp } });\n      }\n    }\n  } else if (body.object === 'page') {\n    for (const ev of entry.messaging || []) {\n      if (!ev.message || ev.message.is_echo) continue;\n      const text = ev.message.text || '[attachment]';\n      const intent = intentOf(text);\n      out.push({ json: { channel: 'messenger', from: ev.sender.id, name: '', text, msgId: ev.message.mid, intent, reply: replies[intent], ts: ev.timestamp } });\n    }\n  }\n}\nreturn out;   // status callbacks (delivered/read) produce no items and stop here"
       },
-      "id": "0efe3b13-974d-4436-a838-cad380957235",
+      "id": "9218cc64-540c-42dc-aac6-d1d8d4a5448a",
       "name": "Parse & detect intent",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -106,7 +106,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "32dc77f9-e1eb-455b-a9d0-83d14e2a1ca8",
+                    "id": "6027406a-3775-4661-9706-291245a37320",
                     "leftValue": "={{ $json.channel }}",
                     "rightValue": "whatsapp",
                     "operator": {
@@ -129,7 +129,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "b1bb4485-c6d9-41ce-b6e0-84dcdca1ee7f",
+                    "id": "04cd13a0-f4fe-45b0-9ff2-ab78710403b5",
                     "leftValue": "={{ $json.channel }}",
                     "rightValue": "messenger",
                     "operator": {
@@ -147,7 +147,7 @@
         },
         "options": {}
       },
-      "id": "f6fc9ec8-aecb-4280-b985-5a158e4dfc98",
+      "id": "80bd5322-ed5c-42d6-a19a-7447d29473ae",
       "name": "Route by channel",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -167,7 +167,7 @@
         "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $json.from, type: 'text', text: { preview_url: true, body: $json.reply } }) }}",
         "options": {}
       },
-      "id": "d685441e-c521-464a-984b-2ca2ed8e9c59",
+      "id": "cf4f7a91-cb07-4dbe-9d5f-ffe21b65084f",
       "name": "WhatsApp · Auto-reply",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -194,7 +194,7 @@
         "jsonBody": "={{ JSON.stringify({ recipient: { id: $json.from }, messaging_type: 'RESPONSE', message: { text: $json.reply } }) }}",
         "options": {}
       },
-      "id": "8759231a-9f26-4ad3-bef9-db7c33c7796d",
+      "id": "63f5a697-f8e0-4d36-ab0c-abcbd63c8596",
       "name": "Messenger · Auto-reply",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -214,7 +214,7 @@
       "parameters": {
         "jsCode": "// Needs two custom UNIQUE contact properties in HubSpot: whatsapp_id and messenger_psid (single-line text, \"unique value\" ticked)\nreturn $input.all().map(({ json: m }) => {\n  const idProperty = m.channel === 'whatsapp' ? 'whatsapp_id' : 'messenger_psid';\n  const properties = { [idProperty]: m.from, hs_lead_status: 'NEW' };\n  if (m.channel === 'whatsapp') { properties.phone = '+' + m.from; if (m.name) properties.firstname = m.name; }\n  return { json: { ...m, crm: { inputs: [{ idProperty, id: m.from, properties }] } } };\n});"
       },
-      "id": "29b81405-880b-4c56-89d0-61c9b5b13d5a",
+      "id": "9c13c307-6604-4cf2-9f8f-85de4455b445",
       "name": "Build CRM record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -236,7 +236,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "aa1ebab3-c7cc-474c-ac54-520f240b29a0",
+      "id": "5f869490-88da-4acf-a225-fdd8c5b984db",
       "name": "HubSpot · Upsert by channel id",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -265,7 +265,7 @@
           },
           "conditions": [
             {
-              "id": "0231626b-52cc-42d2-8149-3163f2570b70",
+              "id": "26fdd9ca-df44-4013-aaee-90bcadd475b4",
               "leftValue": "={{ ['human','price','sample','compliance'].includes($('Build CRM record').item.json.intent) }}",
               "operator": {
                 "type": "boolean",
@@ -278,7 +278,7 @@
         },
         "options": {}
       },
-      "id": "f3ee769f-8b41-4851-bb62-b6b47fb37f30",
+      "id": "7d827cbf-b415-4603-8f0c-0f5123aae442",
       "name": "Needs a trader?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -298,7 +298,7 @@
           "appendAttribution": false
         }
       },
-      "id": "fc3fbc4d-388a-4c51-8b98-b8d622cedaf7",
+      "id": "d74986ba-6e1c-401a-8e99-0002654f54eb",
       "name": "Email · Hand-off to export desk",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -335,7 +335,7 @@
         },
         "options": {}
       },
-      "id": "09947281-904c-41fc-80a6-2bc180bb5f26",
+      "id": "0030773f-a04f-4bbe-9aec-0f9029f94fa5",
       "name": "Sheets · Chat log",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,

@@ -1,15 +1,17 @@
 # GoodBuy Foods Global
 
-> GoodBuy Foods Global (GFG) is a Bangladesh-based food sourcing company that works for buyers, covering seafood, food and crops. Its mission is to be the world's best and most trusted food sourcing company. We match importers worldwide with licensed Bangladeshi exporters, verify plant approvals (DoF FIQC, EU, SFDA, GACC, US FDA) and lab results, and manage quotes, inspection, documents and reefer or air shipment.
+> GoodBuy Foods Global (GFG) is a Bangladesh-based one-stop food sourcing company that works for buyers, covering seafood, food and crops. Its mission is to be the world's best and most trusted food sourcing company. We match importers worldwide with licensed Bangladeshi exporters, verify plant approvals (DoF FIQC, EU, SFDA, GACC, US FDA) and lab results, and manage quotes, inspection, documents and reefer or air shipment.
 
 Key facts
-- Network: 148 registered Bangladeshi seafood exporters mapped across 17 districts (EPB directory); 54 on our shortlist, 19 rated Priority A.
+- Network: 148 registered Bangladeshi seafood exporters mapped across 17 districts (EPB directory); food and produce exporters reached through BAPA (~479 members) and BFVAPEA (~500 members); 75 suppliers on our shortlist (54 seafood, 21 food).
 - Products: 138 export lines (63 seafood, 75 food).
+- Reference prices (public): hilsa government minimum export price US$12.50/kg (2025); aromatic rice minimum export price US$1.60/kg FOB (2025–26); Bangladeshi frozen shrimp US$8.25–15.20/kg (2024, Tridge); table potato about US$300/t (2025). Firm offers depend on grade and compliance.
 - Terms: FOB Chattogram, CFR or CIF; air freight from Dhaka for live and chilled products. Quotes within 24 hours.
 - Minimum order: usually one 20-foot reefer per product.
 
 Pages
 - [Product directory](https://www.goodbuyfoodsglobal.com/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
+- [Services & fees](https://www.goodbuyfoodsglobal.com/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests at cost); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
 - [Food & crops](https://www.goodbuyfoodsglobal.com/food.html): food and crop sectors, sourcing regions and a harvest calendar
 - [Bangladesh export guide](https://www.goodbuyfoodsglobal.com/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
 - [Supplier network](https://www.goodbuyfoodsglobal.com/sourcing.html): how suppliers are rated; exporters can apply to join

@@ -170,7 +170,7 @@ return [{ json: {
   email, firstname: firstname || '', lastname: rest.join(' '),
   name: clean(b.name), company: clean(b.company), country: clean(b.country), port: clean(b.port),
   whatsapp: wa, incoterm: clean(b.incoterm), volume: clean(b.volume), buyerType: clean(b.buyerType),
-  shipMonth: clean(b.shipMonth), details: clean(b.details),
+  shipMonth: clean(b.shipMonth), details: clean(b.details), servicePackage: clean(b.servicePackage) || 'not stated',
   productList: products.map(p => p.name).join(', ') || 'Not specified',
   utmSource: b.utm?.utm_source || '', utmCampaign: b.utm?.utm_campaign || '', gclid: b.utm?.gclid || '',
   visitorId: clean(b.visitorId), page: clean(b.page), submittedAt: b.submittedAt || new Date().toISOString()
@@ -190,7 +190,7 @@ http(wf, "HubSpot · Create deal", "POST", HUBSPOT + "/crm/v3/objects/deals",
      "={{ JSON.stringify({ properties: { dealname: $('Normalize & Score').first().json.company + ' · ' + $('Normalize & Score').first().json.productList.slice(0,60) + ' (' + $('Normalize & Score').first().json.ref + ')',"
      " pipeline: $('Config').first().json.cfg.hubspotPipeline, dealstage: $('Config').first().json.cfg.hubspotStage,"
      " amount: String($('Normalize & Score').first().json.estValue),"
-     " description: 'Tier ' + $('Normalize & Score').first().json.tier + ' (score ' + $('Normalize & Score').first().json.score + ')\\nProducts: ' + $('Normalize & Score').first().json.productList + '\\nVolume: ' + $('Normalize & Score').first().json.volume + ' · ' + $('Normalize & Score').first().json.incoterm + ' ' + $('Normalize & Score').first().json.port + '\\nShip: ' + $('Normalize & Score').first().json.shipMonth + '\\n\\n' + $('Normalize & Score').first().json.details },"
+     " description: 'Tier ' + $('Normalize & Score').first().json.tier + ' (score ' + $('Normalize & Score').first().json.score + ') · Package: ' + $('Normalize & Score').first().json.servicePackage + '\\nProducts: ' + $('Normalize & Score').first().json.productList + '\\nVolume: ' + $('Normalize & Score').first().json.volume + ' · ' + $('Normalize & Score').first().json.incoterm + ' ' + $('Normalize & Score').first().json.port + '\\nShip: ' + $('Normalize & Score').first().json.shipMonth + '\\n\\n' + $('Normalize & Score').first().json.details },"
      " associations: [ { to: { id: $json.results[0].id }, types: [ { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 3 } ] } ] }) }}",
      [1120, 60], CRED_HUBSPOT, "hubspot")
 
@@ -236,7 +236,7 @@ code(wf, "Flatten for sheet", r"""const l = $('Normalize & Score').first().json;
 return [{ json: { Ref: l.ref, Submitted: l.submittedAt, Tier: l.tier, Score: l.score, Company: l.company,
   Name: l.name, Email: l.email, WhatsApp: l.whatsapp, Country: l.country, Port: l.port, Incoterm: l.incoterm,
   Volume: l.volume, BuyerType: l.buyerType, Products: l.productList, ShipMonth: l.shipMonth,
-  Details: l.details, UTMSource: l.utmSource, UTMCampaign: l.utmCampaign, VisitorId: l.visitorId, Status: 'NEW' } }];""",
+  Details: l.details, Package: l.servicePackage, UTMSource: l.utmSource, UTMCampaign: l.utmCampaign, VisitorId: l.visitorId, Status: 'NEW' } }];""",
      [900, 860])
 sheets_append(wf, "Sheets · RFQ log", "RFQ", [1120, 860])
 

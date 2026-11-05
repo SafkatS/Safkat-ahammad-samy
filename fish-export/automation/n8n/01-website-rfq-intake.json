@@ -10,7 +10,7 @@
           "allowedOrigins": "*"
         }
       },
-      "id": "58aeee77-8cad-4a5a-9d3f-ec28d8adbd97",
+      "id": "958bf138-14d0-4ae5-a886-b41cde387190",
       "name": "RFQ Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -18,13 +18,13 @@
         0,
         300
       ],
-      "webhookId": "436ede48-336e-4497-b28d-40533c9417f3"
+      "webhookId": "4fd0cb84-5333-4a3a-9179-1c580bdacc8a"
     },
     {
       "parameters": {
         "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoodsglobal.com',\n    managerEmail: 'manager@goodbuyfoodsglobal.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'\n  }\n}}];"
       },
-      "id": "d77ce556-581a-4fc0-a488-7edea5d2a041",
+      "id": "37115340-ae9b-4bbf-85fa-08b3412457b6",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -35,9 +35,9 @@
     },
     {
       "parameters": {
-        "jsCode": "const cfg = $('Config').first().json.cfg;\nconst b = $('RFQ Webhook').first().json.body || {};\nconst clean = s => String(s ?? '').trim().slice(0, 2000);\nconst email = clean(b.email).toLowerCase();\nif (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) throw new Error('Invalid email');\nif (b.website) throw new Error('Honeypot triggered');            // bot\n\nconst [firstname, ...rest] = clean(b.name).split(/\\s+/);\nconst wa = clean(b.whatsapp).replace(/[^\\d]/g, '');\nconst products = Array.isArray(b.products) ? b.products : [];\n\n// Lead score 0–100: volume, buyer type, completeness, intent\nconst volScore = { 'sample': 5, 'lcl': 10, '1': 25, '2-4': 40, '5+': 50 }[b.volume] ?? 10;\nconst typeScore = /retail|importer/i.test(b.buyerType) ? 15 : /food service|processor/i.test(b.buyerType) ? 10 : 5;\nconst freeMail = /@(gmail|yahoo|hotmail|outlook|icloud|aol|mail)\\./i.test(email) ? 0 : 10;\nconst detail = clean(b.details).length > 40 ? 10 : 0;\nconst score = Math.min(100, volScore + typeScore + freeMail + detail + (wa ? 5 : 0) + Math.min(products.length * 3, 10));\nconst tier = score >= cfg.hotScore ? 'HOT' : score >= 35 ? 'WARM' : 'COLD';\n\n// Rough deal value in USD (FOB-ish blended $/kg × MT) — refined by sales later\nconst mt = { 'sample': 0, 'lcl': 8, '1': 21, '2-4': 63, '5+': 105 }[b.volume] ?? 0;\nconst estValue = Math.round(mt * 1000 * 7.5);\n\nconst ref = 'RFQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();\nreturn [{ json: {\n  ref, score, tier, estValue,\n  email, firstname: firstname || '', lastname: rest.join(' '),\n  name: clean(b.name), company: clean(b.company), country: clean(b.country), port: clean(b.port),\n  whatsapp: wa, incoterm: clean(b.incoterm), volume: clean(b.volume), buyerType: clean(b.buyerType),\n  shipMonth: clean(b.shipMonth), details: clean(b.details),\n  productList: products.map(p => p.name).join(', ') || 'Not specified',\n  utmSource: b.utm?.utm_source || '', utmCampaign: b.utm?.utm_campaign || '', gclid: b.utm?.gclid || '',\n  visitorId: clean(b.visitorId), page: clean(b.page), submittedAt: b.submittedAt || new Date().toISOString()\n}}];"
+        "jsCode": "const cfg = $('Config').first().json.cfg;\nconst b = $('RFQ Webhook').first().json.body || {};\nconst clean = s => String(s ?? '').trim().slice(0, 2000);\nconst email = clean(b.email).toLowerCase();\nif (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) throw new Error('Invalid email');\nif (b.website) throw new Error('Honeypot triggered');            // bot\n\nconst [firstname, ...rest] = clean(b.name).split(/\\s+/);\nconst wa = clean(b.whatsapp).replace(/[^\\d]/g, '');\nconst products = Array.isArray(b.products) ? b.products : [];\n\n// Lead score 0–100: volume, buyer type, completeness, intent\nconst volScore = { 'sample': 5, 'lcl': 10, '1': 25, '2-4': 40, '5+': 50 }[b.volume] ?? 10;\nconst typeScore = /retail|importer/i.test(b.buyerType) ? 15 : /food service|processor/i.test(b.buyerType) ? 10 : 5;\nconst freeMail = /@(gmail|yahoo|hotmail|outlook|icloud|aol|mail)\\./i.test(email) ? 0 : 10;\nconst detail = clean(b.details).length > 40 ? 10 : 0;\nconst score = Math.min(100, volScore + typeScore + freeMail + detail + (wa ? 5 : 0) + Math.min(products.length * 3, 10));\nconst tier = score >= cfg.hotScore ? 'HOT' : score >= 35 ? 'WARM' : 'COLD';\n\n// Rough deal value in USD (FOB-ish blended $/kg × MT) — refined by sales later\nconst mt = { 'sample': 0, 'lcl': 8, '1': 21, '2-4': 63, '5+': 105 }[b.volume] ?? 0;\nconst estValue = Math.round(mt * 1000 * 7.5);\n\nconst ref = 'RFQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();\nreturn [{ json: {\n  ref, score, tier, estValue,\n  email, firstname: firstname || '', lastname: rest.join(' '),\n  name: clean(b.name), company: clean(b.company), country: clean(b.country), port: clean(b.port),\n  whatsapp: wa, incoterm: clean(b.incoterm), volume: clean(b.volume), buyerType: clean(b.buyerType),\n  shipMonth: clean(b.shipMonth), details: clean(b.details), servicePackage: clean(b.servicePackage) || 'not stated',\n  productList: products.map(p => p.name).join(', ') || 'Not specified',\n  utmSource: b.utm?.utm_source || '', utmCampaign: b.utm?.utm_campaign || '', gclid: b.utm?.gclid || '',\n  visitorId: clean(b.visitorId), page: clean(b.page), submittedAt: b.submittedAt || new Date().toISOString()\n}}];"
       },
-      "id": "08968339-9e38-4e12-a2e5-d5af886ddf9d",
+      "id": "d6fcbd62-f188-4151-8df1-dc1a48540198",
       "name": "Normalize & Score",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -54,7 +54,7 @@
           "responseCode": 200
         }
       },
-      "id": "8870442f-a72e-4139-835b-ac00a2bd6aca",
+      "id": "d9e5f935-3a15-4df2-a603-03d5b8bd444f",
       "name": "Respond 200",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -76,7 +76,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "fc06cafd-5f4c-4c8b-a47c-b3f273be807d",
+      "id": "e758d7d0-7c8a-4cf2-a3a7-d4a8c4d0fdb7",
       "name": "HubSpot · Upsert contact",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -101,14 +101,14 @@
         "url": "https://api.hubapi.com/crm/v3/objects/deals",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ properties: { dealname: $('Normalize & Score').first().json.company + ' · ' + $('Normalize & Score').first().json.productList.slice(0,60) + ' (' + $('Normalize & Score').first().json.ref + ')', pipeline: $('Config').first().json.cfg.hubspotPipeline, dealstage: $('Config').first().json.cfg.hubspotStage, amount: String($('Normalize & Score').first().json.estValue), description: 'Tier ' + $('Normalize & Score').first().json.tier + ' (score ' + $('Normalize & Score').first().json.score + ')\\nProducts: ' + $('Normalize & Score').first().json.productList + '\\nVolume: ' + $('Normalize & Score').first().json.volume + ' · ' + $('Normalize & Score').first().json.incoterm + ' ' + $('Normalize & Score').first().json.port + '\\nShip: ' + $('Normalize & Score').first().json.shipMonth + '\\n\\n' + $('Normalize & Score').first().json.details }, associations: [ { to: { id: $json.results[0].id }, types: [ { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 3 } ] } ] }) }}",
+        "jsonBody": "={{ JSON.stringify({ properties: { dealname: $('Normalize & Score').first().json.company + ' · ' + $('Normalize & Score').first().json.productList.slice(0,60) + ' (' + $('Normalize & Score').first().json.ref + ')', pipeline: $('Config').first().json.cfg.hubspotPipeline, dealstage: $('Config').first().json.cfg.hubspotStage, amount: String($('Normalize & Score').first().json.estValue), description: 'Tier ' + $('Normalize & Score').first().json.tier + ' (score ' + $('Normalize & Score').first().json.score + ') · Package: ' + $('Normalize & Score').first().json.servicePackage + '\\nProducts: ' + $('Normalize & Score').first().json.productList + '\\nVolume: ' + $('Normalize & Score').first().json.volume + ' · ' + $('Normalize & Score').first().json.incoterm + ' ' + $('Normalize & Score').first().json.port + '\\nShip: ' + $('Normalize & Score').first().json.shipMonth + '\\n\\n' + $('Normalize & Score').first().json.details }, associations: [ { to: { id: $json.results[0].id }, types: [ { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 3 } ] } ] }) }}",
         "options": {
           "timeout": 15000
         },
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "c9c9c60b-2905-4a43-818a-16b2c7a5b36a",
+      "id": "c5d1c721-e543-4bb0-9dce-308d667b6735",
       "name": "HubSpot · Create deal",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -138,7 +138,7 @@
           "appendAttribution": false
         }
       },
-      "id": "fa59a9b9-692c-4eec-afc7-448a648d58cb",
+      "id": "37b263dd-a927-4f3c-88a9-81ce36e7c6d3",
       "name": "Email · Buyer confirmation",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -164,7 +164,7 @@
           },
           "conditions": [
             {
-              "id": "d90d114d-ef61-4900-b228-ed7f07ab9c42",
+              "id": "d0918e94-bc35-4a1a-97af-d422d5239175",
               "leftValue": "={{ $('Normalize & Score').first().json.whatsapp }}",
               "operator": {
                 "type": "string",
@@ -177,7 +177,7 @@
         },
         "options": {}
       },
-      "id": "c5528f87-a087-4684-ae0e-266e0d65d1b0",
+      "id": "7f2e65e0-6878-452f-a849-da91afe55518",
       "name": "Has WhatsApp?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -199,7 +199,7 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth"
       },
-      "id": "759eaa16-2c46-4152-8b48-49eaaf2d36d8",
+      "id": "c860168a-a879-459a-bc34-342e5a7d9a55",
       "name": "WhatsApp · Buyer confirmation",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -228,7 +228,7 @@
           },
           "conditions": [
             {
-              "id": "bdbe5b17-64c5-46e6-a7d7-e91a2d940847",
+              "id": "6c9d2c75-a365-48fe-8e9c-d27aa989048c",
               "leftValue": "={{ $('Normalize & Score').first().json.score }}",
               "operator": {
                 "type": "number",
@@ -241,7 +241,7 @@
         },
         "options": {}
       },
-      "id": "65c25a1b-e7cc-49f2-867a-287ed44ec047",
+      "id": "bc492f68-6625-4154-a7d2-4cc8827c27f5",
       "name": "Hot lead?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -263,7 +263,7 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth"
       },
-      "id": "d01867cc-34ca-43f8-b80b-2cd596283c70",
+      "id": "f2299ef6-b7be-4cca-a150-5a8ecb18646c",
       "name": "WhatsApp · Alert sales lead",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -293,7 +293,7 @@
           "appendAttribution": false
         }
       },
-      "id": "8f8132ba-cbab-4a8f-80f9-4f6bb81d690c",
+      "id": "83d0ed24-b0cd-4de3-82d6-7b0561c0a398",
       "name": "Email · Sales desk",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -311,9 +311,9 @@
     },
     {
       "parameters": {
-        "jsCode": "const l = $('Normalize & Score').first().json;\nreturn [{ json: { Ref: l.ref, Submitted: l.submittedAt, Tier: l.tier, Score: l.score, Company: l.company,\n  Name: l.name, Email: l.email, WhatsApp: l.whatsapp, Country: l.country, Port: l.port, Incoterm: l.incoterm,\n  Volume: l.volume, BuyerType: l.buyerType, Products: l.productList, ShipMonth: l.shipMonth,\n  Details: l.details, UTMSource: l.utmSource, UTMCampaign: l.utmCampaign, VisitorId: l.visitorId, Status: 'NEW' } }];"
+        "jsCode": "const l = $('Normalize & Score').first().json;\nreturn [{ json: { Ref: l.ref, Submitted: l.submittedAt, Tier: l.tier, Score: l.score, Company: l.company,\n  Name: l.name, Email: l.email, WhatsApp: l.whatsapp, Country: l.country, Port: l.port, Incoterm: l.incoterm,\n  Volume: l.volume, BuyerType: l.buyerType, Products: l.productList, ShipMonth: l.shipMonth,\n  Details: l.details, Package: l.servicePackage, UTMSource: l.utmSource, UTMCampaign: l.utmCampaign, VisitorId: l.visitorId, Status: 'NEW' } }];"
       },
-      "id": "63aaa3de-8bf2-47d6-a1c9-c148f0bc8a3d",
+      "id": "a3b31d8e-616b-4057-8f1d-0a0af2f993f8",
       "name": "Flatten for sheet",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -343,7 +343,7 @@
         },
         "options": {}
       },
-      "id": "912a3b18-c48c-492f-8b06-2f0fb075b831",
+      "id": "d9ed7899-9210-4944-a456-143cc9a09e33",
       "name": "Sheets · RFQ log",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,

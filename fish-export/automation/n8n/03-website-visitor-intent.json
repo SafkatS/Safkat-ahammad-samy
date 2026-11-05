@@ -11,7 +11,7 @@
           "rawBody": true
         }
       },
-      "id": "ec67a4a4-b79a-457e-b1c2-8e451562905f",
+      "id": "4e780b82-30c1-46bd-9e77-b7ab443c03e6",
       "name": "Events Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -19,13 +19,13 @@
         0,
         300
       ],
-      "webhookId": "8fb32bbb-326a-40c5-8e0b-989d034d6f51"
+      "webhookId": "ae43b10e-e1aa-48f3-a526-32ccd5a0b249"
     },
     {
       "parameters": {
         "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoodsglobal.com',\n    managerEmail: 'manager@goodbuyfoodsglobal.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'\n  }\n}}];"
       },
-      "id": "ae94ff30-7437-4118-b613-585b2898b31a",
+      "id": "994db9b2-39df-400c-b13d-35998f2d16b0",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -38,7 +38,7 @@
       "parameters": {
         "jsCode": "const cfg = $('Config').first().json.cfg;\nconst item = $('Events Webhook').first();\nlet b = item.json.body;\n// sendBeacon posts text/plain — parse whichever shape arrives\nif (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { b = {}; } }\nif ((!b || !b.event) && item.binary?.data) {\n  try { b = JSON.parse(Buffer.from(item.binary.data.data, 'base64').toString('utf8')); } catch (e) { b = {}; }\n}\nif (!b || !b.event) return [];\nconst h = item.json.headers || {};\nconst ua = h['user-agent'] || '';\nif (/bot|crawl|spider|slurp|headless|lighthouse/i.test(ua)) return [];\n\nconst WEIGHTS = { page_view: 1, catalogue_filter: 3, lot_trace: 8, rfq_item_added: 12, load_planner: 15,\n                  whatsapp_click: 25, messenger_click: 20, email_click: 15, rfq_started: 25, cta_hero: 5, cta_header: 5 };\nconst s = $getWorkflowStaticData('global');\ns.visitors = s.visitors || {};\nconst v = s.visitors[b.visitorId] || { score: 0, events: [], alerted: false, first: b.ts };\nv.score += WEIGHTS[b.event] ?? 1;\nv.events = [...v.events, b.event + (b.data?.product ? ':' + b.data.product : '')].slice(-25);\nv.last = b.ts;\n// prune visitors idle > 7 days (keeps static data small; GDPR data-minimisation)\nconst weekAgo = Date.now() - 7 * 864e5;\nfor (const [id, x] of Object.entries(s.visitors)) if (new Date(x.last).getTime() < weekAgo) delete s.visitors[id];\nconst alert = v.score >= 50 && !v.alerted;\nif (alert) v.alerted = true;\ns.visitors[b.visitorId] = v;\n\nreturn [{ json: {\n  Timestamp: b.ts, Event: b.event, Data: JSON.stringify(b.data || {}), VisitorId: b.visitorId, Page: b.page,\n  Referrer: b.referrer || '', UTMSource: b.utm?.utm_source || '', UTMCampaign: b.utm?.utm_campaign || '',\n  Country: h['cf-ipcountry'] || h['x-vercel-ip-country'] || '', Language: b.lang || '',\n  IntentScore: v.score, Alert: alert, Journey: v.events.join(' → ')\n} }];"
       },
-      "id": "58dc915f-3d04-48c9-969b-35d3f966bd03",
+      "id": "7d95dfbc-c17a-4e33-a3b5-9689f673cb7a",
       "name": "Parse, filter bots, score",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -68,7 +68,7 @@
         },
         "options": {}
       },
-      "id": "01523ccd-8713-48af-ae7f-e1626436974f",
+      "id": "5ed33451-10c0-4f39-8b3c-34ae31a0a58f",
       "name": "Sheets · Events",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -94,7 +94,7 @@
           },
           "conditions": [
             {
-              "id": "4e246f7f-c094-49e6-82cd-fd996a97a174",
+              "id": "a6c6128e-2fe0-4142-8b73-f4e3a7d7f391",
               "leftValue": "={{ $json.Alert }}",
               "operator": {
                 "type": "boolean",
@@ -107,7 +107,7 @@
         },
         "options": {}
       },
-      "id": "7570d28b-fb96-4128-b8ef-2793a7264505",
+      "id": "d70c5c24-1da9-4245-9545-d00e1cc1a81c",
       "name": "High-intent visitor?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -127,7 +127,7 @@
           "appendAttribution": false
         }
       },
-      "id": "29d9dcb8-4e3a-4863-af5c-c1404426601c",
+      "id": "270a93c7-cae9-4c30-a6ac-ab5e1268e7a4",
       "name": "Email · Hot visitor alert",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,

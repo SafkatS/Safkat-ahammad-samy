@@ -480,3 +480,30 @@ footer .wrap.foot-grid{display:grid;padding-block:3.5rem 1.5rem}
 .cal-key .k.on{background:color-mix(in srgb,var(--aqua) 40%,#fff)}
 .cal-key .k.pk{background:var(--sea)}
 .nav{gap:1rem;font-size:.92rem}
+
+/* Price guide + form checkbox fix */
+.dtable.prices{min-width:820px}
+.dtable.prices td.num{font-weight:600;color:var(--fg);text-align:left}
+.dtable.prices a{color:var(--sea)}
+.dtable.drivers{min-width:640px}
+.dtable.drivers td:nth-child(2){color:var(--good)}
+.dtable.drivers td:nth-child(3){color:var(--muted)}
+.checks-inline{flex-direction:row}
+.checks-inline label{flex:0 0 auto}
+
+/* Service packages */
+.pkgs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;align-items:stretch}
+.pkg{position:relative;display:flex;flex-direction:column;gap:.7rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.6rem 1.4rem;min-width:0}
+.pkg.feat{border:2px solid var(--fg);box-shadow:0 30px 60px -40px rgba(10,37,64,.55)}
+.pkg .ribbon{position:absolute;top:-12px;left:1.2rem;background:var(--coral);color:#fff;font:600 .7rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:.3rem .6rem;border-radius:3px}
+.pkg h3{font-size:1.6rem}
+.pkg .fee b{display:block;font:600 1.7rem/1.1 var(--f-display);color:var(--fg)}
+.pkg .fee span{font-size:.82rem;color:var(--muted)}
+.pkg ul{list-style:none;margin:.3rem 0 0;padding:0;display:grid;gap:.5rem;flex:1}
+.pkg li{font-size:.88rem;color:#2C4A5C;padding-left:1.3rem;position:relative;line-height:1.5}
+.pkg li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:700}
+.pkg .resp{font-size:.86rem;font-weight:600;color:var(--sea);border-top:1px solid var(--line);padding-top:.8rem}
+.pkg .btn{justify-content:center}
+@media (max-width:1100px){.pkgs{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.pkgs{grid-template-columns:1fr}}
+.broker .btn-ghost{border-color:rgba(255,255,255,.5)}
