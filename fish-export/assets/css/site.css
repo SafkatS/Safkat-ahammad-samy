@@ -548,3 +548,6 @@ figure.photo figcaption{position:absolute;left:10px;right:10px;bottom:10px;paddi
 .thumb.ph.food{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none' stroke='%231F8A5B' stroke-opacity='.6' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M8 32c0-14 10-24 24-24 0 14-10 24-24 24z'/%3E%3Cpath d='M8 32l14-14'/%3E%3C/svg%3E"),linear-gradient(135deg,color-mix(in srgb,var(--good) 12%,var(--foam)),var(--foam))}
 
 .thumb.ph,.thumb.ph.food{background-size:26px 26px,100% 100%}
+
+figure.photo.wide img{aspect-ratio:21/9}
+@media (max-width:640px){figure.photo.wide img{aspect-ratio:4/3}}

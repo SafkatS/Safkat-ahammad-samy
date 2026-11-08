@@ -425,7 +425,7 @@ PHOTO = {
  "pointed-gourd-brinjal-beans": "Pointed gourd, brinjal and long beans at a vegetable market",
  "bitter-gourd": "Fresh bitter gourd stacked at a market",
  "green-red-chillies": "Green and red chillies in a woven basket",
- "rice-grains-falling": "Rice grains falling onto a pile",
+ "rice-grains-falling": "Premium polao (aromatic) rice grains falling onto a pile",
  "rohu-carp-catch": "Fresh rohu and carp in a basket after landing",
  "rice-varieties": "Bowls of black, red and white rice varieties",
  "mud-crab-live": "Live mud crabs in a crate",
@@ -434,20 +434,23 @@ PHOTO = {
  "cauliflower-broccoli": "Fresh cauliflower and broccoli",
  "blue-swimming-crab": "Blue swimming crabs tied for live export",
  "buyer-checking-greens": "Buyer checking fresh leafy greens",
- "fresh-mangoes": "Fresh green and ripening mangoes",
+ "fresh-mangoes": "Premium Himsagar mangoes ready for export",
  "tomatoes-beans-market": "Tomatoes, beans and chillies in market baskets",
  "grain-sacks-market": "Open sacks of rice and grain at a wholesale market",
  "packed-cartons-warehouse": "Rows of packed produce cartons in a warehouse ready for inspection",
  "white-rice": "Polished white rice grains",
  "potato-harvest": "Freshly harvested potatoes spilling from a sack",
- "red-rice": "Red rice grains",
- "jackfruit-pods": "Ripe jackfruit pods in a bowl",
+ "red-rice": "Brown rice grains",
+ "jackfruit-pods": "Big, sweet premium jackfruit kosh (pods), ready to eat",
+ "lentils-rice-graded-samples": "Lentils, grass pea, mung dal, pumpkin seed, pepper and polao rice sorted in sacks to show quality",
+ "dry-goods-sacks": "Peanuts, raisins, sago, corn, wheat, rice, peas, lentils and chickpeas in sacks",
+ "paddy-harvest-farmers": "Bengal farmers threshing ripe paddy by hand",
 }
 PROD_IMG = {"hl": "hilsa-on-ice", "rh": "rohu-carp-catch", "ct": "rohu-carp-catch", "mc": "mud-crab-live", "bsc": "blue-swimming-crab",
             "po": "table-potatoes", "ar": "aromatic-rice-spoon", "rr": "red-rice", "gc": "green-red-chillies", "rc": "green-red-chillies",
             "pt": "pointed-gourd-brinjal-beans", "bj": "pointed-gourd-brinjal-beans", "bg": "bitter-gourd", "cb": "cauliflower-broccoli",
             "tm": "tomatoes-beans-market", "yb": "tomatoes-beans-market", "mn": "fresh-mangoes", "jf": "jackfruit-pods", "fj": "jackfruit-pods"}
-SECTOR_IMG = {"Seafood & fish": "hilsa-on-ice", "Rice & grains": "aromatic-rice-spoon", "Spices & tea": "green-red-chillies",
+SECTOR_IMG = {"Seafood & fish": "hilsa-on-ice", "Rice & grains": "paddy-harvest-farmers", "Spices & tea": "green-red-chillies",
               "Fresh vegetables": "pointed-gourd-brinjal-beans", "Fresh fruits": "fresh-mangoes", "Frozen & ready-to-cook": "jackfruit-pods",
               "Processed & packaged": "packed-cartons-warehouse", "Sugar & sweeteners": None}
 IMG = "assets/img/"
@@ -647,14 +650,14 @@ def build():
       <div class="reel">
         {tile('school-underwater','Bay of Bengal','Wild-caught marine species',True)}
         {tile('iced-snapper','Red snapper','Whole round · 0–2 °C on ice')}
-        {tile('catch-carp','Rohu &amp; Indian carp','Morning landing · graded by weight')}
+        {tile('catch-carp','Cultivated carp','Harvest of mixed farmed carp')}
         {tile('catch-pangasius','Pangasius','Farm harvest · to plant in 3 h')}
-        {tile('ice-holding','Ice holding','Flake ice 1:1 · core ≤ 4 °C')}
+        {tile('ice-holding','Frozen snapper','Organised and frozen for packing')}
       </div>
       <div class="band-photos">
         {figure("mud-crab-live", "Live mud crab, graded for air freight")}
         {figure("blue-swimming-crab", "Blue swimming crab, tied for live export")}
-        {figure("fresh-mangoes", "Mango, May–August")}
+        {figure("fresh-mangoes", "Premium Himsagar mango, ready for export")}
         {figure("aromatic-rice-spoon", "Aromatic rice, under export permit")}
       </div>
     </div>
@@ -722,6 +725,7 @@ def build():
           <thead><tr><th>Product</th><th>Specification</th><th>Reference price</th><th>Basis</th><th>Period</th><th>Source</th></tr></thead>
           <tbody>{''.join(f'<tr><td><b>{E(a)}</b></td><td>{E(b)}</td><td class="num">{E(c)}</td><td>{E(d)}</td><td>{E(e)}</td><td><a href="{u}" rel="noopener" target="_blank">{E(src)}</a></td></tr>' for a, b, c, d, e, src, u in PRICES)}</tbody>
         </table></div>
+        {figure("lentils-rice-graded-samples", "Graded samples: size, colour and cleanliness decide the price band", "photo wide")}
         <h3 style="margin:2.2rem 0 1rem">What moves the price</h3>
         <div class="tbl"><table class="dtable drivers">
           <thead><tr><th>Factor</th><th>Higher price</th><th>Lower price</th></tr></thead>
@@ -747,6 +751,18 @@ def build():
 {directory()}
       </div>
       <p class="src">HS headings are indicative (4-digit). The full 8-digit code is confirmed for each shipment. Market lists show typical destinations for Bangladeshi supply, not exclusive rights. Updated <time datetime="{TODAY}">{TODAY}</time>.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap cols2" style="align-items:center">
+      {figure("dry-goods-sacks", "Dry goods for mixed containers")}
+      <div>
+        <p class="eyebrow">Mixed and dry goods on request</p>
+        <h2 style="margin:.6rem 0 1rem">Fill the rest of your container.</h2>
+        <p class="lede">Buyers who consolidate mixed containers can add pulses (lentil, mung, grass pea, chickpea), peanuts, sago, corn, wheat and dried fruit. We source them from wholesale markets and mills, with the same grading and QC checks.</p>
+        <a class="btn btn-navy" style="margin-top:1.4rem" href="contact.html#rfq">Ask for a mixed-container offer</a>
+      </div>
     </div>
   </section>
 
@@ -987,7 +1003,7 @@ def build():
     <div class="wrap">
       <div class="sec-head"><div><p class="eyebrow">At source</p><h2>Receiving and grading.</h2></div><p class="lede">Raw material is iced, graded and moved into the chilled processing hall the same morning.</p></div>
       <div class="reel" style="grid-template-rows:none;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-        {tile('ice-holding','Ice holding','Flake ice 1:1 · core ≤ 4 °C')}
+        {tile('ice-holding','Frozen snapper','Organised and frozen for packing')}
         {tile('iced-snapper','Red snapper','Graded and iced on arrival')}
         {tile('catch-carp','Carp grading','Sorted by weight class')}
       </div>
@@ -1123,7 +1139,7 @@ def build():
         </ul>
 
         <h2 id="food">Food and crop exports</h2>
-        {figure("white-rice", "Bangladesh is a major rice producer; aromatic varieties are exported under government permit")}
+        <div class="duo">{figure("rice-varieties", "Rice varieties: black, red and white")}{figure("white-rice", "Aromatic varieties are exported under government permit")}</div>
         <p>Bangladesh's food exports range from fresh vegetables and seasonal fruit to aromatic rice, tea, spices and a large processed-food industry (biscuits, snacks, juices, noodles, frozen paratha) that reaches more than 100 countries, often through South Asian retail networks.</p>
         <ul>
           <li><b>Export registration:</b> every exporter needs an Export Registration Certificate (ERC) from the Office of the Chief Controller of Imports and Exports.</li>
@@ -1269,12 +1285,12 @@ def build():
       <div class="sec-head"><div><p class="eyebrow">From Bangladeshi fields</p><h2>Graded at source, packed to your specification.</h2></div>
         <p class="lede">Rice, vegetables and fruit from the farms and wholesale markets our suppliers buy from.</p></div>
       <div class="mosaic">
-        {figure("rice-grains-falling", "Aromatic and fine rice, milled to your grade", "photo m-wide")}
+        {figure("rice-grains-falling", "Premium polao rice, milled to your grade", "photo m-wide")}
         {figure("bitter-gourd", "Bitter gourd and summer gourds")}
         {figure("cauliflower-broccoli", "Winter vegetables, November–March")}
         {figure("potato-harvest", "Table potato, harvested February–April")}
-        {figure("rice-varieties", "Black, red and white rice varieties", "photo m-tall")}
-        {figure("red-rice", "Red and brown rice")}
+        {figure("paddy-harvest-farmers", "Bengal farmers threshing ripe paddy", "photo m-tall")}
+        {figure("red-rice", "Brown rice")}
         {figure("tomatoes-beans-market", "Tomatoes, beans and green chilli", "photo m-wide2")}
       </div>
     </div>
