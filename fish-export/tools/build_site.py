@@ -60,7 +60,10 @@ ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": BRAND, "alternate
        "slogan": "One-stop food sourcing services", "description": f"{BRAND} is a one-stop food sourcing company and buyer's broker that sources frozen, chilled, live and dried seafood and Bangladeshi food products from licensed exporters for importers worldwide, with five-gate QC on every lot. Mission: to be the world's best and most trusted food sourcing company.",
        "areaServed": "Worldwide", "address": {"@type": "PostalAddress", "addressCountry": "BD"},
        "knowsAbout": ["Bangladesh seafood export", "Black tiger shrimp", "Hilsa", "Mud crab", "HS 0306", "HS 0303", "Cold chain logistics"],
-       "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "availableLanguage": ["English", "Bengali", "Arabic"]}}
+       "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "availableLanguage": ["English", "Bengali", "Arabic"]},
+       "employee": {"@type": "Person", "name": "Safkat Ahammad Samy", "jobTitle": "Chairman", "description": "International business specialist",
+                    "alumniOf": {"@type": "CollegeOrUniversity", "name": "University of Dhaka"},
+                    "hasCredential": {"@type": "EducationalOccupationalCredential", "credentialCategory": "degree", "name": "Master of International Trade and Business (MITB)"}}}
 
 
 def crumbs_ld(name, path):
@@ -467,6 +470,11 @@ def figure(name, caption, cls="photo"):
     return f'<figure class="{cls}">{photo(name, "lg")}<figcaption>{caption}</figcaption></figure>'
 
 
+# Chairman portrait: drop assets/img/chairman.jpg (1200×1500) and it is used automatically
+CHAIR_IMG = os.path.join(ROOT, "assets/img/chairman.jpg")
+CHAIR_PHOTO = ('<img src="assets/img/chairman.jpg" alt="Safkat Ahammad Samy, Chairman of GoodBuy Foods Global" width="600" height="750" loading="lazy">'
+               if os.path.exists(CHAIR_IMG) else '<span class="initials" role="img" aria-label="Safkat Ahammad Samy">SAS</span>')
+
 # ------------------------------------------------------------------ PAGES
 def write(name, text):
     with open(os.path.join(ROOT, name), "w") as f:
@@ -690,6 +698,20 @@ def build():
         <li><h3>Ship</h3><p>Reefer booked and sealed at the plant. You receive the shipping documents and the carrier's temperature data.</p></li>
         <li><h3>Support</h3><p>We follow up at destination and handle any quality claim with the exporter within 48 hours.</p></li>
       </ol>
+    </div>
+  </section>
+
+  <section id="chairman" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap chair">
+      <figure class="chair-photo">{CHAIR_PHOTO}</figure>
+      <div>
+        <p class="eyebrow">Message from the Chairman</p>
+        <blockquote>
+          <p>Importers should not have to fly to Bangladesh to trust what they buy. At GoodBuy Foods Global we work on the buyer's side of the table: we negotiate at source, check every lot before it ships and stand behind the result.</p>
+          <p>Our goal is simple. Every container should sell at a profit, and every buyer should want to order again.</p>
+        </blockquote>
+        <p class="chair-name"><b>Safkat Ahammad Samy</b><span>Chairman, GoodBuy Foods Global</span><span>International business specialist · Master of International Trade and Business (MITB), University of Dhaka</span></p>
+      </div>
     </div>
   </section>
 
@@ -1423,6 +1445,7 @@ Key facts
 - Network: {NET['mapped']} registered Bangladeshi seafood exporters mapped across {NET['districts']} districts (EPB directory); food and produce exporters reached through BAPA (~{NET['bapa']} members) and BFVAPEA (~{NET['bfvapea']} members); {NET['all_short']} suppliers on our shortlist ({NET['shortlisted']} seafood, {NET['food_short']} food).
 - Products: {N_PRODUCTS} export lines ({N_FISH} seafood, {N_FOOD} food).
 - Reference prices (public): hilsa government minimum export price US$12.50/kg (2025); aromatic rice minimum export price US$1.60/kg FOB (2025–26); Bangladeshi frozen shrimp US$8.25–15.20/kg (2024, Tridge); table potato about US$300/t (2025). Firm offers depend on grade and compliance.
+- Chairman: Safkat Ahammad Samy, international business specialist; Master of International Trade and Business (MITB), University of Dhaka.
 - Terms: FOB Chattogram, CFR or CIF; air freight from Dhaka for live and chilled products. Quotes within 24 hours.
 - Minimum order: usually one 20-foot reefer per product.
 
