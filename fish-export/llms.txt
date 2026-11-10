@@ -13,6 +13,9 @@ Key facts
 Pages
 - [Product directory](https://www.goodbuyfoodsglobal.com/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
 - [Services & fees](https://www.goodbuyfoodsglobal.com/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests at cost); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
+- [Solutions](https://www.goodbuyfoodsglobal.com/solutions.html): the problems buyers and suppliers face and how GFG solves each; GFG is paid only by buyers and takes no supplier commission
+- Product pages: one page per product at https://www.goodbuyfoodsglobal.com/<product-name>-bangladesh.html with HS code, forms, season, minimum order, documents and QC checks
+- Import guides: https://www.goodbuyfoodsglobal.com/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, USA, China, Malaysia and Japan
 - [Food & crops](https://www.goodbuyfoodsglobal.com/food.html): food and crop sectors, sourcing regions and a harvest calendar
 - [Bangladesh export guide](https://www.goodbuyfoodsglobal.com/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
 - [Supplier network](https://www.goodbuyfoodsglobal.com/sourcing.html): how suppliers are rated; exporters can apply to join

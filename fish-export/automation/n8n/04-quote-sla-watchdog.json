@@ -12,7 +12,7 @@
           ]
         }
       },
-      "id": "833fa4ca-b4d8-40b5-a1f0-d590639bd000",
+      "id": "c51f5a92-f604-40ff-b536-35a2a221d0a3",
       "name": "Every hour",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -25,7 +25,7 @@
       "parameters": {
         "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoodsglobal.com',\n    managerEmail: 'manager@goodbuyfoodsglobal.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'\n  }\n}}];"
       },
-      "id": "2e9d23f3-8acc-4b9e-ac19-eec963821d10",
+      "id": "b7e3e0e1-acd1-4813-8f54-2358df2e69b6",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -47,7 +47,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "638d591a-e209-4d56-970e-23084e90227f",
+      "id": "a74d4fe0-3fc5-4b51-a39f-3bd34eae0555",
       "name": "HubSpot · Stale RFQ deals",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -70,7 +70,7 @@
       "parameters": {
         "jsCode": "const r = $input.first().json.results || [];\nif (!r.length) return [];\nconst rows = r.map(d => {\n  const hrs = Math.round((Date.now() - new Date(d.properties.createdate).getTime()) / 36e5);\n  return `<tr><td>${d.properties.dealname}</td><td style=\"text-align:right\">${hrs} h</td><td style=\"text-align:right\">$${Number(d.properties.amount || 0).toLocaleString()}</td></tr>`;\n}).join('');\nreturn [{ json: { count: r.length, html: `<p>${r.length} quote request(s) are past the 4-hour first-response target and still in the first stage.</p><table cellpadding=\"6\" style=\"border-collapse:collapse;font:14px Arial\">${rows}</table><p>Move the deal stage once a price offer is sent to clear it from this list.</p>` } }];"
       },
-      "id": "6b0b984b-a9a3-41a1-b307-2a7f3bc4c0c1",
+      "id": "f6611fd2-6332-4783-975e-5cb8458e7df2",
       "name": "Any breaches?",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -90,7 +90,7 @@
           "appendAttribution": false
         }
       },
-      "id": "c081139d-d617-491a-a5f8-3e816c4004c8",
+      "id": "c5dfbb01-3d7e-4661-933d-a7f297586f75",
       "name": "Email · SLA breach to manager",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,

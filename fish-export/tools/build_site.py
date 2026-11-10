@@ -18,6 +18,13 @@ SHORT = "GFG"
 TODAY = datetime.date.today().isoformat()
 V = "assets/video/"
 E = html.escape
+
+
+def pslug(p):
+    """File name of a product's own page."""
+    n = p[2].lower().replace("&", "and")
+    n = "".join(ch if ch.isalnum() or ch == " " else " " for ch in n)
+    return "-".join(n.split()) + "-bangladesh.html"
 CAT = {c[0]: c for c in CATEGORIES}
 N_PRODUCTS = len(P)
 N_FISH = sum(1 for p in P if CAT[p[1]][2] == "fish")
@@ -52,7 +59,7 @@ BUB = '<div class="bubbles" aria-hidden="true">' + "".join(
     f'<span style="--x:{x}%;--s:{s}px;--d:{d}s;--dl:{dl}s"></span>' for x, s, d, dl in
     [(4,10,13,0),(12,16,17,3),(21,8,11,6),(33,14,15,1),(45,9,12,8),(57,18,19,2),(66,10,14,5),(74,13,16,9),(83,8,10,4),(92,15,18,7)]) + "</div>"
 
-NAV = [("index.html","home","Home"),("products.html","products","Products"),("food.html","food","Food &amp; crops"),("services.html","services","Services &amp; fees"),("quality.html","quality","Quality &amp; risk"),
+NAV = [("index.html","home","Home"),("products.html","products","Products"),("solutions.html","solutions","Solutions"),("services.html","services","Services &amp; fees"),("quality.html","quality","Quality &amp; risk"),
        ("sourcing.html","sourcing","Suppliers"),("guide.html","guide","Guide"),("contact.html","contact","Contact")]
 
 ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": BRAND, "alternateName": SHORT, "url": SITE + "/",
@@ -181,7 +188,7 @@ FOOT = f'''</main>
       <a class="logo" href="index.html" style="color:var(--fg)">{LOGO}<span><span data-brand>{BRAND}</span><small>Best food to buy in the world</small></span></a>
       <p style="margin-top:1rem;max-width:36ch">We source seafood and food from licensed Bangladeshi exporters and manage quality, documents and cold chain for importers worldwide.</p>
     </div>
-    <div><h4>Explore</h4><ul><li><a href="products.html">Product directory</a></li><li><a href="food.html">Food &amp; crops</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="services.html">Services &amp; fees</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li></ul></div>
+    <div><h4>Explore</h4><ul><li><a href="solutions.html">Solutions</a></li><li><a href="products.html">Product directory</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="services.html">Services &amp; fees</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="food.html">Food &amp; crops</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li></ul></div>
     <div><h4>Work with us</h4><ul><li><a href="contact.html#rfq">Request a quote</a></li><li><a href="sourcing.html#apply">Become a supplier partner</a></li><li><a href="#" data-wa="Hello {BRAND}" data-track="whatsapp_click">WhatsApp</a></li><li><a href="#" data-messenger data-track="messenger_click">Messenger</a></li><li><a href="#" data-mail data-track="email_click">Email</a></li></ul></div>
     <div><h4>Office</h4><p>Dhaka, Bangladesh<br>Sunday–Thursday, 09:00–18:00 (UTC+6)<br>WhatsApp answered 7 days</p></div>
   </div>
@@ -213,7 +220,7 @@ def item(p):
     search = " ".join([name, local, sci, hs, forms, markets, CAT[cat][1]]).lower()
     sub = f'<i>{E(sci)}</i>' + (f' · {E(local)}' if local else "")
     return f'''        <article class="item" id="p-{pid}" data-cat="{cat}" data-search="{E(search)}">
-          <div class="item-main">{photo(PROD_IMG[pid], "sq", "thumb") if pid in PROD_IMG else f'<span class="thumb ph {CAT[cat][2]}" aria-hidden="true"></span>'}<div><h3>{E(name)}</h3><p class="sci">{sub}</p>{f'<p class="note">{E(note)}</p>' if note else ''}</div></div>
+          <div class="item-main">{photo(PROD_IMG[pid], "sq", "thumb") if pid in PROD_IMG else f'<span class="thumb ph {CAT[cat][2]}" aria-hidden="true"></span>'}<div><h3><a href="{pslug(p)}">{E(name)}</a></h3><p class="sci">{sub}</p>{f'<p class="note">{E(note)}</p>' if note else ''}</div></div>
           <dl><div><dt>HS</dt><dd class="mono">{E(hs)}</dd></div><div><dt>Forms</dt><dd>{E(forms)}</dd></div><div><dt>Main markets</dt><dd>{E(markets)}</dd></div></dl>
           <button class="add" type="button" data-add="{pid}" aria-pressed="false">Add to quote</button>
         </article>'''
@@ -235,7 +242,7 @@ def featured():
     for p in [p for p in P if p[-1]]:
         pid, cat, name, local, sci, hs, forms, markets, note, _ = p
         cards.append(f'''        <article class="spec">
-          <div class="spec-top"><div><p class="local">{E(CAT[cat][1])}</p><h3><a href="products.html#p-{pid}">{E(name)}</a></h3><div class="latin">{E(sci)}{(' · ' + E(local)) if local else ''}</div></div></div>
+          <div class="spec-top"><div><p class="local">{E(CAT[cat][1])}</p><h3><a href="{pslug(p)}">{E(name)}</a></h3><div class="latin">{E(sci)}{(' · ' + E(local)) if local else ''}</div></div></div>
           <table><tr><th>Forms</th><td>{E(forms)}</td></tr><tr><th>Markets</th><td>{E(markets)}</td></tr></table>
           <div class="spec-foot"><span class="hs">HS {E(hs)}</span><button class="add" type="button" data-add="{pid}" aria-pressed="false">Add to quote</button></div>
         </article>''')
@@ -335,8 +342,9 @@ FAQ_GUIDE = [
 ]
 FAQ_SUP = [
  ("Who can join the GFG supplier network?", "Bangladeshi exporters with a valid export licence and, for fish, a DoF FIQC-approved plant. Approvals for target markets (EU, SFDA, GACC, US FDA) and certifications such as HACCP or BRCGS raise your priority."),
- ("Do you share buyer details?", "Buyer details are shared after a signed NCNDA (non-circumvention, non-disclosure agreement) and commission agreement."),
- ("Is there a fee to join?", "No. GFG earns an agreed commission on completed shipments."),
+ ("Do you share buyer details?", "Buyer details are shared after a signed NCNDA (non-circumvention, non-disclosure agreement) and our supplier code of conduct."),
+ ("Is there a fee to join?", "No. Joining is free and we take no commission from suppliers. Buyers pay our service fee, which keeps our supplier ratings independent."),
+ ("Do paid services improve my rating?", "No. The optional Export-Ready Pack helps you present your products. Ratings depend only on licences, approvals, certificates and shipment record."),
 ]
 FAQ_MARKETS = [
  ("How long does a reefer take from Chattogram to Europe?", "Typically 28–35 days to Rotterdam, Antwerp or Hamburg via a transshipment hub such as Colombo or Singapore."),
@@ -476,6 +484,144 @@ CHAIR_PHOTO = ('<img src="assets/img/chairman.jpg" alt="Safkat Ahammad Samy, Cha
                if os.path.exists(CHAIR_IMG) else '<span class="initials" role="img" aria-label="Safkat Ahammad Samy">SAS</span>')
 
 # ------------------------------------------------------------------ PAGES
+# ===== Positioning: pain points, segments, markets, per-category sourcing facts =====
+PAINS_BUYER = [
+ ("I can't tell a real exporter from a trader with a brochure.", "We check the licence, plant approval and market listing with the issuing bodies and visit the plant.", "Verify", "services.html#pkg-verify"),
+ ("The samples were excellent. The container was not.", "Five QC gates on the exact lot you buy. You approve the evidence before the balance is paid.", "Assure", "quality.html#qc-gates"),
+ ("One border rejection wipes out a year of margin.", "Plant listing for your market, lab tests per lot and a document check before loading.", "17 risk controls", "quality.html#risk"),
+ ("I pay for ice, glaze and short weight.", "Glaze is fixed in the contract and deglazed net weight is checked on sampled cartons.", "Net-weight control", "quality.html#qc-gates"),
+ ("Exporters ignore small orders. I need 12 products in one container.", "We consolidate mixed containers across suppliers: fish, rice, spices, snacks and dry goods.", "Mixed containers", "solutions.html#segments"),
+ ("The price changed after we agreed, and extra costs appeared.", "Several qualified plants quote. FOB, freight, insurance and duty are shown separately, with a validity date.", "Open costing", "products.html#prices"),
+ ("I paid an advance and the supplier went quiet.", "Verified exporter identity and bank details. Payment by L/C or against documents.", "Payment safety", "quality.html#risk"),
+ ("When something goes wrong, nobody answers.", "One accountable team in Dhaka. Claims answered within 48 hours and pursued with the exporter for you.", "Claims handled", "services.html"),
+ ("My supplier runs out and my shelves go empty.", "Supply programmes with booked production slots and a backup plant for each product.", "Programme", "services.html#pkg-programme"),
+ ("Import rules keep changing: traceability, catch certificates, labelling.", "We track each market's rules and give every shipment a digital lot file with its full record.", "Regulatory watch", "guide.html#watch"),
+]
+PAINS_SELLER = [
+ ("Most enquiries are not real buyers.", "We bring verified importers with a written specification, volume and destination."),
+ ("Buyers push the price down because they don't trust the quality.", "Independent QC evidence lets you sell on proof, not on discount."),
+ ("Claims arrive weeks later and we have no evidence.", "The inspection report, lab certificate and loading record protect you as much as the buyer."),
+ ("We don't know what each market requires.", "A market brief for every order: listing, tests, documents and labels needed."),
+ ("Agents take a hidden cut from our price.", "We take no commission from suppliers. Buyers pay our fee and you keep your full price."),
+ ("Orders are unpredictable, so we can't plan production.", "Buyer supply programmes give you a monthly or quarterly forecast."),
+ ("Payment is slow or uncertain.", "Orders run on L/C at sight or payment against documents, with vetted buyers."),
+ ("We have no English spec sheets or good photos.", "The optional Export-Ready Pack prepares them for a fixed one-time fee."),
+]
+SEGMENTS = [
+ ("Seafood importers in the EU, UK and Gulf", "Full containers of shrimp, prawn and marine fish.", "Plants listed for your market, count and glaze control, programmes for monthly volume.", ["bt", "gp", "sp", "rb"]),
+ ("South Asian grocery wholesalers and distributors", "Mixed containers: freshwater fish, dried fish, rice, spices, snacks and frozen foods.", "One order, one QC standard and one set of documents across many small suppliers.", ["rh", "pb", "dl", "ar", "mu", "fp"]),
+ ("Food service and private-label buyers", "Specification-driven lines with your own packing and label.", "Label compliance review, pack approval and the same specification on every shipment.", ["pg", "va", "fv", "mp"]),
+]
+# market: slug, name, short, approvals, documents, duty/preferences, transit, product ids, watch-outs
+MARKETS = [
+ ("european-union", "the European Union", "EU",
+  ["Seafood must come from a plant on the EU list of approved establishments for Bangladesh.", "Residue monitoring must meet EU rules; maximum levels are set by Regulation (EU) 2023/915.", "Wild-caught fish needs a catch certificate under the EU IUU regulation.", "Fresh produce needs a phytosanitary certificate; mango comes from monitored orchards."],
+  ["Health certificate issued by the Department of Fisheries (seafood)", "Common Health Entry Document through TRACES at the border control post", "Catch certificate for wild-caught marine fish", "Phytosanitary certificate (fresh produce)", "Commercial invoice, packing list, bill of lading and certificate of origin"],
+  "Bangladeshi goods currently enter under the Everything But Arms scheme. Preferences are expected to continue for three years after Bangladesh's LDC graduation, then move to another scheme. Confirm the duty for your HS code.",
+  "28–35 days to Rotterdam, Antwerp or Hamburg", ["bt", "gp", "va", "sq", "mn", "fj"],
+  ["Antibiotic residues (nitrofurans, chloramphenicol) in shrimp", "Plant missing from the approved list", "Pesticide residues above MRLs on fresh produce", "Incomplete catch certificates"]),
+ ("united-kingdom", "the United Kingdom", "UK",
+  ["Seafood must come from an establishment approved for export to Great Britain.", "Consignments are pre-notified on IPAFFS and may be checked at a border control post.", "Fresh produce needs a phytosanitary certificate; some products, such as betel leaf, face extra checks."],
+  ["Export health certificate", "IPAFFS pre-notification by the importer", "Catch certificate for wild-caught marine fish", "Phytosanitary certificate (fresh produce)", "Commercial invoice, packing list, bill of lading and certificate of origin"],
+  "Bangladesh is covered by the UK Developing Countries Trading Scheme. Confirm the current duty for your HS code.",
+  "30–35 days to Felixstowe or London Gateway; 1–2 days by air to Heathrow", ["rh", "hl", "pb", "dl", "ar", "pt", "fp"],
+  ["Labelling that does not meet UK rules", "Undeclared allergens in packaged food", "Residues in farmed fish and shrimp"]),
+ ("saudi-arabia", "Saudi Arabia", "KSA",
+  ["Fish plants must appear on the SFDA list of approved Bangladeshi establishments.", "Halal certification is required for many products.", "Labels must be in Arabic."],
+  ["Health certificate", "Halal certificate where required", "Certificate of origin", "Commercial invoice, packing list and bill of lading"],
+  "Duty depends on the HS code under the GCC common tariff. Confirm with your customs broker.",
+  "14–20 days to Jeddah or Dammam", ["sp", "hl", "rb", "pc", "km", "ar", "po"],
+  ["Plant not on the current SFDA list", "Label not in Arabic or missing dates", "Temperature abuse in transit"]),
+ ("united-arab-emirates", "the United Arab Emirates", "UAE",
+  ["Products and labels are registered with the emirate's food control authority before import.", "Halal certification is required for many products.", "Labels must be in Arabic, with production and expiry dates."],
+  ["Health certificate", "Halal certificate where required", "Certificate of origin", "Commercial invoice, packing list and bill of lading"],
+  "Duty depends on the HS code under the GCC common tariff. Confirm with your customs broker.",
+  "14–18 days to Jebel Ali; 1 day by air to Dubai", ["sp", "rh", "pg", "mc", "ar", "mn", "po"],
+  ["Label registration not completed before shipment", "Shelf-life rules for chilled and frozen products", "Missing Halal certificate"]),
+ ("united-states", "the United States", "USA",
+  ["The plant must be registered with the FDA and follow seafood HACCP.", "Each shipment needs FDA Prior Notice.", "Shrimp is covered by the Seafood Import Monitoring Program (SIMP).", "The FDA Food Traceability Rule (FSMA 204) applies from 20 July 2028 and covers most seafood."],
+  ["FDA Prior Notice confirmation", "Seafood HACCP records from the processor", "SIMP harvest and chain-of-custody data for shrimp", "Commercial invoice, packing list and bill of lading", "Importer's Foreign Supplier Verification Program records (non-seafood foods)"],
+  "Duty depends on the HS code and current US trade measures, which have changed often. Confirm before you contract.",
+  "35–45 days to New York, Savannah or Los Angeles", ["bt", "va", "sc", "tl", "pg", "fp", "sm"],
+  ["FDA import alerts for residues or filth", "Incomplete SIMP data", "Labelling and allergen declarations"]),
+ ("china", "China", "CN",
+  ["Overseas food producers must be registered with China Customs (GACC).", "Live crab and eel need approved exporters and packing sites.", "Chinese labels are required for packaged food."],
+  ["Health certificate", "GACC registration number of the producer", "Certificate of origin", "Commercial invoice, packing list and air waybill or bill of lading"],
+  "China grants zero-tariff treatment to least developed countries on most tariff lines. Confirm how this applies after Bangladesh's LDC graduation.",
+  "1–2 days by air for live products; 18–26 days by sea to Shanghai", ["mc", "ee", "bsc", "rb", "fm", "sq"],
+  ["Exporter not GACC-registered", "Mortality in live shipments", "Label or registration number mismatch"]),
+ ("malaysia", "Malaysia", "MY",
+  ["Fish imports need an import permit and may be inspected by MAQIS at entry.", "Halal certification recognised by JAKIM is expected for many foods.", "Fresh produce needs a phytosanitary certificate."],
+  ["Import permit (importer)", "Health or phytosanitary certificate", "Halal certificate where required", "Commercial invoice, packing list and bill of lading"],
+  "Duty depends on the HS code. Confirm with your customs broker.",
+  "10–14 days to Port Klang", ["po", "cb", "pk2", "mc", "bsc", "bi"],
+  ["Missing import permit", "Quality loss in fresh produce on longer transits", "Halal certificate not recognised"]),
+ ("japan", "Japan", "JP",
+  ["Each import is notified under the Food Sanitation Act and may be tested at the quarantine station.", "Japan applies strict residue limits under its positive list system.", "Sulphite-free melanosis control is often requested for shrimp."],
+  ["Import notification (importer)", "Health certificate", "Manufacturing process and ingredient information", "Commercial invoice, packing list and bill of lading"],
+  "Duty depends on the HS code and Japan's preference schemes. Confirm with your customs broker.",
+  "18–24 days to Tokyo or Osaka", ["bt", "iw", "sc", "sq", "cu", "gt2"],
+  ["Residues above positive-list limits", "Additives not permitted in Japan", "Size and appearance below grade"]),
+]
+CAT_INFO = {
+ "shrimp": dict(ship="Frozen at −18 °C in 20′ or 40′ reefer containers from Chattogram or Mongla", moq="One 20′ reefer, or part of a mixed 40′ reefer",
+                tests="Nitrofurans, chloramphenicol, heavy metals, Salmonella, Vibrio; count, glaze % and deglazed net weight",
+                docs="DoF health certificate, certificate of origin, lab report for the lot, packing list",
+                season="Year-round from cold storage; farm harvest runs March–November and peaks May–September"),
+ "shell":  dict(ship="Live by air from Dhaka; frozen by reefer container", moq="Live: from 500 kg per flight. Frozen: part of a mixed reefer",
+                tests="Liveliness and mortality (live); heavy metals, microbiology and net weight (frozen)",
+                docs="DoF health certificate, certificate of origin, packing list; importing-country registration where required",
+                season="Year-round; live crab supply is strongest in the cooler months"),
+ "marine": dict(ship="Frozen whole in reefer containers; some species chilled by air", moq="One 20′ reefer, or part of a mixed 40′ reefer",
+                tests="Histamine where relevant, heavy metals, microbiology, core temperature, size grade and net weight",
+                docs="DoF health certificate, catch certificate for wild-caught fish, certificate of origin, packing list",
+                season="Year-round from cold storage; landings fall during the annual marine fishing ban"),
+ "fresh":  dict(ship="Frozen in reefer containers; chilled or live by air for nearby markets", moq="Part of a mixed reefer, or from 500 kg by air",
+                tests="Antibiotic residues, malachite green, microbiology, size grade and net weight",
+                docs="DoF health certificate, certificate of origin, packing list",
+                season="Year-round from farms; peak harvest in winter"),
+ "live":   dict(ship="Live by air from Dhaka in oxygenated or moist packing", moq="From 500 kg per flight",
+                tests="Liveliness, mortality allowance and size grade",
+                docs="DoF health certificate, importing-country exporter registration, air waybill",
+                season="Year-round, strongest in the monsoon and post-monsoon months"),
+ "dried":  dict(ship="Dry container or as part of a mixed container; vacuum packs by air for small orders", moq="From 500 kg, or mixed with other dry goods",
+                tests="Moisture, salt, pesticide residues (insecticide misuse is a known risk in dried fish), microbiology",
+                docs="DoF health certificate, certificate of origin, packing list",
+                season="Main drying season October–March"),
+ "rice":   dict(ship="Dry container in 1–25 kg bags", moq="One 20′ container, or part of a mixed container",
+                tests="Moisture, broken %, foreign matter, aflatoxin, pesticide residues",
+                docs="Phytosanitary certificate, certificate of origin, fumigation certificate where required",
+                season="Main harvest November–January; shipped year-round from store"),
+ "spice":  dict(ship="Dry container or mixed container; tea in paper sacks or cartons", moq="From 500 kg, or mixed with other dry goods",
+                tests="Aflatoxin, Sudan dyes and lead chromate (turmeric), pesticide residues, moisture",
+                docs="Phytosanitary certificate, certificate of origin, lab report",
+                season="Depends on the crop; turmeric peaks January–March, tea June–October"),
+ "veg":    dict(ship="By air from Dhaka for most vegetables; reefer container for potato, pumpkin and cabbage", moq="From 500 kg by air, or one reefer by sea",
+                tests="Pesticide residues against your market's MRLs, grading, pest freedom",
+                docs="Phytosanitary certificate from the DAE Plant Protection Wing, certificate of origin",
+                season="Winter vegetables November–March; gourds April–October"),
+ "fruit":  dict(ship="By air from Dhaka; reefer container for some fruit to nearby markets", moq="From 500 kg by air",
+                tests="Pesticide residues, fruit-fly freedom, grading and ripeness",
+                docs="Phytosanitary certificate and treatment record where required, certificate of origin",
+                season="Seasonal; mango May–August, lychee May–June, jujube January–March"),
+ "frozen": dict(ship="Frozen at −18 °C in reefer containers", moq="Part of a mixed reefer",
+                tests="Microbiology, allergen declaration, net weight, label compliance",
+                docs="Health or sanitary certificate, certificate of origin, ingredient and allergen specification",
+                season="Year-round"),
+ "sweet":  dict(ship="Dry container or mixed container", moq="From 500 kg, or mixed with other dry goods",
+                tests="Adulteration (added sugar), moisture, antibiotic residues in honey",
+                docs="Certificate of origin, lab report, health certificate where required",
+                season="Date-palm jaggery December–February; honey harvests vary by flower"),
+ "processed": dict(ship="Dry container, often as mixed loads of several lines", moq="Varies by brand; mixed containers are common",
+                tests="Label and allergen compliance for your market, shelf life, additives permitted in your market",
+                docs="Certificate of origin, ingredient specification, Halal certificate where required",
+                season="Year-round"),
+}
+SEASON = {"hl": "June–November, peak August–October, under government export permit", "mn": "May–August; Himsagar and Langra peak in June, Amrapali and Fazli in July",
+          "li": "May–June", "jf": "May–August", "pa": "May–September", "po": "Harvest February–April; shipped from cold store for most of the year",
+          "ar": "Harvest November–January; shipped year-round, under government export permit", "jg": "December–February", "wm": "March–May", "jj": "January–March", "ol": "August–October"}
+
+
 def write(name, text):
     with open(os.path.join(ROOT, name), "w") as f:
         f.write(text)
@@ -530,6 +676,23 @@ def build():
         <div><b>{N_PRODUCTS}</b><span>export products in our directory</span><cite>{N_FISH} seafood · {N_FOOD} food</cite></div>
         <div><b>24 h</b><span>quote turnaround</span><cite>Working days</cite></div>
       </div>
+    </div>
+  </section>
+
+  <section id="doors" style="padding-top:0">
+    <div class="wrap doors">
+      <article class="door">
+        <p class="eyebrow">For buyers</p>
+        <h2>Importing from Bangladesh has ten common problems. We solve each one.</h2>
+        <ul class="pains">{''.join(f'<li><q>{E(a)}</q><span>{E(b)}</span></li>' for a, b, c, d in PAINS_BUYER[:3])}</ul>
+        <a class="btn btn-navy" href="solutions.html#buyers">See all buyer solutions</a>
+      </article>
+      <article class="door alt">
+        <p class="eyebrow">For Bangladeshi suppliers</p>
+        <h2>Real buyers, fair prices, and no commission taken from you.</h2>
+        <ul class="pains">{''.join(f'<li><q>{E(a)}</q><span>{E(b)}</span></li>' for a, b in [PAINS_SELLER[0], PAINS_SELLER[1], PAINS_SELLER[4]])}</ul>
+        <a class="btn btn-navy" href="solutions.html#suppliers">See supplier solutions</a>
+      </article>
     </div>
   </section>
 
@@ -725,7 +888,7 @@ def build():
     chips = '<button class="chip" aria-pressed="true" data-filter="all">All <span>' + str(N_PRODUCTS) + '</span></button>' + "".join(
         f'<button class="chip" aria-pressed="false" data-filter="{c}">{E(t)} <span>{sum(1 for p in P if p[1]==c)}</span></button>' for c, t, g, i in CATEGORIES)
     item_list = {"@type": "ItemList", "name": "Bangladesh export product directory", "numberOfItems": N_PRODUCTS,
-                 "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{SITE}/products.html#p-{p[0]}",
+                 "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{SITE}/{pslug(p)}",
                                       "item": {"@type": "Product", "name": p[2], **({"image": f"{SITE}/{IMG}{PROD_IMG[p[0]]}-lg.jpg"} if p[0] in PROD_IMG else {}), "description": f"{p[2]} ({p[4]}) from Bangladesh. HS {p[5]}. Forms: {p[6]}.",
                                                "category": CAT[p[1]][1], "countryOfOrigin": {"@type": "Country", "name": "Bangladesh"}}}
                                      for i, p in enumerate(P)]}
@@ -863,7 +1026,7 @@ def build():
         <li><h3>Certification</h3><p>HACCP is required for processors. BRCGS, ISO 22000, FSSC 22000, GLOBALG.A.P., BAP, ASC, Organic and Halal are recorded where held.</p></li>
         <li><h3>Lab capability</h3><p>Residue (antibiotic or pesticide), heavy metal, aflatoxin and microbiology testing per lot, in-house or at an accredited lab.</p></li>
         <li><h3>Track record</h3><p>Shipment history, claims record and references from existing buyers.</p></li>
-        <li><h3>Agreement</h3><p>A signed NCNDA and commission agreement before any buyer details are shared.</p></li>
+        <li><h3>Agreement</h3><p>A signed NCNDA and supplier code of conduct before any buyer details are shared.</p></li>
       </ol>
     </div>
   </section>
@@ -892,11 +1055,12 @@ def build():
       <div>
         <p class="eyebrow">For Bangladeshi exporters</p>
         <h2 style="margin-top:.8rem">Join the GFG supplier network: seafood, food and crops</h2>
-        <p class="lede" style="margin-top:1.2rem">We bring you qualified buyers from Europe, the Gulf, East Asia and North America. Joining is free; we earn an agreed commission on completed shipments.</p>
+        <p class="lede" style="margin-top:1.2rem">We bring you verified buyers with real specifications from Europe, the Gulf, East Asia and North America. Joining is free and we take no commission from suppliers: buyers pay our fee, so you keep your full price.</p>
         <ul class="contact-list">
           <li><span>You need</span><a>An Export Registration Certificate (ERC). For fish, a DoF FIQC-approved plant; for fresh produce, phytosanitary registration with DAE.</a></li>
           <li><span>We review</span><a>Within 3 working days. We call to confirm details.</a></li>
-          <li><span>Then</span><a>NCNDA and commission agreement, then buyer introductions.</a></li>
+          <li><span>Then</span><a>NCNDA and supplier code of conduct, then buyer introductions.</a></li>
+          <li><span>Optional</span><a>Export-Ready Pack (US$200, one-time): English spec sheets, product photos and a market document checklist. It never affects your rating.</a></li>
         </ul>
       </div>
       <form class="rfq-form" id="supplierForm" novalidate>
@@ -983,6 +1147,11 @@ def build():
       <div class="duo">
         {figure("packed-cartons-warehouse", "Gate 4: cartons counted, weighed and sampled before loading")}
         {figure("hilsa-on-ice", "Gate 1: fish iced at 0–2 °C from landing")}
+      </div>
+      <div class="broker" style="margin-top:2rem">
+        <div><p class="eyebrow">Digital lot file</p><h3>One link holds the full record of your shipment.</h3>
+        <p>Each lot gets a shared digital file: supplier verification, lab certificate, inspection report, loading photos, temperature log and shipping documents. It is the record your auditors, retailers and traceability rules ask for.</p></div>
+        <a class="btn btn-navy" href="guide.html#watch">Rules we track</a>
       </div>
       <p class="src">You receive the inspection report, lab certificate and loading photos before the balance payment or document release.</p>
     </div>
@@ -1093,6 +1262,13 @@ def build():
     </div>
   </section>
 
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">Import guides by market</p><h2>What your market requires.</h2></div><p class="lede">Approvals, documents, transit times and common rejection reasons for each destination.</p></div>
+      <div class="sectors">{''.join(f'<a class="sector" href="import-from-bangladesh-to-{m[0]}.html"><span class="txt"><b>{E(m[1][0].upper() + m[1][1:])}</b><span>{E(m[6])}</span><em>Import guide →</em></span></a>' for m in MARKETS)}</div>
+    </div>
+  </section>
+
 {faq_html(FAQ_MARKETS, "Shipping questions")}
 ''' + FOOT
     write("markets.html", mk)
@@ -1116,7 +1292,7 @@ def build():
         <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
           <li><a href="#what">What Bangladesh exports</a></li><li><a href="#who">Who the exporters are</a></li><li><a href="#hs">HS codes</a></li>
           <li><a href="#cert">Licences and market approvals</a></li><li><a href="#hilsa">Hilsa export rules</a></li><li><a href="#assoc">Trade associations</a></li>
-          <li><a href="#food">Food and crop exports</a></li><li><a href="#ship">Shipping and terms</a></li><li><a href="#faq-guide">Frequently asked questions</a></li></ol></nav>
+          <li><a href="#food">Food and crop exports</a></li><li><a href="#watch">Regulatory watch</a></li><li><a href="#ship">Shipping and terms</a></li><li><a href="#faq-guide">Frequently asked questions</a></li></ol></nav>
 
         <h2 id="what">What Bangladesh exports</h2>
         <p>Frozen shrimp is the country's leading seafood export. Black tiger shrimp (<i>Penaeus monodon</i>, locally <i>bagda</i>) and giant freshwater prawn (<i>Macrobrachium rosenbergii</i>, <i>golda</i>) are farmed in the south-west and processed in Khulna, Satkhira and Bagerhat. Whiteleg shrimp (vannamei) farming started recently.</p>
@@ -1171,6 +1347,16 @@ def build():
         </ul>
         <div class="tbl"><table class="dtable"><thead><tr><th>Sector</th><th>Main sourcing regions</th></tr></thead><tbody>{regions_rows()}</tbody></table></div>
         <p>See the <a href="food.html">food &amp; crops page</a> for the harvest calendar.</p>
+
+        <h2 id="watch">Regulatory watch: what is changing</h2>
+        <p>Rules for importing food change every year. These are the changes we are tracking for buyers of Bangladeshi products.</p>
+        <ul>
+          <li><b>Bangladesh's LDC graduation.</b> Graduation from least-developed-country status is scheduled for 24 November 2026, and the government has asked the UN for a deferral. The EU has said Everything But Arms preferences continue for three years after graduation. Check the duty that applies to your HS code before you contract. (<a href="https://www.tbsnews.net/economy/substantial-gaps-remain-bangladeshs-ldc-graduation-preparedness-un-assessment-report-1403396" rel="noopener" target="_blank">The Business Standard</a>)</li>
+          <li><b>US food traceability (FSMA 204).</b> The FDA Food Traceability Rule covers most seafood. Its compliance date is 20 July 2028, and large US retailers are asking suppliers for the records earlier. (<a href="https://www.fda.gov/food/food-safety-modernization-act-fsma/fsma-proposed-rule-food-traceability" rel="noopener" target="_blank">FDA</a>)</li>
+          <li><b>Catch documentation.</b> The EU and UK require catch certificates for wild-caught fish, and the EU is moving these to its digital CATCH system. Wild-caught orders need the vessel and landing details from the start.</li>
+          <li><b>Export controls in Bangladesh.</b> Hilsa and aromatic rice are exported under government permits and quotas that change by season.</li>
+        </ul>
+        <p>Our digital lot file is built for these rules: every shipment keeps its supplier, lot, test and movement records in one place.</p>
 
         <h2 id="ship">Shipping and terms</h2>
         <p>Frozen seafood moves in 20- or 40-foot reefers from Chattogram or Mongla, usually transshipped in Colombo or Singapore. Europe takes 28–35 days and the Gulf 14–20 days. Live and chilled products fly from Dhaka. Common terms are FOB Chattogram or CFR to the destination port, paid by L/C at sight or T/T with a deposit. See <a href="markets.html">markets &amp; logistics</a>.</p>
@@ -1407,10 +1593,214 @@ def build():
 ''' + FOOT
     write("contact.html", ct)
 
+    # ---------- SOLUTIONS (pain points, both sides)
+    FAQ_SOL = [
+     ("Who pays GoodBuy Foods Global?", "The buyer. We charge buyers a published service fee and take no commission from suppliers, so our supplier ratings and QC decisions stay independent."),
+     ("Can small importers use GFG?", "Yes. We consolidate mixed containers across several suppliers, so a wholesaler can order many products in one shipment."),
+     ("What does a supplier gain if GFG takes no commission?", "Verified buyers with real specifications, independent QC evidence that supports a fair price, and repeat orders through buyer supply programmes."),
+    ]
+    def seg_card(sg):
+        t, what, how, ids = sg
+        links = ", ".join(f'<a href="{pslug(q)}">{E(q[2])}</a>' for q in P if q[0] in ids)
+        return f'<div class="tier"><h3 style="margin-top:0">{E(t)}</h3><p><b>{E(what)}</b></p><p style="margin-top:.6rem">{E(how)}</p><p class="src">Typical lines: {links}</p></div>'
+    sol = head(f"Problems Importers and Exporters Face in Bangladesh Food Trade, Solved | {SHORT}",
+               "Ten problems buyers face when importing food from Bangladesh and eight problems Bangladeshi exporters face, with how GoodBuy Foods Global solves each one.",
+               "solutions.html", [crumbs_ld("Solutions", "solutions.html"), faq_ld(FAQ_SOL)], "iced-snapper.jpg") + header("solutions") + "\n" + page_hero(
+        "Solutions", "The problems in Bangladesh food trade, and how we solve them.",
+        "Buyers worry about quality, compliance and payment. Suppliers worry about real buyers, fair prices and claims. We built one service that fixes both.", "catch-pangasius") + f"""
+
+  <section id="buyers" style="padding-top:2rem">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">For buyers</p><h2>Ten problems importers tell us about.</h2></div>
+        <p class="lede">Each one has a specific control, and you see the evidence before you pay the balance.</p></div>
+      <div class="tbl"><table class="dtable pain">
+        <thead><tr><th>The problem</th><th>How GFG solves it</th><th>Where</th></tr></thead>
+        <tbody>{''.join(f'<tr><td><q>{E(a)}</q></td><td>{E(b)}</td><td><a href="{d}">{E(c)}</a></td></tr>' for a, b, c, d in PAINS_BUYER)}</tbody>
+      </table></div>
+      <div class="more"><a class="btn btn-primary" href="contact.html#rfq">Tell us what you need</a></div>
+    </div>
+  </section>
+
+  <section id="segments" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">Who we serve best</p><h2>Three kinds of buyer.</h2></div>
+        <p class="lede">We focus where Bangladesh is strongest and where a buyer-side partner makes the biggest difference.</p></div>
+      <div class="tiers">{''.join(seg_card(x) for x in SEGMENTS)}</div>
+    </div>
+  </section>
+
+  <section id="suppliers">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">For Bangladeshi suppliers</p><h2>Eight problems exporters tell us about.</h2></div>
+        <p class="lede">Joining is free and we take no commission from suppliers. Buyers pay our fee.</p></div>
+      <div class="tbl"><table class="dtable pain">
+        <thead><tr><th>The problem</th><th>How GFG solves it</th></tr></thead>
+        <tbody>{''.join(f'<tr><td><q>{E(a)}</q></td><td>{E(b)}</td></tr>' for a, b in PAINS_SELLER)}</tbody>
+      </table></div>
+      <div class="more"><a class="btn btn-navy" href="sourcing.html#apply">Apply as a supplier</a></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="broker">
+        <div><p class="eyebrow">How we stay independent</p><h3>One fee, paid by the buyer, published on this site.</h3>
+        <p>We do not take commission from suppliers, mark up lab tests or hide costs in the price. That is why a GFG rating or QC release means something to both sides.</p></div>
+        <a class="btn btn-navy" href="services.html">See services &amp; fees</a>
+      </div>
+    </div>
+  </section>
+
+{faq_html(FAQ_SOL, "Common questions")}
+""" + FOOT
+    write("solutions.html", sol)
+
+    # ---------- PRODUCT PAGES (one per product, for search and AI answers)
+    extra_pages = ["solutions.html"]
+    for pr in P:
+        pid, cat, name, local, sci, hs, forms, markets, note, _f = pr
+        info = CAT_INFO[cat]; season = SEASON.get(pid, info["season"]); fn = pslug(pr)
+        low = name
+        img = PROD_IMG.get(pid)
+        faqs = [
+         (f"What is the HS code for {low}?", f"{name} from Bangladesh is classified under HS heading {hs}. The full 8-digit code depends on the product form and is confirmed for each shipment."),
+         (f"What is the minimum order for {low} from Bangladesh?", f"{info['moq']}."),
+         (f"When is {low} available?", f"{season}."),
+         (f"Which documents come with {low} shipments?", f"{info['docs']}."),
+        ]
+        prod_ld = {"@type": "Product", "name": f"{name} from Bangladesh", "category": CAT[cat][1],
+                   "description": f"{name} ({sci}) sourced from Bangladesh. HS {hs}. Forms: {forms}. Main markets: {markets}.",
+                   "countryOfOrigin": {"@type": "Country", "name": "Bangladesh"}, "brand": {"@id": SITE + "/#org"},
+                   **({"image": f"{SITE}/{IMG}{img}-lg.jpg"} if img else {})}
+        bc = {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+            {"@type": "ListItem", "position": 2, "name": "Products", "item": SITE + "/products.html"},
+            {"@type": "ListItem", "position": 3, "name": name, "item": f"{SITE}/{fn}"}]}
+        related = [q for q in P if q[1] == cat and q[0] != pid][:8]
+        aka = f" Known locally as {E(local)}." if local else ""
+        page = head(f"{name} from Bangladesh: Specs, HS Code, Supplier Sourcing | {SHORT}",
+                    f"Source {low} ({sci}) from Bangladesh: HS {hs}, forms, season, minimum order, documents and QC checks. Verified suppliers and a price offer in 24 hours.",
+                    fn, [bc, prod_ld, faq_ld(faqs)], (f"../img/{img}-lg.jpg" if img else "iced-snapper.jpg")) + header("products") + f"""
+  <section class="vid page-hero novideo">
+    <div class="bg-field" aria-hidden="true"></div>
+    <canvas class="sea" data-level="0.78" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><a href="products.html">Products</a><span aria-hidden="true">/</span><span>{E(CAT[cat][1])}</span></nav>
+      <h1>{E(name)} from Bangladesh</h1>
+      <p class="lede"><i>{E(sci)}</i>.{aka} Sourced from verified Bangladeshi suppliers, checked at five QC gates and shipped with the documents your market requires.</p>
+      <div class="actions" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn btn-primary" type="button" data-add="{pid}" aria-pressed="false" style="border:0">Add to quote</button><a class="btn btn-ghost" href="contact.html#rfq" style="color:var(--fg)">Request a price offer</a></div>
+    </div>
+  </section>
+
+  <section style="padding-top:1.5rem">
+    <div class="wrap cols2">
+      <div>
+        <p class="answer"><b>In short:</b> {E(name)} is exported from Bangladesh in these forms: {E(forms)}. Main markets: {E(markets.replace(' · ', ', '))}. It ships under HS heading {E(hs)}. {E(note)}</p>
+        <div class="tbl" style="margin-top:1.5rem"><table class="dtable">
+          <tbody>
+            <tr><td><b>Scientific name</b></td><td><i>{E(sci)}</i></td></tr>
+            {f'<tr><td><b>Bangla name</b></td><td>{E(local)}</td></tr>' if local else ''}
+            <tr><td><b>Category</b></td><td>{E(CAT[cat][1])}</td></tr>
+            <tr><td><b>HS heading</b></td><td class="mono">{E(hs)}</td></tr>
+            <tr><td><b>Forms</b></td><td>{E(forms)}</td></tr>
+            <tr><td><b>Main markets</b></td><td>{E(markets)}</td></tr>
+            <tr><td><b>Season</b></td><td>{E(season)}</td></tr>
+            <tr><td><b>Shipping</b></td><td>{E(info['ship'])}</td></tr>
+            <tr><td><b>Minimum order</b></td><td>{E(info['moq'])}</td></tr>
+            <tr><td><b>Documents</b></td><td>{E(info['docs'])}</td></tr>
+          </tbody></table></div>
+      </div>
+      <div>
+        {figure(img, PHOTO[img]) if img else ''}
+        <h2 style="font-size:1.6rem;margin:{'1.5rem' if img else '0'} 0 1rem">What we check before it ships</h2>
+        <ul class="ticks">
+          <li><b>Tests:</b> {E(info['tests'])}.</li>
+          <li><b>Supplier:</b> licence, plant approval and listing for your market, verified with the issuing body.</li>
+          <li><b>Inspection:</b> AQL sampling against your specification, with photos and video.</li>
+          <li><b>Evidence:</b> you approve the digital lot file before the balance is paid.</li>
+        </ul>
+        <a class="btn btn-navy" style="margin-top:1.4rem" href="quality.html#qc-gates">See the five QC gates</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">How to buy</p><h2>From specification to shipment.</h2></div>
+        <p class="lede">Send the form, grade, packing, volume and destination. Several qualified suppliers quote, and you get one clear offer within 24 hours.</p></div>
+      <ol class="steps">
+        <li><h3>Specify</h3><p>Tell us the form, size grade, packing and port or airport.</p></li>
+        <li><h3>Compare</h3><p>We collect offers from suppliers approved for your market.</p></li>
+        <li><h3>Verify &amp; ship</h3><p>Five QC gates, documents checked, then shipment with tracking.</p></li>
+      </ol>
+      <p class="src" style="margin-top:2rem">Import guides: {' · '.join(f'<a href="import-from-bangladesh-to-{m[0]}.html">{E(m[2])}</a>' for m in MARKETS)}</p>
+    </div>
+  </section>
+
+{faq_html(faqs, f"{name}: common questions")}
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <h2 style="font-size:1.6rem;margin-bottom:1rem">More {E(CAT[cat][1].lower())} from Bangladesh</h2>
+      <p class="related">{''.join(f'<a class="chip" href="{pslug(q)}">{E(q[2])}</a>' for q in related)} <a class="chip" href="products.html#cat-{cat}">All {E(CAT[cat][1].lower())} →</a></p>
+    </div>
+  </section>
+""" + FOOT
+        write(fn, page); extra_pages.append(fn)
+
+    # ---------- MARKET PAGES
+    for slug, mname, short, appr, docs, duty, transit, ids, watch in MARKETS:
+        fn = f"import-from-bangladesh-to-{slug}.html"
+        cap = mname[0].upper() + mname[1:]
+        faqs = [
+         (f"What approvals are needed to import seafood from Bangladesh to {mname}?", appr[0]),
+         (f"How long does shipping take from Bangladesh to {mname}?", f"Typically {transit}."),
+         (f"Which documents are needed to import food from Bangladesh to {mname}?", "; ".join(docs) + "."),
+        ]
+        page = head(f"Import Food & Seafood from Bangladesh to {cap}: Requirements | {SHORT}",
+                    f"How to import seafood and food from Bangladesh to {mname}: approvals, documents, duty notes, transit times and common rejection reasons, with verified suppliers.",
+                    fn, [crumbs_ld(f"Import to {cap}", fn), faq_ld(faqs)], "school-underwater.jpg") + header("markets") + "\n" + page_hero(
+            f"Import guide · {short}", f"Importing food and seafood from Bangladesh to {mname}",
+            "The approvals, documents and checks your shipment needs, and how we make sure they are in place before loading.", "school-underwater") + f"""
+
+  <section style="padding-top:1.5rem">
+    <div class="wrap cols2">
+      <div>
+        <p class="answer"><b>In short:</b> {E(appr[0])} Sea freight takes {E(transit.split(';')[0])}.</p>
+        <h2 style="font-size:1.6rem;margin:2rem 0 1rem">Approvals and rules</h2>
+        <ul class="ticks">{''.join(f'<li>{E(a)}</li>' for a in appr)}</ul>
+        <h2 style="font-size:1.6rem;margin:2rem 0 1rem">Duty and preferences</h2>
+        <p>{E(duty)}</p>
+        <p class="src">Rules and tariffs change. This guide is a starting point, not legal or customs advice. Updated <time datetime="{TODAY}">{TODAY}</time>.</p>
+      </div>
+      <div>
+        <h2 style="font-size:1.6rem;margin:0 0 1rem">Documents</h2>
+        <ul class="ticks">{''.join(f'<li>{E(d)}</li>' for d in docs)}</ul>
+        <h2 style="font-size:1.6rem;margin:2rem 0 1rem">Common reasons shipments are held or rejected</h2>
+        <ul class="ticks warn">{''.join(f'<li>{E(w)}</li>' for w in watch)}</ul>
+        <a class="btn btn-navy" style="margin-top:1.4rem" href="quality.html#risk">How we control these risks</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <h2 style="font-size:1.6rem;margin-bottom:1rem">Popular Bangladeshi products for {E(mname)}</h2>
+      <p class="related">{''.join(f'<a class="chip" href="{pslug(q)}">{E(q[2])}</a>' for q in P if q[0] in ids)} <a class="chip" href="products.html">All products →</a></p>
+      <p class="src" style="margin-top:1.5rem">Transit: {E(transit)}. Other markets: {' · '.join(f'<a href="import-from-bangladesh-to-{m[0]}.html">{E(m[2])}</a>' for m in MARKETS if m[0] != slug)}</p>
+    </div>
+  </section>
+
+{faq_html(faqs, f"Importing to {mname}: common questions")}
+
+{cta_band('iced-snapper', f'Shipping to {short}', 'Tell us what you need.', 'We match your order to suppliers approved for your market and send a price offer within 24 hours.')}
+""" + FOOT
+        write(fn, page); extra_pages.append(fn)
+
     # ---------- catalog.js, sitemap, robots, llms.txt
     cat_js = {p[0]: {"n": p[2], "hs": p[5], "c": CAT[p[1]][1]} for p in P}
     write("assets/js/catalog.js", "/* Generated by tools/build_site.py from tools/catalog.py */\nwindow.CATALOG=" + json.dumps(cat_js, ensure_ascii=False) + ";\n")
-    pages = ["index.html", "products.html", "food.html", "services.html", "sourcing.html", "quality.html", "markets.html", "guide.html", "contact.html"]
+    pages = ["index.html", "products.html", "food.html", "services.html", "sourcing.html", "quality.html", "markets.html", "guide.html", "contact.html"] + extra_pages
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
         f'  <url><loc>{SITE}/{"" if p == "index.html" else p}</loc><lastmod>{TODAY}</lastmod></url>\n' for p in pages) + "</urlset>\n")
     write("robots.txt", f"""User-agent: *
@@ -1452,6 +1842,9 @@ Key facts
 Pages
 - [Product directory]({SITE}/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
 - [Services & fees]({SITE}/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests at cost); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
+- [Solutions]({SITE}/solutions.html): the problems buyers and suppliers face and how GFG solves each; GFG is paid only by buyers and takes no supplier commission
+- Product pages: one page per product at {SITE}/<product-name>-bangladesh.html with HS code, forms, season, minimum order, documents and QC checks
+- Import guides: {SITE}/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, USA, China, Malaysia and Japan
 - [Food & crops]({SITE}/food.html): food and crop sectors, sourcing regions and a harvest calendar
 - [Bangladesh export guide]({SITE}/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
 - [Supplier network]({SITE}/sourcing.html): how suppliers are rated; exporters can apply to join

@@ -514,7 +514,7 @@ email(wf, "Email · Acknowledge supplier", "={{ $('Validate & rate supplier').fi
       "=<div style=\"font-family:Arial,sans-serif;max-width:560px;color:#0A2540\"><p>Dear {{ $('Validate & rate supplier').first().json.name }},</p>"
       "<p>Thank you for applying to join the GoodBuy Foods Global supplier network. Your reference is <b>{{ $('Validate & rate supplier').first().json.ref }}</b>.</p>"
       "<p>Next steps:</p><ol><li>We call you within 3 working days to confirm your details.</li><li>Please have ready: your Export Registration Certificate (ERC); for fish, your DoF FIQC licence and plant approval number; for fresh produce, your phytosanitary registration; and any certificates or market listings (EU, SFDA, GACC, FDA, HACCP, BRCGS, FSSC 22000, Halal).</li>"
-      "<li>We sign an NCNDA and commission agreement, then introduce qualified buyers.</li></ol><p>GoodBuy Foods Global</p></div>", [900, 480])
+      "<li>We sign an NCNDA and our supplier code of conduct, then introduce verified buyers. Joining is free and we take no commission from suppliers.</li></ol><p>GoodBuy Foods Global</p></div>", [900, 480])
 email(wf, "Email · Notify sourcing team", "={{ $('Config').first().json.cfg.salesEmail }}",
       "=[Supplier {{ $('Validate & rate supplier').first().json.priority }}] {{ $('Validate & rate supplier').first().json.company }} · {{ $('Validate & rate supplier').first().json.district }}",
       "=<pre style=\"font:13px/1.5 monospace\">{{ JSON.stringify($('Validate & rate supplier').first().json, null, 2) }}</pre><p>Before any deal: verify the DoF licence with FIQC and the plant's listing for the buyer's market.</p>", [900, 640])
