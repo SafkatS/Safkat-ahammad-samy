@@ -22,7 +22,8 @@ E = html.escape
 
 def pslug(p):
     """File name of a product's own page."""
-    n = p[2].lower().replace("&", "and")
+    import unicodedata
+    n = unicodedata.normalize("NFKD", p[2].lower().replace("&", "and")).encode("ascii", "ignore").decode()
     n = "".join(ch if ch.isalnum() or ch == " " else " " for ch in n)
     return "-".join(n.split()) + "-bangladesh.html"
 CAT = {c[0]: c for c in CATEGORIES}
