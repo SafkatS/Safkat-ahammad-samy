@@ -1,0 +1,215 @@
+{
+  "name": "GFG · 03 Website visitor intent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gfg-events",
+        "responseMode": "onReceived",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      },
+      "id": "947186e0-9079-402a-a53c-56775447495a",
+      "name": "Events Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "251204c0-294e-4d9e-9246-c34c0630a08d"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoodsglobal.com',\n    managerEmail: 'manager@goodbuyfoodsglobal.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoodsglobal.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoodsglobal.com/products.html'\n  }\n}}];"
+      },
+      "id": "b3769af0-fab7-4602-9654-84ec199b1767",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json.cfg;\nconst item = $('Events Webhook').first();\nlet b = item.json.body;\n// sendBeacon posts text/plain — parse whichever shape arrives\nif (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { b = {}; } }\nif ((!b || !b.event) && item.binary?.data) {\n  try { b = JSON.parse(Buffer.from(item.binary.data.data, 'base64').toString('utf8')); } catch (e) { b = {}; }\n}\nif (!b || !b.event) return [];\nconst h = item.json.headers || {};\nconst ua = h['user-agent'] || '';\nif (/bot|crawl|spider|slurp|headless|lighthouse/i.test(ua)) return [];\n\nconst WEIGHTS = { page_view: 1, catalogue_filter: 3, lot_trace: 8, rfq_item_added: 12, load_planner: 15,\n                  whatsapp_click: 25, messenger_click: 20, email_click: 15, rfq_started: 25, cta_hero: 5, cta_header: 5 };\nconst s = $getWorkflowStaticData('global');\ns.visitors = s.visitors || {};\nconst v = s.visitors[b.visitorId] || { score: 0, events: [], alerted: false, first: b.ts };\nv.score += WEIGHTS[b.event] ?? 1;\nv.events = [...v.events, b.event + (b.data?.product ? ':' + b.data.product : '')].slice(-25);\nv.last = b.ts;\n// prune visitors idle > 7 days (keeps static data small; GDPR data-minimisation)\nconst weekAgo = Date.now() - 7 * 864e5;\nfor (const [id, x] of Object.entries(s.visitors)) if (new Date(x.last).getTime() < weekAgo) delete s.visitors[id];\nconst alert = v.score >= 50 && !v.alerted;\nif (alert) v.alerted = true;\ns.visitors[b.visitorId] = v;\n\nreturn [{ json: {\n  Timestamp: b.ts, Event: b.event, Data: JSON.stringify(b.data || {}), VisitorId: b.visitorId, Page: b.page,\n  Referrer: b.referrer || '', UTMSource: b.utm?.utm_source || '', UTMCampaign: b.utm?.utm_campaign || '',\n  Country: h['cf-ipcountry'] || h['x-vercel-ip-country'] || '', Language: b.lang || '',\n  IntentScore: v.score, Alert: alert, Journey: v.events.join(' → ')\n} }];"
+      },
+      "id": "bd502551-33c3-45fc-9e5f-b65ab4c4e7ad",
+      "name": "Parse, filter bots, score",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Config').first().json.cfg.sheetId }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Events"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "e9982bc4-60a2-4002-9767-7a30e2171885",
+      "name": "Sheets · Events",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        680,
+        200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Google Sheets"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "0bdea491-1030-4980-aad9-92268e90edd1",
+              "leftValue": "={{ $json.Alert }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a090fc4f-4a44-4f40-849d-bcd52206dc55",
+      "name": "High-intent visitor?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        680,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $('Config').first().json.cfg.salesEmail }}",
+        "subject": "=🔥 High-intent visitor ({{ $json.Country || 'unknown country' }}) — score {{ $json.IntentScore }}",
+        "emailFormat": "html",
+        "html": "=<p>An anonymous visitor just crossed the intent threshold.</p><p><b>Journey:</b> {{ $json.Journey }}</p><p><b>Source:</b> {{ $json.UTMSource || $json.Referrer || 'direct' }} {{ $json.UTMCampaign }}</p><p>Tip: if they started an RFQ but did not submit, it will appear in the Events sheet as rfq_started with no RFQ row. Consider a retargeting audience for this campaign.</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "57d27241-ae2c-490b-b940-bc579e549779",
+      "name": "Email · Hot visitor alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        900,
+        420
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP export desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Events Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Parse, filter bots, score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse, filter bots, score": {
+      "main": [
+        [
+          {
+            "node": "Sheets · Events",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "High-intent visitor?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "High-intent visitor?": {
+      "main": [
+        [
+          {
+            "node": "Email · Hot visitor alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "gfg"
+    },
+    {
+      "name": "analytics"
+    }
+  ]
+}
