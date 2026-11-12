@@ -1,0 +1,10 @@
+wrangler.jsonc
+.assetsignore
+.gitignore
+README.md
+STRATEGY.md
+tools
+automation
+gen
+__pycache__
+assets/ASSET-BRIEF.md
