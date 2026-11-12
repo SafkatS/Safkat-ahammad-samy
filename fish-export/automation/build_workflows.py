@@ -25,16 +25,16 @@ return [{ json: {
   ...$input.first().json,
   cfg: {
     brand: 'GoodBuy Foods Global',
-    salesEmail: 'sales@goodbuyfood.com',
-    managerEmail: 'manager@goodbuyfood.com',
-    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfood.com>',
+    salesEmail: 'sales@goodbuyfoods.com',
+    managerEmail: 'manager@goodbuyfoods.com',
+    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',
     waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',
     salesWhatsApp: '8801700000000',
     sheetId: 'REPLACE_GOOGLE_SHEET_ID',
     hubspotPipeline: 'default',
     hubspotStage: 'appointmentscheduled',
     hotScore: 60,
-    catalogueUrl: 'https://www.goodbuyfood.com/products.html'
+    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'
   }
 }}];"""
 

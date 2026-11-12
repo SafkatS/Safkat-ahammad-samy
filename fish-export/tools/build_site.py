@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from catalog import CATEGORIES, P
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://www.goodbuyfood.com"   # ← your live domain
+SITE = "https://www.goodbuyfoods.com"   # ← your live domain
 BRAND = "GoodBuy Foods Global"
 SHORT = "GFG"
 TODAY = datetime.date.today().isoformat()
