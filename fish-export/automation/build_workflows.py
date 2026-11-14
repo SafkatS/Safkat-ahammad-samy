@@ -29,7 +29,7 @@ return [{ json: {
     managerEmail: 'manager@goodbuyfoods.com',
     fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',
     waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',
-    salesWhatsApp: '8801700000000',
+    salesWhatsApp: '8801331352255',
     sheetId: 'REPLACE_GOOGLE_SHEET_ID',
     hubspotPipeline: 'default',
     hubspotStage: 'appointmentscheduled',

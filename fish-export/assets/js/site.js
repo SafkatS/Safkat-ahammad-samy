@@ -3,7 +3,7 @@
    ============================================================ */
 const CONFIG = {
   brand: "GoodBuy Foods Global",
-  whatsappNumber: "8801700000000",        // international format, digits only
+  whatsappNumber: "8801331352255",        // international format, digits only
   whatsappDisplay: "+880 1700-000000",
   email: "sales@goodbuyfoods.com",
   messengerPage: "goodbuyfoods",       // facebook page username for m.me links

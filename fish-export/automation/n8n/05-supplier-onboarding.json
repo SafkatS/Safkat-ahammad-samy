@@ -10,7 +10,7 @@
           "allowedOrigins": "*"
         }
       },
-      "id": "d1a84d5f-5156-4f74-a23c-1a1703712b14",
+      "id": "8eb0763c-b55c-401a-a5dd-c8f7e2786053",
       "name": "Supplier Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -18,13 +18,13 @@
         0,
         300
       ],
-      "webhookId": "b55e45bc-8ade-492b-b2ce-1802f00c58b6"
+      "webhookId": "7304ebf8-826d-4a5d-a70c-b8eb413a272e"
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: '1JyiuxvECPbww8jFOmU0Bf-TR6JToa4XhYi_iQhXa0eA',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801331352255',\n    sheetId: '1JyiuxvECPbww8jFOmU0Bf-TR6JToa4XhYi_iQhXa0eA',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'\n  }\n}}];"
       },
-      "id": "7bb7f842-3b6f-4304-817a-db44cfde08f8",
+      "id": "9f504ac6-aa80-478d-8b1f-8c3ae9c288d5",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -37,7 +37,7 @@
       "parameters": {
         "jsCode": "const b = $('Supplier Webhook').first().json.body || {};\nconst clean = s => String(s ?? '').trim().slice(0, 1500);\nconst email = clean(b.email).toLowerCase();\nif (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) throw new Error('Invalid email');\nif (b.website) throw new Error('Honeypot');\nconst approvals = Array.isArray(b.approvals) ? b.approvals : [];\nconst cats = Array.isArray(b.categories) ? b.categories : [];\nconst licence = clean(b.licence);\n// Same tiers as the GFG exporter list: A = official approval list / leadership, B = credible to confirm, C = verify first\nlet score = 0;\nif (licence) score += 25;                                             // DoF approval / export licence number given\nscore += ['EU approved list','SFDA (Saudi)','GACC (China)','US FDA'].filter(a => approvals.includes(a)).length * 12;\nscore += ['HACCP','BRCGS','ISO 22000','FSSC 22000','GLOBALG.A.P.','BAP','ASC','Organic','BSTI','Halal'].filter(a => approvals.includes(a)).length * 4;\nconst FISH = ['shrimp','shell','marine','fresh','live','dried'];\nconst isFish = cats.length === 0 || cats.some(c => FISH.includes(c));   // fish/seafood → Exporter List, food & crops → Food Exporter List\nscore += ({ '<20': 0, '20-100': 8, '100-500': 15, '500+': 20 })[b.capacity] ?? 0;\nif (/^https?:\\/\\//.test(clean(b.website_url))) score += 5;\nconst priority = score >= 60 ? 'A' : score >= 35 ? 'B' : 'C';\nconst ref = 'SUP-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();\nreturn [{ json: { ref, score, priority, isFish, email, company: clean(b.company), name: clean(b.name), designation: clean(b.designation),\n  phone: clean(b.phone), district: clean(b.district), licence, capacity: clean(b.capacity), approvals, categories: cats,\n  website: clean(b.website_url), notes: clean(b.notes), submittedAt: b.submittedAt || new Date().toISOString() } }];"
       },
-      "id": "6e19b6d1-c37b-4615-991a-c0a3c041d74c",
+      "id": "70a498aa-ff05-4c15-b1f1-a2e58b2dde26",
       "name": "Validate & rate supplier",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -54,7 +54,7 @@
           "responseCode": 200
         }
       },
-      "id": "a6561a32-b471-459f-9120-abe5bad68d86",
+      "id": "ababf412-19e4-4f05-ac97-5f729ee403cc",
       "name": "Respond 200",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -67,7 +67,7 @@
       "parameters": {
         "jsCode": "const s = $('Validate & rate supplier').first().json;\n// Keys match the header row of WBF_Exporter_List → 'Exporter List' exactly\nreturn [{ json: {\n  'Bangladesh Fish exporter Company': s.company,\n  'Location': s.district, 'Region': s.district,\n  'DoF Approval No.': s.licence,\n  'Products': s.categories.join(', ') + (s.notes ? ' | ' + s.notes : ''),\n  'Evidence / Source': 'Website application ' + s.ref + ' · approvals: ' + (s.approvals.join(', ') || 'none stated'),\n  'Website': s.website, 'Priority': s.priority, 'Status': 'Applied via website',\n  'Contact Name of the Bangladeshi fish exporter ': s.name + (s.designation ? ' (' + s.designation + ')' : ''),\n  'Phone / WhatsApp': s.phone, 'Email': s.email, 'NCNDA Signed': 'No',\n  'Notes': 'Capacity ' + s.capacity + ' MT/month · score ' + s.score + (s.isFish ? ' · verify licence with DoF FIQC before any deal' : ' · verify ERC, phytosanitary registration and factory certificates before any deal')\n} }];"
       },
-      "id": "58c2e5da-7e77-4309-8a6b-4d1b016d38b1",
+      "id": "f9aac52c-bf5a-41f1-a40e-583f14005f87",
       "name": "Map to Exporter List columns",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -97,7 +97,7 @@
         },
         "options": {}
       },
-      "id": "a611b293-10f3-47aa-b663-fcab160a9381",
+      "id": "586ab624-eabd-4e0d-a81e-89514b214375",
       "name": "Sheets · Add to Exporter List",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -126,7 +126,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "59296ede-dbb4-49d9-b687-92b1201fb248",
+      "id": "5e213f68-66a4-4e9c-9476-ad999af950bd",
       "name": "HubSpot · Create supplier company",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -156,7 +156,7 @@
           "appendAttribution": false
         }
       },
-      "id": "a4d4d81c-af99-4d66-8588-3fb3b31e0985",
+      "id": "b20f84b4-b6e5-4b1b-bbc7-5a7b9480f327",
       "name": "Email · Acknowledge supplier",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -183,7 +183,7 @@
           "appendAttribution": false
         }
       },
-      "id": "64a3578a-0164-4a9f-9940-a81a71a1a9eb",
+      "id": "ef87d619-1630-4cf0-b994-ee8c6e3e528a",
       "name": "Email · Notify sourcing team",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,

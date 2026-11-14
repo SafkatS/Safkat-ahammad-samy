@@ -8,7 +8,7 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "3223866e-8c3c-4c43-a7ff-00dee86307a4",
+      "id": "b536f428-ba6f-4a95-b6b7-3b0715e58eb3",
       "name": "Meta verify (GET)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,13 +16,13 @@
         0,
         0
       ],
-      "webhookId": "3e254f88-7bb1-4c67-9ef9-7673632f9755"
+      "webhookId": "1c4ffbc2-dd9e-476a-96b4-ba197aea2bd3"
     },
     {
       "parameters": {
         "jsCode": "const VERIFY_TOKEN = 'REPLACE_WITH_YOUR_VERIFY_TOKEN';   // same value you enter in Meta App → Webhooks\nconst q = $input.first().json.query || {};\nconst ok = q['hub.mode'] === 'subscribe' && q['hub.verify_token'] === VERIFY_TOKEN;\nreturn [{ json: { ok, challenge: ok ? String(q['hub.challenge']) : 'forbidden' } }];"
       },
-      "id": "441a65a1-f4f5-4bdd-96fb-0496a8ffc0b5",
+      "id": "82204e6a-d503-4a1a-bdba-cdf6d682db5d",
       "name": "Check verify token",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -39,7 +39,7 @@
           "responseCode": "={{ $json.ok ? 200 : 403 }}"
         }
       },
-      "id": "7c4a7c0b-836d-45b8-8e3a-d57ee7717f54",
+      "id": "d41047fa-1416-4baf-bad1-f64eebc110cc",
       "name": "Return challenge",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -57,7 +57,7 @@
           "allowedOrigins": "*"
         }
       },
-      "id": "afcf52fd-c9e0-4842-9006-1abe4eac2554",
+      "id": "727b6ada-3fae-47e2-84ad-3f4bc3880366",
       "name": "Meta events (POST)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -65,13 +65,13 @@
         0,
         300
       ],
-      "webhookId": "bc95f285-e856-466c-ad65-270cf6c7bfd6"
+      "webhookId": "f7e53e27-9a8c-48a9-82e8-5d8f4337e0fa"
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801331352255',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'\n  }\n}}];"
       },
-      "id": "536f4122-593e-4020-9f42-51464384782a",
+      "id": "32a6ee4f-0bb8-46f2-b3af-641933c03828",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -84,7 +84,7 @@
       "parameters": {
         "jsCode": "const cfg = $('Config').first().json.cfg;\nconst body = $('Meta events (POST)').first().json.body || {};\nconst out = [];\nconst intentOf = t => {\n  const s = (t || '').toLowerCase();\n  if (/(human|agent|call me|talk to|someone|person)/.test(s)) return 'human';\n  if (/(price|rate|quote|offer|cfr|fob|cif|\\$|usd|eur|দাম)/.test(s)) return 'price';\n  if (/(sample)/.test(s)) return 'sample';\n  if (/(catalog|catalogue|product|list|spec|size|grade)/.test(s)) return 'catalog';\n  if (/(certif|haccp|brc|eu approv|fda|halal|asc|bap)/.test(s)) return 'compliance';\n  if (/^(hi|hello|hey|salam|assalam|good (morning|evening))/.test(s)) return 'greeting';\n  return 'other';\n};\nconst replies = {\n  greeting: `Hello from ${cfg.brand} 👋 We source Bangladeshi seafood and food for importers, with QC on every lot. Reply with:\\n1️⃣ CATALOGUE\\n2️⃣ PRICE + product, size and port\\n3️⃣ SAMPLE\\n4️⃣ HUMAN to talk to the export desk`,\n  catalog: `Our export product directory (100+ products with HS codes and markets): ${cfg.catalogueUrl}\\nTell us the product, size and destination port and we will quote.`,\n  price: `Thanks! To quote CFR/FOB we need: product & cut, count grade, pack, quantity (MT or containers) and destination port. A trader will reply with today's price shortly.`,\n  sample: `We send frozen samples on dry ice by courier. Please share company name, delivery address and products. A trader will confirm cost and timing.`,\n  compliance: `We work with plants approved for your market (EU, SFDA, GACC, US FDA) and certified to HACCP, BRCGS or Halal as required. A trader will send the relevant certificates.`,\n  human: `Connecting you to our export desk now. Hours: Sun–Thu 09:00–18:00 Bangladesh time (UTC+6).`,\n  other: `Thanks for your message. A member of our export desk will reply shortly. Meanwhile, browse our catalogue: ${cfg.catalogueUrl}`\n};\nfor (const entry of body.entry || []) {\n  if (body.object === 'whatsapp_business_account') {\n    for (const ch of entry.changes || []) {\n      const v = ch.value || {};\n      const contact = (v.contacts || [])[0] || {};\n      for (const m of v.messages || []) {\n        const text = m.text?.body || m.button?.text || m.interactive?.button_reply?.title || m.interactive?.list_reply?.title || `[${m.type}]`;\n        const intent = intentOf(text);\n        out.push({ json: { channel: 'whatsapp', from: m.from, name: contact.profile?.name || '', text, msgId: m.id, intent, reply: replies[intent], ts: m.timestamp } });\n      }\n    }\n  } else if (body.object === 'page') {\n    for (const ev of entry.messaging || []) {\n      if (!ev.message || ev.message.is_echo) continue;\n      const text = ev.message.text || '[attachment]';\n      const intent = intentOf(text);\n      out.push({ json: { channel: 'messenger', from: ev.sender.id, name: '', text, msgId: ev.message.mid, intent, reply: replies[intent], ts: ev.timestamp } });\n    }\n  }\n}\nreturn out;   // status callbacks (delivered/read) produce no items and stop here"
       },
-      "id": "5e7f3b9d-cb09-4264-9679-1f2b0598d68c",
+      "id": "1e6699a4-529a-44fe-b8fe-1c219a4f11d4",
       "name": "Parse & detect intent",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -106,7 +106,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "c855be67-956d-4e7d-be18-c7bd8b790369",
+                    "id": "bfd8a715-e8b6-430b-b6fb-0befa130d554",
                     "leftValue": "={{ $json.channel }}",
                     "rightValue": "whatsapp",
                     "operator": {
@@ -129,7 +129,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "a43bda58-d756-415a-aa3d-cc9cef23a0db",
+                    "id": "6ac1bb87-00ca-4404-9ed8-3c6baae9afb8",
                     "leftValue": "={{ $json.channel }}",
                     "rightValue": "messenger",
                     "operator": {
@@ -147,7 +147,7 @@
         },
         "options": {}
       },
-      "id": "62b17cf2-42fa-4d04-8303-45dba5c05d45",
+      "id": "c5f5df61-0a00-45ac-87dc-a411f187abc7",
       "name": "Route by channel",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -167,7 +167,7 @@
         "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $json.from, type: 'text', text: { preview_url: true, body: $json.reply } }) }}",
         "options": {}
       },
-      "id": "160f1c10-d992-4b93-8b22-f08fcfb7a59c",
+      "id": "69348114-1577-422e-87b2-a4517aaa52eb",
       "name": "WhatsApp · Auto-reply",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -194,7 +194,7 @@
         "jsonBody": "={{ JSON.stringify({ recipient: { id: $json.from }, messaging_type: 'RESPONSE', message: { text: $json.reply } }) }}",
         "options": {}
       },
-      "id": "3f935d5c-0d9f-4104-8e93-b51749ee6864",
+      "id": "44526df8-9684-46a6-8883-5e34e0adc37d",
       "name": "Messenger · Auto-reply",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -214,7 +214,7 @@
       "parameters": {
         "jsCode": "// Needs two custom UNIQUE contact properties in HubSpot: whatsapp_id and messenger_psid (single-line text, \"unique value\" ticked)\nreturn $input.all().map(({ json: m }) => {\n  const idProperty = m.channel === 'whatsapp' ? 'whatsapp_id' : 'messenger_psid';\n  const properties = { [idProperty]: m.from, hs_lead_status: 'NEW' };\n  if (m.channel === 'whatsapp') { properties.phone = '+' + m.from; if (m.name) properties.firstname = m.name; }\n  return { json: { ...m, crm: { inputs: [{ idProperty, id: m.from, properties }] } } };\n});"
       },
-      "id": "9b2774a2-fcea-4021-94ca-627f3dd3fed4",
+      "id": "37b6896f-dfd5-4d69-92e1-e8120174dff6",
       "name": "Build CRM record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -236,7 +236,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "d7a01524-8997-4e11-b7e8-b5e8607b5a25",
+      "id": "0aeefc60-b702-4f0b-8c71-27777bf2384b",
       "name": "HubSpot · Upsert by channel id",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -265,7 +265,7 @@
           },
           "conditions": [
             {
-              "id": "9d07f24e-48ef-4361-9a45-cd9d256ade25",
+              "id": "f941c697-5bce-43ac-8d0a-7c8b250f709a",
               "leftValue": "={{ ['human','price','sample','compliance'].includes($('Build CRM record').item.json.intent) }}",
               "operator": {
                 "type": "boolean",
@@ -278,7 +278,7 @@
         },
         "options": {}
       },
-      "id": "ade2a602-44aa-4032-822b-4aad51413af8",
+      "id": "371cb1e7-9cc1-4ae3-b724-2d62c0dba720",
       "name": "Needs a trader?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -298,7 +298,7 @@
           "appendAttribution": false
         }
       },
-      "id": "e84f29bb-6967-4059-a9f2-2b83d8900d5f",
+      "id": "c1daecbf-f85b-4a53-b16c-e866b54857b4",
       "name": "Email · Hand-off to export desk",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -335,7 +335,7 @@
         },
         "options": {}
       },
-      "id": "2abc60b9-1d55-48df-984a-3233d7a396a9",
+      "id": "4c4c8793-38bc-4ae0-a1bd-80071e2bbf9f",
       "name": "Sheets · Chat log",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,

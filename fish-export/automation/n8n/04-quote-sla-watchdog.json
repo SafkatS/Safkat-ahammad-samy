@@ -12,7 +12,7 @@
           ]
         }
       },
-      "id": "c51f5a92-f604-40ff-b536-35a2a221d0a3",
+      "id": "397f730e-fe83-49db-8155-6724304f111e",
       "name": "Every hour",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -23,9 +23,9 @@
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801700000000',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801331352255',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'\n  }\n}}];"
       },
-      "id": "b7e3e0e1-acd1-4813-8f54-2358df2e69b6",
+      "id": "e2b5cad3-1024-4a8e-93c7-fcb6b7491211",
       "name": "Config",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -47,7 +47,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "hubspotAppToken"
       },
-      "id": "a74d4fe0-3fc5-4b51-a39f-3bd34eae0555",
+      "id": "4241a370-a5dd-4be5-bcdb-ec19586c218c",
       "name": "HubSpot · Stale RFQ deals",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -70,7 +70,7 @@
       "parameters": {
         "jsCode": "const r = $input.first().json.results || [];\nif (!r.length) return [];\nconst rows = r.map(d => {\n  const hrs = Math.round((Date.now() - new Date(d.properties.createdate).getTime()) / 36e5);\n  return `<tr><td>${d.properties.dealname}</td><td style=\"text-align:right\">${hrs} h</td><td style=\"text-align:right\">$${Number(d.properties.amount || 0).toLocaleString()}</td></tr>`;\n}).join('');\nreturn [{ json: { count: r.length, html: `<p>${r.length} quote request(s) are past the 4-hour first-response target and still in the first stage.</p><table cellpadding=\"6\" style=\"border-collapse:collapse;font:14px Arial\">${rows}</table><p>Move the deal stage once a price offer is sent to clear it from this list.</p>` } }];"
       },
-      "id": "f6611fd2-6332-4783-975e-5cb8458e7df2",
+      "id": "1d8125a6-5383-45da-9707-a2570886557e",
       "name": "Any breaches?",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -90,7 +90,7 @@
           "appendAttribution": false
         }
       },
-      "id": "c5dfbb01-3d7e-4661-933d-a7f297586f75",
+      "id": "a12c05ef-f9c1-4ba7-bb93-cfbb87e0b4ce",
       "name": "Email · SLA breach to manager",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
