@@ -5,8 +5,8 @@ const CONFIG = {
   brand: "GoodBuy Foods Global",
   whatsappNumber: "8801700000000",        // international format, digits only
   whatsappDisplay: "+880 1700-000000",
-  email: "sales@goodbuyfoodsglobal.com",
-  messengerPage: "goodbuyfoodsglobal",       // facebook page username for m.me links
+  email: "sales@goodbuyfoods.com",
+  messengerPage: "goodbuyfoods",       // facebook page username for m.me links
   // n8n production webhook URLs (Webhook node → "Production URL").
   // Leave empty to run the site in demo mode (form shows success locally).
   rfqWebhook: "",                          // e.g. https://n8n.yourdomain.com/webhook/gfg-rfq
