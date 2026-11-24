@@ -1,0 +1,284 @@
+{
+  "name": "LAWNET · 02 Verification decision (HITL)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "lawnet-verify",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a70be42b-15a6-4ca6-b196-e8ce949f7cc3",
+      "name": "Verify Link",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "8b8fb4ec-bbca-4213-a58c-45c24bd3fc0c"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json.cfg\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Global Node Legal Network',\n    n8nBase: 'https://n8n.example.com/webhook',          // your n8n production webhook base\n    complianceEmail: 'compliance@example.com',          // EU Legal Compliance Officer\n    opsEmail: 'ops@example.com',\n    fromEmail: 'Global Node Legal <legal@example.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    privacyUrl: 'https://example.com/privacy',\n    consentVersion: 'lawnet-consent-2026-11',\n    lawyerSlaHours: 24,          // lawyer must accept a referral within\n    reviewSlaHours: 4,           // SOP §4: nothing stuck in review > 4h\n    priorityCountries: ['RO','BG','MK','BA','LT','LV','SI','SK']\n  }\n}}];"
+      },
+      "id": "631fb2b7-02ff-41e1-a5e3-dee2d3bc218d",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst secret = $env.LAWNET_HMAC_SECRET;\nif (!secret) throw new Error('LAWNET_HMAC_SECRET not set');\nconst sign = (id, d) => crypto.createHmac('sha256', secret).update(id + '|' + d).digest('hex').slice(0, 32);\nconst q = $('Verify Link').first().json.query || {};\nif (!['verified','rejected','suspended'].includes(q.d)) throw new Error('bad decision');\nif (!/^[0-9a-f-]{36}$/.test(q.id || '')) throw new Error('bad id');\nconst ok = crypto.timingSafeEqual(Buffer.from(sign(q.id, q.d)), Buffer.from(String(q.t || '').padEnd(32).slice(0, 32)));\nif (!ok) throw new Error('invalid signature');\nreturn [{ json: { id: q.id, decision: q.d, by: q.by || $('Config').first().json.cfg.complianceEmail } }];"
+      },
+      "id": "954c7c98-2a95-43a8-996e-df77d38e3d96",
+      "name": "Check Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "with u as (\n  update lawnet.lawyers set verification = $2::lawnet.verification_status, verified_by = $3,\n         verified_at = case when $2 = 'verified' then now() else verified_at end\n  where id = $1::uuid returning id, public_ref, full_name, email, whatsapp_e164, hubspot_contact_id, verification)\n, v as (insert into lawnet.verifications(lawyer_id, method, result, checked_by)\n        select id, 'bar_register_lookup', verification, $3 from u)\nselect * from u;",
+        "options": {
+          "queryReplacement": "={{ [$json.id, $json.decision, $json.by] }}"
+        }
+      },
+      "id": "f38741d0-466b-496f-9bf0-52b3ef19ac9f",
+      "name": "Apply Decision",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        660,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "a673fab8-b81f-4fe5-bbf0-f93b211d13b0",
+              "leftValue": "={{ $json.verification }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "rightValue": "verified"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3f5c8acb-3850-4aa1-ab75-99d2c07a613a",
+      "name": "Verified?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://graph.facebook.com/v21.0/' + $('Config').first().json.cfg.waPhoneNumberId + '/messages' }}",
+        "options": {
+          "timeout": 15000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $json.whatsapp_e164.replace('+',''), type: 'template', template: { name: 'lawnet_lawyer_verified', language: { code: 'en' }, components: [ { type: 'body', parameters: [ { type: 'text', text: String($json.full_name) }, { type: 'text', text: String($json.public_ref) } ] } ] } }) }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "f8e1af36-95bf-44ef-950b-91c2e8a2bd85",
+      "name": "WhatsApp Welcome",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "WhatsApp Cloud API (Bearer)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $json.email }}",
+        "subject": "You are verified – referrals are now open",
+        "emailFormat": "html",
+        "html": "={{ `<p>Dear ${$json.full_name},</p><p>Your bar admission is confirmed (ref <b>${$json.public_ref}</b>). You will now receive anonymised candidate/employer cases that match your countries, routes and languages. Please accept or decline each case within ${$('Config').first().json.cfg.lawyerSlaHours} hours.</p>` }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "c3989654-68fe-4548-af07-0c32b48e0174",
+      "name": "Email Welcome",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        360
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP legal desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        },
+        "responseBody": "={{ `<html><body style=\"font-family:system-ui;padding:40px\"><h2>Saved</h2><p>${$('Apply Decision').first().json.public_ref} → <b>${$('Apply Decision').first().json.verification}</b></p></body></html>` }}"
+      },
+      "id": "c7cf2ba6-5a03-4271-aba5-bfa8b86de29e",
+      "name": "Respond Page",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Verify Link": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Check Signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Signature": {
+      "main": [
+        [
+          {
+            "node": "Apply Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Decision": {
+      "main": [
+        [
+          {
+            "node": "Verified?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verified?": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Welcome",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Welcome",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Welcome": {
+      "main": [
+        [
+          {
+            "node": "Respond Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "lawnet"
+    },
+    {
+      "name": "hitl"
+    }
+  ]
+}

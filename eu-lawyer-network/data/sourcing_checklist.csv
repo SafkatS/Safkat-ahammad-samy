@@ -1,0 +1,9 @@
+country,bar_authority,where_to_search,search_terms_local,target_lawyers,status
+RO,UNBR (unbr.ro) + Baroul București / Cluj / Timiș / Iași / Constanța,UNBR national roll; firm websites,"avocat imigrări; aviz de muncă; permis de ședere; dreptul muncii",15,todo
+BG,Supreme Bar Council (vas.bg) – Unified Register; Sofia / Plovdiv / Varna bars,Unified Register of Lawyers; firm websites,"адвокат имиграция; разрешение за работа; единно разрешение; трудово право",10,todo
+MK,Bar Association of North Macedonia,Bar member list; firm websites,"адвокат работна дозвола; странци вработување; привремен престој",6,todo
+BA,FBiH bar / Republika Srpska bar / Brčko bar,Entity bar lists; firm websites,"advokat radna dozvola; boravak stranaca; radno pravo",6,todo
+LT,Lithuanian Bar (advoco.lt),Bar advocate search; firm websites,"advokatas migracija; leidimas gyventi; darbo teisė",8,todo
+LV,Latvian Council of Sworn Advocates (advokatura.lv),Council list of sworn advocates; firm websites,"zvērināts advokāts imigrācija; uzturēšanās atļauja; darba tiesības",6,todo
+SI,Bar Association of Slovenia (odv-zb.si),Imenik odvetnikov; firm websites,"odvetnik tujci; enotno dovoljenje; delovno pravo",6,todo
+SK,Slovak Bar Association (sak.sk),Advocate search; firm websites,"advokát cudzinci; pobyt na účel zamestnania; pracovné právo",8,todo
