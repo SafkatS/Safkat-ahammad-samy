@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join the Legal Network</title>
+<meta name="description" content="Immigration and employment lawyers in Romania, Bulgaria, North Macedonia, Bosnia and Herzegovina, Lithuania, Latvia, Slovenia and Slovakia: receive paid work-permit referrals.">
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--ink:#16202c;--muted:#5b6776;--line:#d9dee5;--accent:#1f5eff;--accent-ink:#fff;--ok:#127a3e;--err:#b42318}
+  @media (prefers-color-scheme:dark){:root{--bg:#0f141a;--card:#171e27;--ink:#e8edf3;--muted:#9aa6b4;--line:#2a3441;--accent:#6c9bff;--accent-ink:#0b1020;--ok:#4cc38a;--err:#ff7a6e}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  main{max-width:820px;margin:0 auto;padding:32px 16px 64px}
+  h1{font-size:1.75rem;margin:0 0 4px}
+  p.lead{color:var(--muted);margin:0 0 24px}
+  fieldset{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:20px;margin:0 0 16px}
+  legend{font-weight:600;padding:0 6px}
+  .grid{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+  @media (max-width:640px){.grid{grid-template-columns:1fr}}
+  label{display:block;font-size:.9rem;font-weight:500}
+  input,select,textarea{width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:inherit;font:inherit}
+  textarea{min-height:90px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:400;cursor:pointer}
+  .chips input{width:auto;margin:0}
+  .route-group h4{margin:12px 0 6px;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .check{display:flex;gap:10px;align-items:flex-start;font-weight:400;margin:8px 0}
+  .check input{width:auto;margin-top:4px}
+  button{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:14px 22px;font:600 1rem system-ui;cursor:pointer}
+  button[disabled]{opacity:.6}
+  #msg{margin-top:14px;font-weight:500}
+  .ok{color:var(--ok)} .err{color:var(--err)}
+  .hp{position:absolute;left:-9999px}
+  small{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Join the European Manpower Legal Network</h1>
+  <p class="lead">For lawyers handling work permits, residence permits and employer compliance. Receive pre-screened, anonymised cases from employers and recruitment partners. Verification against your bar register is required before referrals start.</p>
+
+  <form id="f" novalidate>
+    <input class="hp" name="website_hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <fieldset><legend>You</legend>
+      <div class="grid">
+        <label>Full name *<input name="full_name" required autocomplete="name"></label>
+        <label>Professional title<input name="title" placeholder="Avocat, Advokat, Odvetnik…"></label>
+        <label>Business e-mail *<input name="email" type="email" required autocomplete="email"></label>
+        <label>Phone (international)<input name="phone" type="tel" placeholder="+40 7…" autocomplete="tel"></label>
+        <label>WhatsApp (if different)<input name="whatsapp" type="tel"></label>
+        <label>LinkedIn URL<input name="linkedin" type="url"></label>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Admission</legend>
+      <div class="grid">
+        <label>Country of admission *
+          <select name="country" id="country" required>
+            <option value="">Choose…</option>
+            <option value="RO">Romania</option><option value="BG">Bulgaria</option>
+            <option value="MK">North Macedonia</option><option value="BA">Bosnia and Herzegovina</option>
+            <option value="LT">Lithuania</option><option value="LV">Latvia</option>
+            <option value="SI">Slovenia</option><option value="SK">Slovakia</option>
+            <option value="HR">Croatia</option><option value="CZ">Czechia</option><option value="PL">Poland</option>
+            <option value="HU">Hungary</option><option value="RS">Serbia</option><option value="DE">Germany</option>
+          </select></label>
+        <label>City<input name="city"></label>
+        <label>Bar / chamber *<input name="bar_name" id="bar_name" required placeholder="e.g. Baroul București"></label>
+        <label>Bar registration number *<input name="bar_number" required></label>
+        <label>Year admitted<input name="admitted_year" type="number" min="1950" max="2026"></label>
+        <label>Law firm<input name="firm"></label>
+        <label>Firm website<input name="firm_website" type="url"></label>
+        <label>Personal / profile page<input name="website" type="url"></label>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>What you handle</legend>
+      <label>Practice areas</label>
+      <div class="chips" id="practice"></div>
+      <label style="margin-top:14px">Permit routes you file</label>
+      <div id="routes"></div>
+      <label style="margin-top:14px">Also serving countries</label>
+      <div class="chips" id="served"></div>
+      <label style="margin-top:14px">Languages</label>
+      <div class="chips" id="langs"></div>
+    </fieldset>
+
+    <fieldset><legend>Fees & capacity</legend>
+      <div class="grid">
+        <label>Typical fee per work-permit file (EUR)<input name="fee_permit_eur" type="number" min="0" step="10"></label>
+        <label>Hourly rate (EUR)<input name="hourly_eur" type="number" min="0" step="5"></label>
+        <label>New files you can take per month<input name="capacity" type="number" min="1" max="500" value="10"></label>
+      </div>
+      <label style="margin-top:14px">Short bio<textarea name="bio" maxlength="2000" placeholder="Experience with employers, sectors, nationalities…"></textarea></label>
+    </fieldset>
+
+    <fieldset><legend>Consent</legend>
+      <label class="check"><input type="checkbox" name="consent_directory" required> <span>List me in the network directory (required). Contact details stay hidden from employers until an engagement is agreed.</span></label>
+      <label class="check"><input type="checkbox" name="consent_referrals" checked> <span>Send me matching case referrals by e-mail and WhatsApp.</span></label>
+      <label class="check"><input type="checkbox" name="consent_b2b"> <span>Show my masked profile to vetted European employers on the B2B portal.</span></label>
+      <label class="check"><input type="checkbox" name="consent_marketing"> <span>Occasional network news (max. monthly).</span></label>
+      <small>You can withdraw consent or request erasure at any time. See our <a id="privacy" href="/privacy">privacy notice</a>.</small>
+    </fieldset>
+
+    <button id="go" type="submit">Submit for verification</button>
+    <div id="msg" role="status" aria-live="polite"></div>
+  </form>
+</main>
+<script>
+// ⚙ Set to your n8n production webhook (workflow 01)
+const ENDPOINT = 'https://n8n.example.com/webhook/lawnet-lawyer-signup';
+
+const PRACTICE = {work_permits:'Work permits',residence_permits:'Residence permits',eu_blue_card:'EU Blue Card',visa_d:'D visas',
+  appeals_refusals:'Refusals & appeals',recruitment_agency_licensing:'Agency licensing',posted_workers:'Posted workers / A1',
+  employment_law:'Employment law',labour_inspection_defence:'Labour inspections',worker_rights:'Worker rights',
+  family_reunification:'Family reunification',qualification_recognition:'Qualification recognition',
+  document_legalisation:'Apostille & documents',corporate_immigration:'Corporate compliance',long_term_citizenship:'Long-term residence'};
+const ROUTES = {
+  RO:{name:'Romania',r:{'RO-PERMANENT':'Permanent worker','RO-SEASONAL':'Seasonal','RO-POSTED':'Posted','RO-TRAINEE':'Trainee','RO-ICT':'ICT','RO-BLUECARD':'Blue Card','RO-FAMILY':'Family'}},
+  BG:{name:'Bulgaria',r:{'BG-SINGLE':'Single permit','BG-SEASONAL':'Seasonal','BG-BLUECARD':'Blue Card','BG-ICT':'ICT','BG-FAMILY':'Family'}},
+  MK:{name:'North Macedonia',r:{'MK-WORK-PERMIT':'Work permit','MK-SEASONAL':'Seasonal','MK-POSTED':'Posted','MK-TEMP-RES':'Temporary residence'}},
+  BA:{name:'Bosnia & Herzegovina',r:{'BA-WORK-PERMIT':'Work permit','BA-TEMP-RES':'Temporary residence','BA-FAMILY':'Family'}},
+  LT:{name:'Lithuania',r:{'LT-TRP-WORK':'TRP for work','LT-WORK-PERMIT':'Work permit','LT-D-VISA':'D visa','LT-BLUECARD':'Blue Card','LT-SEASONAL':'Seasonal','LT-ICT':'ICT'}},
+  LV:{name:'Latvia',r:{'LV-RP-WORK':'Residence permit (work)','LV-WORK-VISA':'Work visa','LV-BLUECARD':'Blue Card','LV-SEASONAL':'Seasonal'}},
+  SI:{name:'Slovenia',r:{'SI-SINGLE':'Single permit','SI-BLUECARD':'Blue Card','SI-SEASONAL':'Seasonal','SI-POSTED':'Posted','SI-ICT':'ICT'}},
+  SK:{name:'Slovakia',r:{'SK-TRP-EMPLOY':'TRP employment','SK-BLUECARD':'Blue Card','SK-SEASONAL':'Seasonal','SK-ICT':'ICT'}}};
+const LANGS = {en:'English',ro:'Romanian',bg:'Bulgarian',mk:'Macedonian',bs:'Bosnian/Croatian/Serbian',lt:'Lithuanian',lv:'Latvian',
+  sl:'Slovene',sk:'Slovak',ru:'Russian',de:'German',fr:'French',bn:'Bengali',hi:'Hindi',ne:'Nepali',ur:'Urdu',ar:'Arabic',tr:'Turkish'};
+const BARS = {RO:'Baroul … (UNBR member bar)',BG:'… адвокатска колегия',MK:'Адвокатска комора на РСМ',BA:'Advokatska komora FBiH / RS / Brčko',
+  LT:'Lietuvos advokatūra',LV:'Latvijas Zvērinātu advokātu padome',SI:'Odvetniška zbornica Slovenije',SK:'Slovenská advokátska komora'};
+
+const chip = (name, value, label) => `<label><input type="checkbox" name="${name}" value="${value}"> ${label}</label>`;
+document.getElementById('practice').innerHTML = Object.entries(PRACTICE).map(([k,v]) => chip('practice_areas',k,v)).join('');
+document.getElementById('langs').innerHTML = Object.entries(LANGS).map(([k,v]) => chip('languages',k,v)).join('');
+document.getElementById('served').innerHTML = Object.entries(ROUTES).map(([k,v]) => chip('countries_served',k,v.name)).join('');
+document.getElementById('routes').innerHTML = Object.entries(ROUTES).map(([k,v]) =>
+  `<div class="route-group" data-c="${k}"><h4>${v.name}</h4><div class="chips">${Object.entries(v.r).map(([c,l]) => chip('routes',c,l)).join('')}</div></div>`).join('');
+document.querySelector('#langs input[value=en]').checked = true;
+
+const country = document.getElementById('country');
+country.addEventListener('change', () => {
+  const c = country.value;
+  document.getElementById('bar_name').placeholder = BARS[c] || 'Bar / chamber name';
+  document.querySelectorAll('#served input').forEach(i => { if (i.value === c) i.checked = true; });
+});
+
+document.getElementById('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target, msg = document.getElementById('msg'), btn = document.getElementById('go');
+  if (!f.reportValidity()) return;
+  const fd = new FormData(f), body = {};
+  for (const [k, v] of fd.entries()) {
+    if (['practice_areas','routes','languages','countries_served'].includes(k)) (body[k] ||= []).push(v);
+    else body[k] = v;
+  }
+  ['consent_directory','consent_referrals','consent_b2b','consent_marketing'].forEach(k => body[k] = fd.has(k));
+  body.ref = new URLSearchParams(location.search).get('ref') || '';
+  btn.disabled = true; msg.className = ''; msg.textContent = 'Sending…';
+  try {
+    const r = await fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.ok) throw new Error(j.message || 'Submission failed');
+    msg.className = 'ok'; msg.textContent = `Thank you. Your reference is ${j.ref}. We will confirm your bar admission within one working day.`;
+    f.reset();
+  } catch (err) {
+    msg.className = 'err'; msg.textContent = 'Could not submit: ' + err.message + '. Please try again or e-mail us.';
+  } finally { btn.disabled = false; }
+});
+</script>
+</body>
+</html>

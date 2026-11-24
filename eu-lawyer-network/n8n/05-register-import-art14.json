@@ -1,0 +1,259 @@
+{
+  "name": "LAWNET · 05 Register import + Art.14 notice",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lawnet-import",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        },
+        "authentication": "headerAuth"
+      },
+      "id": "7017cc4f-cbf5-4815-9efc-bf2d9cc28912",
+      "name": "Import Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "LangGraph agent → n8n (X-Api-Key)"
+        }
+      },
+      "webhookId": "3eec2518-9217-4adf-8b6b-d8c03b6e6aab"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json.cfg\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Global Node Legal Network',\n    n8nBase: 'https://n8n.example.com/webhook',          // your n8n production webhook base\n    complianceEmail: 'compliance@example.com',          // EU Legal Compliance Officer\n    opsEmail: 'ops@example.com',\n    fromEmail: 'Global Node Legal <legal@example.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    privacyUrl: 'https://example.com/privacy',\n    consentVersion: 'lawnet-consent-2026-11',\n    lawyerSlaHours: 24,          // lawyer must accept a referral within\n    reviewSlaHours: 4,           // SOP §4: nothing stuck in review > 4h\n    priorityCountries: ['RO','BG','MK','BA','LT','LV','SI','SK']\n  }\n}}];"
+      },
+      "id": "c05240fa-a487-4076-9a32-3cb27edcea41",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Body: { rows: [ {full_name, country, city, firm, bar_number, email, phone, website, source_url, routes, languages, practice_areas} ] }\n// Rows come from staff copying PUBLIC bar-register / firm-website data (legitimate interest, SOP §5).\nconst rows = ($('Import Webhook').first().json.body || {}).rows || [];\nconst clean = (s, n = 200) => String(s ?? '').trim().slice(0, n);\nconst list = v => JSON.stringify((Array.isArray(v) ? v : String(v ?? '').split(/[;,]/)).map(x => clean(x, 40)).filter(Boolean));\nreturn rows.slice(0, 500).filter(r => clean(r.full_name) && /^[A-Za-z]{2}$/.test(clean(r.country))).map(r => ({ json: {\n  full_name: clean(r.full_name, 120), country: clean(r.country, 2).toUpperCase(), city: clean(r.city, 80),\n  firm: clean(r.firm, 160), bar_number: clean(r.bar_number, 60),\n  email: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(clean(r.email)) ? clean(r.email).toLowerCase() : '',\n  phone: clean(r.phone, 25).replace(/[^\\d+]/g, ''), website: clean(r.website), source_url: clean(r.source_url, 500),\n  routes: list(r.routes), languages: list(r.languages), practice: list(r.practice_areas)\n}}));"
+      },
+      "id": "24f0c50f-9ea5-4d5f-a9b0-c3cbc708df33",
+      "name": "Normalise Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "with f as (\n  insert into lawnet.firms(name, country_iso2, city, source, source_url) select $5, $2, nullif($3,''), 'public_bar_register', nullif($10,'')\n  where nullif($5,'') is not null on conflict (country_iso2, name) do update set city = coalesce(lawnet.firms.city, excluded.city) returning id),\nl as (\n  insert into lawnet.lawyers(full_name, country_iso2, city, firm_id, bar_number, email, phone_e164, website, source, source_url, lawful_basis, verification,\n     bar_authority_id)\n  values ($1, $2, nullif($3,''), (select id from f), nullif($4,''), nullif($6,''),\n     case when $7 ~ '^\\+[1-9][0-9]{6,14}$' then $7 end, nullif($8,''), 'public_bar_register', nullif($10,''), 'legitimate_interest', 'unverified',\n     (select id from lawnet.bar_authorities where country_iso2 = $2 order by jurisdiction = 'National' desc limit 1))\n  on conflict (country_iso2, bar_number) do update set city = coalesce(excluded.city, lawnet.lawyers.city),\n     email = coalesce(lawnet.lawyers.email, excluded.email), website = coalesce(lawnet.lawyers.website, excluded.website)\n  returning id, public_ref, email, full_name, art14_notice_sent_at, (xmax = 0) as inserted),\nr as (insert into lawnet.lawyer_routes(lawyer_id, route_code) select (select id from l), x from jsonb_array_elements_text($9::jsonb) x\n      where exists (select 1 from lawnet.work_routes where code = x) on conflict do nothing),\ng as (insert into lawnet.lawyer_languages(lawyer_id, lang) select (select id from l), lower(x) from jsonb_array_elements_text($11::jsonb) x\n      where length(x) = 2 on conflict do nothing),\np as (insert into lawnet.lawyer_practice_areas(lawyer_id, practice_code) select (select id from l), x from jsonb_array_elements_text($12::jsonb) x\n      where exists (select 1 from lawnet.practice_areas where code = x) on conflict do nothing)\nselect * from l;",
+        "options": {
+          "queryReplacement": "={{ [$json.full_name, $json.country, $json.city, $json.bar_number, $json.firm, $json.email, $json.phone, $json.website, $json.routes, $json.source_url, $json.languages, $json.practice] }}"
+        }
+      },
+      "id": "d51bd260-491d-440d-81b4-2ad576349f4f",
+      "name": "Upsert Register Record",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        660,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst secret = $env.LAWNET_HMAC_SECRET;\nif (!secret) throw new Error('LAWNET_HMAC_SECRET not set');\nconst sign = (id, d) => crypto.createHmac('sha256', secret).update(id + '|' + d).digest('hex').slice(0, 32);const cfg = $('Config').first().json.cfg;\nreturn $input.all().filter(i => i.json.email && !i.json.art14_notice_sent_at).map(i => ({ json: { ...i.json,\n  joinUrl: `${cfg.n8nBase.replace('/webhook','')}/lawyer-signup.html?ref=${i.json.public_ref}`,\n  eraseUrl: `${cfg.n8nBase}/lawnet-verify?id=${i.json.id}&d=suspended&t=${sign(i.json.id, 'suspended')}` } }));"
+      },
+      "id": "4da35fd1-0456-44ec-992f-4d45b1dcc1bf",
+      "name": "Needs Art.14 Notice",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ 'Invitation & privacy notice – ' + $('Config').first().json.cfg.brand }}",
+        "emailFormat": "html",
+        "html": "={{ `<p>Dear ${$json.full_name},</p><p>We operate a referral network that connects employers and foreign workers with local immigration and employment lawyers. We found your professional details in a public bar register / your firm website and hold: name, city, firm, bar number and business contact (legal basis: legitimate interest, GDPR Art. 6(1)(f); notice under Art. 14).</p><p><a href=\"${$json.joinUrl}\">Join the network and receive paid referrals</a></p><p>If you do not want this, <a href=\"${$json.eraseUrl}\">click here</a> or simply ignore this e-mail – your record is erased automatically after 30 days. Privacy notice: ${$('Config').first().json.cfg.privacyUrl}</p>` }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "cb06219f-44b4-4d50-9d03-d050a50d58b8",
+      "name": "Send Art.14 Notice",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP legal desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update lawnet.lawyers set art14_notice_sent_at = now() where id = $1::uuid;",
+        "options": {
+          "queryReplacement": "={{ [$('Needs Art.14 Notice').item.json.id] }}"
+        }
+      },
+      "id": "d6cf97f5-a62f-4f42-a42d-a59bc5059e56",
+      "name": "Mark Notice Sent",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1320,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {
+          "responseCode": 200
+        },
+        "responseBody": "={{ JSON.stringify({ ok: true, imported: $('Upsert Register Record').all().length }) }}"
+      },
+      "id": "9b847034-1a09-455d-b626-b025849e85cc",
+      "name": "Respond Import",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Import Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normalise Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalise Rows": {
+      "main": [
+        [
+          {
+            "node": "Upsert Register Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Register Record": {
+      "main": [
+        [
+          {
+            "node": "Needs Art.14 Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Art.14 Notice": {
+      "main": [
+        [
+          {
+            "node": "Send Art.14 Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Art.14 Notice": {
+      "main": [
+        [
+          {
+            "node": "Mark Notice Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Notice Sent": {
+      "main": [
+        [
+          {
+            "node": "Respond Import",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "lawnet"
+    },
+    {
+      "name": "sourcing"
+    },
+    {
+      "name": "gdpr"
+    }
+  ]
+}

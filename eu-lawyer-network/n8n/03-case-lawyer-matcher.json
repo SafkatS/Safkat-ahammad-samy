@@ -1,0 +1,378 @@
+{
+  "name": "LAWNET · 03 Case → lawyer matcher",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lawnet-match",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        },
+        "authentication": "headerAuth"
+      },
+      "id": "d6067305-ceb3-44fd-83f4-1ad3e1d6fe1b",
+      "name": "Case Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "LangGraph agent → n8n (X-Api-Key)"
+        }
+      },
+      "webhookId": "b378e23e-961e-4882-8002-e3e3c010df44"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json.cfg\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Global Node Legal Network',\n    n8nBase: 'https://n8n.example.com/webhook',          // your n8n production webhook base\n    complianceEmail: 'compliance@example.com',          // EU Legal Compliance Officer\n    opsEmail: 'ops@example.com',\n    fromEmail: 'Global Node Legal <legal@example.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    privacyUrl: 'https://example.com/privacy',\n    consentVersion: 'lawnet-consent-2026-11',\n    lawyerSlaHours: 24,          // lawyer must accept a referral within\n    reviewSlaHours: 4,           // SOP §4: nothing stuck in review > 4h\n    priorityCountries: ['RO','BG','MK','BA','LT','LV','SI','SK']\n  }\n}}];"
+      },
+      "id": "a366fa05-929d-4beb-9f84-87392d43e91c",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('Case Webhook').first().json.body || {};\nconst ref = String(b.candidate_ref || '').toUpperCase();\nif (!/^CAND-[A-Z0-9]{5,}$/.test(ref)) throw new Error('candidate_ref must be anonymised CAND-XXXXX (no PII)');\nconst country = String(b.country || '').toUpperCase().slice(0, 2);\nreturn [{ json: {\n  candidate_ref: ref, country, route: String(b.route || '') || null,\n  lang: String(b.lang || 'en').toLowerCase().slice(0, 2), employer_ref: b.employer_ref || null,\n  trade: String(b.trade || '').slice(0, 80), blocks: (b.blocks || []).slice(0, 10).map(String),\n  limit: Math.min(parseInt(b.limit) || 1, 3)\n}}];"
+      },
+      "id": "f7324adf-ae80-4718-9249-7adb6837d564",
+      "name": "Validate Case",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from lawnet.match_lawyers($1, nullif($2,''), $3, $4::int);",
+        "options": {
+          "queryReplacement": "={{ [$json.country, $json.route ?? '', $json.lang, $json.limit] }}"
+        }
+      },
+      "id": "13118394-e00b-443b-a8c1-597420c23425",
+      "name": "Match Lawyers",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        660,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "a12728d7-543a-46bb-8941-cd7540d8cea0",
+              "leftValue": "={{ $json.lawyer_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "25e95db1-3022-4eb5-a58a-b3d6b863f6e5",
+      "name": "Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into lawnet.engagements(candidate_ref, lawyer_id, route_code, country_iso2, employer_ref, status, match_score, sla_due_at)\nvalues ($1, $2::uuid, nullif($3,''), $4, nullif($5,''), 'lawyer_notified', $6::numeric, now() + ($7 || ' hours')::interval)\nreturning id as engagement_id, lawyer_id, sla_due_at,\n  (select email from lawnet.lawyers where id = $2::uuid) as lawyer_email,\n  (select whatsapp_e164 from lawnet.lawyers where id = $2::uuid) as lawyer_wa,\n  (select full_name from lawnet.lawyers where id = $2::uuid) as lawyer_name;",
+        "options": {
+          "queryReplacement": "={{ [$('Validate Case').first().json.candidate_ref, $json.lawyer_id, $('Validate Case').first().json.route ?? '', $('Validate Case').first().json.country, $('Validate Case').first().json.employer_ref ?? '', $json.score, String($('Config').first().json.cfg.lawyerSlaHours)] }}"
+        }
+      },
+      "id": "af5a5087-d861-452f-87a9-6bcfbcb990d8",
+      "name": "Create Engagement",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1100,
+        200
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $json.lawyer_email }}",
+        "subject": "={{ 'New case ' + $('Validate Case').first().json.candidate_ref + ' · ' + ($('Validate Case').first().json.route || $('Validate Case').first().json.country) }}",
+        "emailFormat": "html",
+        "html": "={{ `<p>Dear ${$json.lawyer_name},</p><p>An anonymised case matches your profile:</p><ul><li>Case: <b>${$('Validate Case').first().json.candidate_ref}</b></li><li>Country / route: ${$('Validate Case').first().json.country} · ${$('Validate Case').first().json.route || 'to be advised'}</li><li>Trade: ${$('Validate Case').first().json.trade || '-'}</li><li>Flagged blocks: ${$('Validate Case').first().json.blocks.join(', ') || 'none'}</li></ul><p>Please reply ACCEPT or DECLINE (with fee quote) before ${new Date($json.sla_due_at).toUTCString()}.</p>` }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "359ee8f1-f665-45de-a202-a4889ebfd32e",
+      "name": "Brief Lawyer",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        120
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP legal desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://graph.facebook.com/v21.0/' + $('Config').first().json.cfg.waPhoneNumberId + '/messages' }}",
+        "options": {
+          "timeout": 15000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $json.lawyer_wa.replace('+',''), type: 'template', template: { name: 'lawnet_new_case', language: { code: 'en' }, components: [ { type: 'body', parameters: [ { type: 'text', text: String($json.lawyer_name) }, { type: 'text', text: String($('Validate Case').first().json.candidate_ref) }, { type: 'text', text: String($('Validate Case').first().json.country) } ] } ] } }) }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "097fd7b9-9c2b-4a4e-b9d7-23df9a8ffb51",
+      "name": "WhatsApp Lawyer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        280
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "WhatsApp Cloud API (Bearer)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {
+          "responseCode": 200
+        },
+        "responseBody": "={{ JSON.stringify({ ok: true, engagement_id: $('Create Engagement').first().json.engagement_id, lawyer_ref: $('Match Lawyers').first().json.public_ref, sla_due_at: $('Create Engagement').first().json.sla_due_at }) }}"
+      },
+      "id": "803b999c-d649-45a7-9fae-eb6a317596ac",
+      "name": "Respond Matched",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $('Config').first().json.cfg.complianceEmail }}",
+        "subject": "={{ '⚠ No verified lawyer for ' + $('Validate Case').first().json.country + ' ' + ($('Validate Case').first().json.route || '') }}",
+        "emailFormat": "html",
+        "html": "={{ `<p>Case ${$('Validate Case').first().json.candidate_ref} needs a lawyer in <b>${$('Validate Case').first().json.country}</b> for route <b>${$('Validate Case').first().json.route || 'any'}</b> (language ${$('Validate Case').first().json.lang}). No verified lawyer with referral consent and free capacity. Recruit one via workflow 05 / sign-up form.</p>` }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "c4a50aca-6045-4278-95df-ba20ab6fae9d",
+      "name": "Coverage Gap Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        420
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP legal desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {
+          "responseCode": 202
+        },
+        "responseBody": "={{ JSON.stringify({ ok: false, reason: 'no_lawyer_available', escalated: true }) }}"
+      },
+      "id": "d1d2d6a4-3a28-44b4-9b54-dd2346a750ea",
+      "name": "Respond Gap",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Case Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Validate Case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Case": {
+      "main": [
+        [
+          {
+            "node": "Match Lawyers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Match Lawyers": {
+      "main": [
+        [
+          {
+            "node": "Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Found?": {
+      "main": [
+        [
+          {
+            "node": "Create Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Coverage Gap Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Engagement": {
+      "main": [
+        [
+          {
+            "node": "Brief Lawyer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WhatsApp Lawyer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brief Lawyer": {
+      "main": [
+        [
+          {
+            "node": "Respond Matched",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coverage Gap Alert": {
+      "main": [
+        [
+          {
+            "node": "Respond Gap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "lawnet"
+    },
+    {
+      "name": "matching"
+    },
+    {
+      "name": "langgraph"
+    }
+  ]
+}

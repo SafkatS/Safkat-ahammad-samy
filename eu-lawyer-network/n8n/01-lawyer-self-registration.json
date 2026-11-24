@@ -1,0 +1,319 @@
+{
+  "name": "LAWNET · 01 Lawyer self-registration",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lawnet-lawyer-signup",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "c549428a-7810-4253-9bca-5dc090c0d6d6",
+      "name": "Signup Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "1ad65253-a544-4b5c-b59e-2d47371ffd7c"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json.cfg\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Global Node Legal Network',\n    n8nBase: 'https://n8n.example.com/webhook',          // your n8n production webhook base\n    complianceEmail: 'compliance@example.com',          // EU Legal Compliance Officer\n    opsEmail: 'ops@example.com',\n    fromEmail: 'Global Node Legal <legal@example.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    privacyUrl: 'https://example.com/privacy',\n    consentVersion: 'lawnet-consent-2026-11',\n    lawyerSlaHours: 24,          // lawyer must accept a referral within\n    reviewSlaHours: 4,           // SOP §4: nothing stuck in review > 4h\n    priorityCountries: ['RO','BG','MK','BA','LT','LV','SI','SK']\n  }\n}}];"
+      },
+      "id": "aad23491-c817-4d37-b714-27926b88eb07",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('Signup Webhook').first().json.body || {};\nconst h = $('Signup Webhook').first().json.headers || {};\nconst cfg = $('Config').first().json.cfg;\nconst clean = (s, n = 300) => String(s ?? '').trim().slice(0, n);\nconst arr = v => (Array.isArray(v) ? v : String(v ?? '').split(',')).map(x => clean(x, 40)).filter(Boolean);\nif (b.website_hp) throw new Error('Honeypot');\nconst email = clean(b.email).toLowerCase();\nif (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) throw new Error('Invalid email');\nconst country = clean(b.country, 2).toUpperCase();\nif (!/^[A-Z]{2}$/.test(country)) throw new Error('Invalid country');\nconst e164 = p => { const d = clean(p, 25).replace(/[^\\d+]/g, ''); if (!d) return null;\n  const v = d.startsWith('+') ? d : '+' + d; return /^\\+[1-9]\\d{6,14}$/.test(v) ? v : null; };\nif (b.consent_directory !== true && b.consent_directory !== 'on' && b.consent_directory !== 'true')\n  throw new Error('Directory consent is required');\nconst yes = v => v === true || v === 'on' || v === 'true';\nreturn [{ json: {\n  full_name: clean(b.full_name, 120), title: clean(b.title, 60), email,\n  phone: e164(b.phone), whatsapp: e164(b.whatsapp || b.phone),\n  country, city: clean(b.city, 80), firm: clean(b.firm, 160), firm_website: clean(b.firm_website, 200),\n  bar_name: clean(b.bar_name, 160), bar_number: clean(b.bar_number, 60), admitted_year: parseInt(b.admitted_year) || null,\n  website: clean(b.website, 200), linkedin: clean(b.linkedin, 200), bio: clean(b.bio, 2000),\n  fee_permit_eur: parseFloat(b.fee_permit_eur) || null, hourly_eur: parseFloat(b.hourly_eur) || null,\n  capacity: parseInt(b.capacity) || 10,\n  countries_served: JSON.stringify([...new Set([country, ...arr(b.countries_served).map(c => c.toUpperCase())])]),\n  practice: JSON.stringify(arr(b.practice_areas)), routes: JSON.stringify(arr(b.routes)),\n  languages: JSON.stringify(arr(b.languages).map(l => l.toLowerCase().slice(0, 2))),\n  consents: JSON.stringify([\n    { purpose: 'directory_listing', granted: true },\n    { purpose: 'referrals', granted: yes(b.consent_referrals) },\n    { purpose: 'marketing', granted: yes(b.consent_marketing) },\n    { purpose: 'b2b_portal_visibility', granted: yes(b.consent_b2b) }]),\n  marketing: yes(b.consent_marketing),\n  ip: String(h['x-forwarded-for'] || '').split(',')[0].trim() || null,\n  ua: clean(h['user-agent'], 300), consentVersion: cfg.consentVersion,\n  priority: cfg.priorityCountries.includes(country)\n}}];"
+      },
+      "id": "5744c714-9778-4e1d-9283-47f21c1e45bf",
+      "name": "Validate & Normalise",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update lawnet.lawyers set email = $1\nwhere country_iso2 = $2 and bar_number = nullif($3,'') and (email is null or lower(email) = $1)\nreturning id;",
+        "options": {
+          "queryReplacement": "={{ [$json.email, $json.country, $json.bar_number] }}"
+        }
+      },
+      "id": "83bc8ae6-aec7-4903-be77-1987d5678d3b",
+      "name": "Claim Register Record",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        550,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "with f as (\n  insert into lawnet.firms(name, country_iso2, city, website, source)\n  select $8, $6, nullif($7,''), nullif($9,''), 'self_registration' where nullif($8,'') is not null\n  on conflict (country_iso2, name) do update set website = coalesce(excluded.website, lawnet.firms.website)\n  returning id),\nba as (select id from lawnet.bar_authorities where country_iso2 = $6\n       order by similarity(name_en || ' ' || name_local, $10::text) desc limit 1),\nl as (\n  insert into lawnet.lawyers(full_name, title, email, phone_e164, whatsapp_e164, country_iso2, city, firm_id,\n     bar_authority_id, bar_number, admitted_year, website, linkedin_url, bio, fixed_fee_permit_eur, hourly_rate_eur,\n     capacity_per_month, source, lawful_basis, marketing_opt_in, verification)\n  values ($1, nullif($2,''), $3, nullif($4,''), nullif($5,''), $6, nullif($7,''),\n     (select id from f), (select id from ba), nullif($11,''), nullif($12,'')::smallint, nullif($13,''),\n     nullif($14,''), nullif($15,''), nullif($16,'')::numeric, nullif($17,'')::numeric, $18::smallint,\n     'self_registration', 'consent', $19::boolean, 'pending_review')\n  on conflict (lower(email)) where email is not null do update set\n     full_name = excluded.full_name, title = excluded.title, phone_e164 = excluded.phone_e164, whatsapp_e164 = excluded.whatsapp_e164,\n     city = excluded.city, firm_id = coalesce(excluded.firm_id, lawnet.lawyers.firm_id), bio = excluded.bio,\n     bar_authority_id = coalesce(lawnet.lawyers.bar_authority_id, excluded.bar_authority_id),\n     bar_number = coalesce(excluded.bar_number, lawnet.lawyers.bar_number), admitted_year = excluded.admitted_year,\n     website = excluded.website, linkedin_url = excluded.linkedin_url,\n     fixed_fee_permit_eur = excluded.fixed_fee_permit_eur, hourly_rate_eur = excluded.hourly_rate_eur,\n     capacity_per_month = excluded.capacity_per_month, marketing_opt_in = excluded.marketing_opt_in,\n     source = 'self_registration', lawful_basis = 'consent', is_active = true,\n     verification = case when lawnet.lawyers.verification = 'verified' then 'verified'::lawnet.verification_status else 'pending_review' end\n  returning id, public_ref, verification, bar_authority_id),\nc  as (insert into lawnet.lawyer_countries select (select id from l), x, x = $6 from jsonb_array_elements_text($20::jsonb) x\n       where exists (select 1 from lawnet.countries where iso2 = x) on conflict do nothing),\np  as (insert into lawnet.lawyer_practice_areas(lawyer_id, practice_code) select (select id from l), x from jsonb_array_elements_text($21::jsonb) x\n       where exists (select 1 from lawnet.practice_areas where code = x) on conflict do nothing),\nr  as (insert into lawnet.lawyer_routes(lawyer_id, route_code) select (select id from l), x from jsonb_array_elements_text($22::jsonb) x\n       where exists (select 1 from lawnet.work_routes where code = x) on conflict do nothing),\ng  as (insert into lawnet.lawyer_languages(lawyer_id, lang) select (select id from l), x from jsonb_array_elements_text($23::jsonb) x\n       where length(x) = 2 on conflict do nothing),\nk  as (insert into lawnet.consents(lawyer_id, purpose, granted, text_version, ip, user_agent)\n       select (select id from l), e->>'purpose', (e->>'granted')::boolean, $24, nullif($25,'')::inet, $26\n       from jsonb_array_elements($27::jsonb) e)\nselect l.id, l.public_ref, l.verification, bar.register_search_url, bar.website as bar_website, bar.name_en as bar\nfrom l left join lawnet.bar_authorities bar on bar.id = l.bar_authority_id;",
+        "options": {
+          "queryReplacement": "={{ [$('Validate & Normalise').first().json.full_name, $('Validate & Normalise').first().json.title, $('Validate & Normalise').first().json.email, $('Validate & Normalise').first().json.phone ?? '', $('Validate & Normalise').first().json.whatsapp ?? '', $('Validate & Normalise').first().json.country, $('Validate & Normalise').first().json.city, $('Validate & Normalise').first().json.firm, $('Validate & Normalise').first().json.firm_website, $('Validate & Normalise').first().json.bar_name, $('Validate & Normalise').first().json.bar_number, $('Validate & Normalise').first().json.admitted_year ? String($('Validate & Normalise').first().json.admitted_year) : '', $('Validate & Normalise').first().json.website, $('Validate & Normalise').first().json.linkedin, $('Validate & Normalise').first().json.bio, $('Validate & Normalise').first().json.fee_permit_eur ? String($('Validate & Normalise').first().json.fee_permit_eur) : '', $('Validate & Normalise').first().json.hourly_eur ? String($('Validate & Normalise').first().json.hourly_eur) : '', $('Validate & Normalise').first().json.capacity, $('Validate & Normalise').first().json.marketing, $('Validate & Normalise').first().json.countries_served, $('Validate & Normalise').first().json.practice, $('Validate & Normalise').first().json.routes, $('Validate & Normalise').first().json.languages, $('Validate & Normalise').first().json.consentVersion, $('Validate & Normalise').first().json.ip ?? '', $('Validate & Normalise').first().json.ua, $('Validate & Normalise').first().json.consents] }}"
+        }
+      },
+      "id": "6acfed2e-0bab-416c-90d8-982cef24415e",
+      "name": "Upsert Lawyer",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        660,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst secret = $env.LAWNET_HMAC_SECRET;\nif (!secret) throw new Error('LAWNET_HMAC_SECRET not set');\nconst sign = (id, d) => crypto.createHmac('sha256', secret).update(id + '|' + d).digest('hex').slice(0, 32);\nconst row = $input.first().json, cfg = $('Config').first().json.cfg, v = $('Validate & Normalise').first().json;\nconst link = d => `${cfg.n8nBase}/lawnet-verify?id=${row.id}&d=${d}&t=${sign(row.id, d)}`;\nreturn [{ json: { ...v, ...row, approveUrl: link('verified'), rejectUrl: link('rejected') } }];"
+      },
+      "id": "e46c7dc9-7b9c-4eaf-b0ec-c65681ca8ac7",
+      "name": "Sign Review Links",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert",
+        "options": {
+          "timeout": 15000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ inputs: [ { idProperty: 'email', id: $json.email, properties: { email: $json.email, firstname: $json.full_name.split(' ')[0], lastname: $json.full_name.split(' ').slice(1).join(' ') || '-', phone: $json.phone || '', company: $json.firm || '', country: $json.country, city: $json.city, jobtitle: 'Lawyer', lifecyclestage: 'other', hs_lead_status: 'NEW' } } ] }) }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "hubspotAppToken"
+      },
+      "id": "3388f25c-b026-494a-994a-400758524082",
+      "name": "HubSpot Upsert Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        160
+      ],
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "REPLACE_ME",
+          "name": "HubSpot Private App"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $('Config').first().json.cfg.complianceEmail }}",
+        "subject": "={{ ($json.priority ? '🔴 PRIORITY ' : '') + 'Verify lawyer ' + $json.public_ref + ' · ' + $json.country + ' · ' + $json.full_name }}",
+        "emailFormat": "html",
+        "html": "={{ `<h3>New lawyer awaiting verification (SLA ${$('Config').first().json.cfg.reviewSlaHours}h)</h3><p><b>${$json.full_name}</b> — ${$json.title || ''} ${$json.firm ? '· ' + $json.firm : ''}<br>${$json.city}, ${$json.country}</p><p>Bar: ${$json.bar || $json.bar_name || '?'} · No. <b>${$json.bar_number || 'not given'}</b><br>Check register: <a href=\"${$json.register_search_url || $json.bar_website || '#'}\">${$json.register_search_url || $json.bar_website || 'no URL on file'}</a></p><p>Routes: ${JSON.parse($json.routes).join(', ') || '-'}<br>Languages: ${JSON.parse($json.languages).join(', ')}</p><p><a href=\"${$json.approveUrl}\">✅ Approve (verified)</a> &nbsp; | &nbsp; <a href=\"${$json.rejectUrl}\">❌ Reject</a></p>` }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "4a8bfd84-70a3-4858-9230-08ec3843c381",
+      "name": "Alert Compliance Officer",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP legal desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ 'Your listing request – ' + $('Config').first().json.cfg.brand }}",
+        "emailFormat": "html",
+        "html": "={{ `<p>Dear ${$json.full_name},</p><p>Thank you for joining the ${$('Config').first().json.cfg.brand}. Your reference is <b>${$json.public_ref}</b>. Our compliance team will check your bar admission (normally within one working day) before referrals start.</p><p>You can withdraw consent or ask for erasure at any time by replying to this e-mail. Privacy notice: ${$('Config').first().json.cfg.privacyUrl}</p>` }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "9695bf48-56dc-4a2c-ad59-59ac72a7e811",
+      "name": "Confirm to Lawyer",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        440
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP legal desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {
+          "responseCode": 200
+        },
+        "responseBody": "={{ JSON.stringify({ ok: true, ref: $('Sign Review Links').first().json.public_ref }) }}"
+      },
+      "id": "7a35cc99-0aa6-4073-bc5c-c6eb2587463c",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Signup Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Validate & Normalise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Normalise": {
+      "main": [
+        [
+          {
+            "node": "Claim Register Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claim Register Record": {
+      "main": [
+        [
+          {
+            "node": "Upsert Lawyer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Lawyer": {
+      "main": [
+        [
+          {
+            "node": "Sign Review Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sign Review Links": {
+      "main": [
+        [
+          {
+            "node": "HubSpot Upsert Contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert Compliance Officer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Confirm to Lawyer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirm to Lawyer": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "lawnet"
+    },
+    {
+      "name": "intake"
+    }
+  ]
+}

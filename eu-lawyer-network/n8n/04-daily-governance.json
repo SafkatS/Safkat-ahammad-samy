@@ -1,0 +1,434 @@
+{
+  "name": "LAWNET · 04 Daily governance",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "id": "2f8a5408-8f65-4e10-8b5d-89806e629524",
+      "name": "Every Morning 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json.cfg\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'Global Node Legal Network',\n    n8nBase: 'https://n8n.example.com/webhook',          // your n8n production webhook base\n    complianceEmail: 'compliance@example.com',          // EU Legal Compliance Officer\n    opsEmail: 'ops@example.com',\n    fromEmail: 'Global Node Legal <legal@example.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    privacyUrl: 'https://example.com/privacy',\n    consentVersion: 'lawnet-consent-2026-11',\n    lawyerSlaHours: 24,          // lawyer must accept a referral within\n    reviewSlaHours: 4,           // SOP §4: nothing stuck in review > 4h\n    priorityCountries: ['RO','BG','MK','BA','LT','LV','SI','SK']\n  }\n}}];"
+      },
+      "id": "42137d3b-3e2d-48cf-b59b-f591bacd6577",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update lawnet.engagements set status = 'sla_breached'\nwhere status in ('proposed','lawyer_notified') and sla_due_at < now()\nreturning id, candidate_ref, country_iso2, route_code, lawyer_id;",
+        "options": {}
+      },
+      "id": "74c25995-731e-40d3-a9e3-df232fbf5a63",
+      "name": "Mark SLA Breaches",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        440,
+        80
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select public_ref, full_name, country_iso2, bar_number, verification, round(extract(epoch from waiting)/3600) as hours from lawnet.v_verification_queue where waiting > ($1 || ' hours')::interval or verification = 'verified';",
+        "options": {
+          "queryReplacement": "={{ [String($('Config').first().json.cfg.reviewSlaHours)] }}"
+        }
+      },
+      "id": "a0ae79b6-5226-4ae7-8a53-7df5f6edb382",
+      "name": "Review Queue > SLA",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        440,
+        220
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select lawnet.purge_unanswered_register_records() as erased;",
+        "options": {}
+      },
+      "id": "d1f0b356-1d60-4492-ae54-4c214dc4eca9",
+      "name": "GDPR Purge",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        440,
+        360
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from lawnet.v_country_coverage where priority <= 5;",
+        "options": {}
+      },
+      "id": "20f2d701-5a72-4469-a8ba-b70f69f4f5f2",
+      "name": "Coverage",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        440,
+        500
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select 'bar' as kind, id, coalesce(register_search_url, website) as url from lawnet.bar_authorities where coalesce(register_search_url, website) is not null\nunion all select 'permit', id, website from lawnet.permit_authorities where website is not null;",
+        "options": {}
+      },
+      "id": "50c1fd76-746e-4e4b-abe5-43f0e42cd3bf",
+      "name": "URLs To Check",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        440,
+        640
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 15000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        },
+        "authentication": "none",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "da11ac94-e9cb-4f98-a1de-dc9f422e50ed",
+      "name": "Ping URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        640
+      ],
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "const src = $('URLs To Check').all();\nreturn $input.all().map((it, i) => ({ json: { kind: src[i].json.kind, id: src[i].json.id, url: src[i].json.url,\n  status: it.json.statusCode || (it.json.error ? 0 : 200) } }));"
+      },
+      "id": "b782f337-f24b-43d4-9f20-9190e8203ffa",
+      "name": "URL Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update lawnet.bar_authorities set url_last_status = $3::int, url_verified_at = case when $3::int between 200 and 399 then now() else url_verified_at end where $1 = 'bar' and id = $2::uuid;\nupdate lawnet.permit_authorities set url_last_status = $3::int, url_verified_at = case when $3::int between 200 and 399 then now() else url_verified_at end where $1 = 'permit' and id = $2::uuid;",
+        "options": {
+          "queryReplacement": "={{ [$json.kind, $json.id, $json.status] }}"
+        }
+      },
+      "id": "564938e8-5148-4263-b75e-96fc9c7edeed",
+      "name": "Save URL Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1100,
+        640
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_ME",
+          "name": "Supabase Postgres (lawnet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "numberInputs": 4
+      },
+      "id": "b0863c6f-a81c-4e93-8f68-4a99ca01b24a",
+      "name": "Wait All",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = n => { try { return $(n).all().map(i => i.json).filter(j => Object.keys(j).length); } catch { return []; } };\nconst breaches = rows('Mark SLA Breaches'), queue = rows('Review Queue > SLA'), cov = rows('Coverage');\nconst erased = (rows('GDPR Purge')[0] || {}).erased || 0;\nconst t = (list, cols) => list.length ? `<table border=1 cellpadding=4 style=\"border-collapse:collapse\">` +\n  `<tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr>` + list.map(r => `<tr>${cols.map(c => `<td>${r[c] ?? ''}</td>`).join('')}</tr>`).join('') + '</table>' : '<p>None ✅</p>';\nconst html = `<h2>Legal network – daily governance</h2>\n<h3>Referral SLA breaches (${breaches.length})</h3>${t(breaches, ['candidate_ref','country_iso2','route_code'])}\n<h3>Verification queue over SLA / re-verification due (${queue.length})</h3>${t(queue, ['public_ref','full_name','country_iso2','bar_number','verification','hours'])}\n<h3>Coverage – priority markets</h3>${t(cov, ['iso2','name','lawyers_total','lawyers_verified','routes_covered','routes_total'])}\n<p>GDPR: ${erased} unanswered public-register record(s) erased (30-day rule).</p>`;\nreturn [{ json: { html, alert: breaches.length + queue.length > 0 } }];"
+      },
+      "id": "55cbd7c1-b3d8-4b78-b7cd-bc3462b20585",
+      "name": "Build Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.cfg.fromEmail }}",
+        "toEmail": "={{ $('Config').first().json.cfg.opsEmail + ',' + $('Config').first().json.cfg.complianceEmail }}",
+        "subject": "={{ ($json.alert ? '⚠ ' : '✅ ') + 'Legal network daily report ' + $now.toFormat('yyyy-LL-dd') }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "c3e3937d-0ab9-4cbc-9a34-12e9565106db",
+      "name": "Email Ops",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_ME",
+          "name": "SMTP legal desk"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Mark SLA Breaches",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Review Queue > SLA",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GDPR Purge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Coverage",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "URLs To Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Morning 07:00": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark SLA Breaches": {
+      "main": [
+        [
+          {
+            "node": "Wait All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review Queue > SLA": {
+      "main": [
+        [
+          {
+            "node": "Wait All",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "GDPR Purge": {
+      "main": [
+        [
+          {
+            "node": "Wait All",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Coverage": {
+      "main": [
+        [
+          {
+            "node": "Wait All",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Wait All": {
+      "main": [
+        [
+          {
+            "node": "Build Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Report": {
+      "main": [
+        [
+          {
+            "node": "Email Ops",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URLs To Check": {
+      "main": [
+        [
+          {
+            "node": "Ping URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ping URL": {
+      "main": [
+        [
+          {
+            "node": "URL Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Results": {
+      "main": [
+        [
+          {
+            "node": "Save URL Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "lawnet"
+    },
+    {
+      "name": "governance"
+    },
+    {
+      "name": "gdpr"
+    }
+  ]
+}
