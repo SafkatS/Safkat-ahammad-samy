@@ -93,6 +93,9 @@ P = [
  ("fm","dried","Fish maw (swim bladder)","Fish maw","Croaker / catfish species","0305","Dried","China · Hong Kong","",False),
  ("fs","dried","Fish scales","Fish scales","Assorted species","0511","Cleaned, dried","China · Japan","Used for collagen extraction.",False),
  ("fo","dried","Fish oil","Fish oil","Assorted species","1504","Crude","Asia","",False),
+ ("dpf","dried","Dried pomfret","Rupchanda shutki","Pampus argenteus","0305","Sun-dried, whole; vacuum packed","Middle East · UK · USA","",False),
+ ("dan","dried","Dried anchovy","Kachki / phasa shutki","Corica soborna / Stolephorus spp.","0305","Sun-dried, cleaned; retail packs","Middle East · UK · USA","",False),
+ ("dcr","dried","Dried croaker","Lal poa shutki","Otolithoides / Johnius spp.","0305","Sun-dried, split","Middle East · UK","",False),
  # ---- Rice & grains
  ("ar","rice","Aromatic rice (Kalijira, Chinigura, Kataribhog)","Sugandhi chal","Oryza sativa","1006","Milled, parboiled; 1–25 kg","Middle East · UK · USA · EU","Exports depend on current government export policy.",True),
  ("mu","rice","Puffed rice","Muri","Oryza sativa","1904","Retail packs","UK · Middle East · USA","",False),
@@ -130,6 +133,8 @@ P = [
  ("fk","frozen","Frozen snacks (samosa, singara, spring roll)","","Assorted","1905 / 2106","Retail and food-service packs","UK · Middle East","",False),
  # ---- Processed & packaged
  ("bi","processed","Biscuits & bakery","","Wheat-based","1905","Retail packs, cartons","Middle East · Africa · UK · India","",False),
+ ("rus","processed","Toast biscuits & dry cake (rusk)","Toast, dry cake","Wheat-based","1905","Retail packs, cartons","Middle East · UK · USA · Malaysia","",False),
+ ("len","processed","Lentils & pulses (packed)","Dal","Lens culinaris / Cicer / Vigna spp.","0713","Retail packs 500 g–5 kg","Middle East · UK · USA","Packed by Bangladeshi brands, often from imported raw pulses. Origin and duty are confirmed per shipment.",False),
  ("nd","processed","Instant noodles","","Wheat-based","1902","Retail packs","Middle East · Africa · Asia","",False),
  ("sn","processed","Snacks (chanachur, chips)","Chanachur","Assorted","2106 / 2005","Retail packs","UK · Middle East · USA","",False),
  ("jc","processed","Fruit juices & drinks","","Mango, orange, litchi","2009 / 2202","PET, Tetra Pak, cans","Middle East · Africa · Asia","",False),
@@ -149,6 +154,9 @@ P += [
  # Spices, tea & leaf
  ("pp","spice","Panch phoron & whole spice blends","Panch phoron","Fenugreek, nigella, cumin, fennel, mustard","0910","Retail packs","UK · Middle East · USA","",False),
  ("gt2","spice","Green & organic tea","Sobuj cha","Camellia sinensis","0902","Loose leaf, tea bags","EU · USA · Japan · Middle East","Organic estates in Panchagarh and Sylhet.",False),
+ ("bay","spice","Indian bay leaf","Tejpata","Cinnamomum tamala","0910","Dried leaf, retail and bulk","Middle East · UK · USA","",False),
+ ("msd","spice","Mustard seed","Shorisha","Brassica juncea / B. campestris","1207","Cleaned seed, retail packs","Middle East · UK","",False),
+ ("ses","spice","Sesame seed","Til","Sesamum indicum","1207","Cleaned, natural","Asia · Middle East","Volumes depend on the crop year; confirmed per order.",False),
  # Fresh vegetables
  ("cb","veg","Cabbage & cauliflower","Bandhakopi, phulkopi","Brassica oleracea","0704","Fresh (winter season)","Malaysia · Singapore · Middle East · UK","",False),
  ("tm","veg","Tomato","Tomato","Solanum lycopersicum","0702","Fresh (winter season)","Middle East · Nepal","",False),
@@ -161,6 +169,12 @@ P += [
  ("gpa","veg","Green papaya","Kacha pepe","Carica papaya","0807","Fresh","UK · Middle East","",False),
  ("cl2","veg","Coriander leaves & herbs","Dhonepata","Coriandrum sativum","0709","Fresh bunches (air freight)","UK · Middle East","",False),
  ("lm","veg","Lemon & lime","Kagoji lebu","Citrus aurantiifolia","0805","Fresh","UK · Middle East","",False),
+ ("jl","veg","Jute leaves (molokhia)","Pat shak","Corchorus olitorius / C. capsularis","0709 / 0712","Fresh (air freight), dried, frozen","Middle East · UK","Emerging export line. Volumes are limited, so supply is confirmed per order.",False),
+ ("fb","veg","Flat bean (hyacinth bean)","Sheem","Lablab purpureus","0708","Fresh (winter season)","UK · Middle East","",False),
+ ("rd","veg","Radish","Mula","Raphanus sativus","0706","Fresh (winter season)","Middle East · UK","",False),
+ ("cu2","veg","Cucumber","Shosha","Cucumis sativus","0707","Fresh","Middle East · UK","",False),
+ ("bfl","veg","Banana flower","Mocha","Musa spp.","0709","Fresh (air freight)","UK · Middle East","",False),
+ ("kl2","veg","Kochur loti (taro stolon)","Kochur loti","Colocasia esculenta","0709","Fresh bunches (air freight)","UK · Middle East","",False),
  # Fresh fruits
  ("bn","fruit","Banana","Kola (Sagor, Shabri)","Musa spp.","0803","Fresh","Middle East","",False),
  ("pw","fruit","Papaya (ripe)","Pepe","Carica papaya","0807","Fresh","Middle East · UK","",False),

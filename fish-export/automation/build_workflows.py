@@ -170,7 +170,7 @@ return [{ json: {
   email, firstname: firstname || '', lastname: rest.join(' '),
   name: clean(b.name), company: clean(b.company), country: clean(b.country), port: clean(b.port),
   whatsapp: wa, incoterm: clean(b.incoterm), volume: clean(b.volume), buyerType: clean(b.buyerType),
-  shipMonth: clean(b.shipMonth), details: clean(b.details), servicePackage: clean(b.servicePackage) || 'not stated',
+  shipMonth: clean(b.shipMonth), details: clean(b.details), servicePackage: clean(b.servicePackage) || 'not stated', lang: clean(b.lang) || 'en',
   productList: products.map(p => p.name).join(', ') || 'Not specified',
   utmSource: b.utm?.utm_source || '', utmCampaign: b.utm?.utm_campaign || '', gclid: b.utm?.gclid || '',
   visitorId: clean(b.visitorId), page: clean(b.page), submittedAt: b.submittedAt || new Date().toISOString()
@@ -236,7 +236,7 @@ code(wf, "Flatten for sheet", r"""const l = $('Normalize & Score').first().json;
 return [{ json: { Ref: l.ref, Submitted: l.submittedAt, Tier: l.tier, Score: l.score, Company: l.company,
   Name: l.name, Email: l.email, WhatsApp: l.whatsapp, Country: l.country, Port: l.port, Incoterm: l.incoterm,
   Volume: l.volume, BuyerType: l.buyerType, Products: l.productList, ShipMonth: l.shipMonth,
-  Details: l.details, Package: l.servicePackage, UTMSource: l.utmSource, UTMCampaign: l.utmCampaign, VisitorId: l.visitorId, Status: 'NEW' } }];""",
+  Details: l.details, Package: l.servicePackage, Language: l.lang, UTMSource: l.utmSource, UTMCampaign: l.utmCampaign, VisitorId: l.visitorId, Status: 'NEW' } }];""",
      [900, 860])
 sheets_append(wf, "Sheets · RFQ log", "RFQ", [1120, 860])
 

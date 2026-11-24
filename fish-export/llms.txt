@@ -4,18 +4,25 @@
 
 Key facts
 - Network: 148 registered Bangladeshi seafood exporters mapped across 17 districts (EPB directory); food and produce exporters reached through BAPA (~479 members) and BFVAPEA (~500 members); 75 suppliers on our shortlist (54 seafood, 21 food).
-- Products: 140 export lines (64 seafood, 76 food).
+- Products: 154 export lines (67 seafood, 87 food).
 - Reference prices (public): hilsa government minimum export price US$12.50/kg (2025); aromatic rice minimum export price US$1.60/kg FOB (2025–26); Bangladeshi frozen shrimp US$8.25–15.20/kg (2024, Tridge); table potato about US$300/t (2025). Firm offers depend on grade and compliance.
 - Chairman: Safkat Ahammad Samy, international business specialist; Master of International Trade and Business (MITB), University of Dhaka.
 - Terms: FOB Chattogram, CFR or CIF; air freight from Dhaka for live and chilled products. Quotes within 24 hours.
-- Minimum order: usually one 20-foot reefer per product.
+- Minimum order: from 500 kg for dry food and air-freight vegetables; mixed containers combine several products and suppliers; frozen seafood usually one 20-foot reefer.
+- Bangladesh's LDC graduation was deferred by the UN General Assembly (30 October 2026) to 24 November 2029.
 
 Pages
 - [Product directory](https://www.goodbuyfoods.com/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
-- [Services & fees](https://www.goodbuyfoods.com/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests at cost); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
+- [For Gulf food importers](https://www.goodbuyfoods.com/gulf-food-importers.html): Saudi Arabia, UAE, Kuwait, Qatar, Oman and Bahrain; Arabic labels, Halal, SFDA and GCC rules; Arabic site at https://www.goodbuyfoods.com/ar/
+- [For Bengali grocery buyers worldwide](https://www.goodbuyfoods.com/bangladeshi-grocery-importers.html): mixed containers of Bangladeshi groceries for importers in the Gulf, UK, USA, Canada, Italy, Malaysia and Australia; Bangla site at https://www.goodbuyfoods.com/bn/
+- [Dry food](https://www.goodbuyfoods.com/dry-food.html): dried fish (shutki), rice, puffed and flattened rice, semai, spices, tea, biscuits, snacks and pulses; Ramadan ordering timeline
+- [Fresh vegetables](https://www.goodbuyfoods.com/vegetables.html): weekly air-freight vegetables from Dhaka, packhouse QC on packing day, landed-cost calculator
+- [Services & fees](https://www.goodbuyfoods.com/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests and inspector travel outside Dhaka, Chattogram and Khulna at cost); Fresh US$120 per air consignment (weekly programme US$400/month); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
 - [Solutions](https://www.goodbuyfoods.com/solutions.html): the problems buyers and suppliers face and how GFG solves each; GFG is paid only by buyers and takes no supplier commission
 - Product pages: one page per product at https://www.goodbuyfoods.com/<product-name>-bangladesh.html with HS code, forms, season, minimum order, documents and QC checks
-- Import guides: https://www.goodbuyfoods.com/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, USA, China, Malaysia and Japan
+- Import guides: https://www.goodbuyfoods.com/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, Kuwait, Qatar, Oman, USA, China, Malaysia and Japan (Gulf guides also in Arabic under https://www.goodbuyfoods.com/ar/)
+- Arabic product pages: https://www.goodbuyfoods.com/ar/<product-name>-bangladesh.html for every product
+- Contact: WhatsApp +880 1331-352255 (English, Arabic, Bangla), email sales@goodbuyfoods.com
 - [Food & crops](https://www.goodbuyfoods.com/food.html): food and crop sectors, sourcing regions and a harvest calendar
 - [Bangladesh export guide](https://www.goodbuyfoods.com/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
 - [Supplier network](https://www.goodbuyfoods.com/sourcing.html): how suppliers are rated; exporters can apply to join
@@ -29,11 +36,11 @@ Product directory
 - Marine finfish: Hilsa, Kelee shad, Silver pomfret, Chinese pomfret, Black pomfret, Ribbonfish, Bombay duck, Pama croaker, Indian threadfin, Fourfinger threadfin, Indo-Pacific king mackerel, Indian mackerel, Red snapper, Grouper, Barramundi (Asian sea bass), Mullet, Yellowfin seabream, Grunt, Tuna (skipjack, yellowfin), Barracuda, Tripletail
 - Freshwater & farmed fish: Pangasius, Tilapia, Rohu, Catla, Mrigal, Kalbasu, Silver carp, Climbing perch, Stinging catfish, Walking catfish, Striped snakehead, Giant snakehead, Wallago catfish, Long-whiskered catfish, Pabda catfish, Gulsha tengra, Tengra catfish, Clown knifefish, Mola carplet, Puti barb
 - Live eel & specialty: Mud eel
-- Dried, salted & by-products: Dried Bombay duck, Dried ribbonfish, Dried shrimp, Mixed dried sea fish, Salted hilsa, Fish maw (swim bladder), Fish scales, Fish oil
+- Dried, salted & by-products: Dried Bombay duck, Dried ribbonfish, Dried shrimp, Mixed dried sea fish, Salted hilsa, Fish maw (swim bladder), Fish scales, Fish oil, Dried pomfret, Dried anchovy, Dried croaker
 - Rice & grains: Aromatic rice (Kalijira, Chinigura, Kataribhog), Puffed rice, Flattened rice, Vermicelli & laccha semai, Popped rice, Rice flour & pitha mixes, Red & brown rice
-- Spices, tea & leaf: Turmeric, Dried red chilli, Coriander, Black cumin (nigella), Tea, Betel leaf, Panch phoron & whole spice blends, Green & organic tea
-- Fresh vegetables: Potato, Pointed gourd, Teasel gourd, Bitter gourd, Bottle gourd, Okra, Brinjal (aubergine), Yard-long bean, Taro & arum, Green chilli, Leafy greens, Shatkora citrus, Cabbage & cauliflower, Tomato, Pumpkin, Ash gourd, Snake gourd, Ridge & sponge gourd, Drumstick, Green banana (plantain), Green papaya, Coriander leaves & herbs, Lemon & lime
+- Spices, tea & leaf: Turmeric, Dried red chilli, Coriander, Black cumin (nigella), Tea, Betel leaf, Panch phoron & whole spice blends, Green & organic tea, Indian bay leaf, Mustard seed, Sesame seed
+- Fresh vegetables: Potato, Pointed gourd, Teasel gourd, Bitter gourd, Bottle gourd, Okra, Brinjal (aubergine), Yard-long bean, Taro & arum, Green chilli, Leafy greens, Shatkora citrus, Cabbage & cauliflower, Tomato, Pumpkin, Ash gourd, Snake gourd, Ridge & sponge gourd, Drumstick, Green banana (plantain), Green papaya, Coriander leaves & herbs, Lemon & lime, Jute leaves (molokhia), Flat bean (hyacinth bean), Radish, Cucumber, Banana flower, Kochur loti (taro stolon)
 - Fresh fruits: Mango (Himsagar, Langra, Amrapali, Fazli), Jackfruit, Pineapple, Lychee, Guava, Banana, Papaya (ripe), Watermelon, Green coconut, Pomelo, Jujube, Hog plum, Star fruit, Wood apple, Indian olive
 - Frozen & ready-to-cook: Frozen vegetables, Frozen paratha, Frozen snacks (samosa, singara, spring roll), Frozen jackfruit (young & ripe), Frozen puri, roti & pitha, Frozen ready meals (biryani, curries)
 - Sugar, jaggery & sweeteners: Honey (Sundarbans, mustard), Date-palm jaggery, Cane jaggery, Molasses
-- Processed & packaged foods: Biscuits & bakery, Instant noodles, Snacks (chanachur, chips), Fruit juices & drinks, Pickles & chutneys, Sauces & ketchup, Spice mixes (masala), Mustard oil, Mango pulp & purée, Confectionery & candy, Ready mixes (halim, kheer, firni), Traditional sweets (canned rasgulla, chomchom), Rice bran oil
+- Processed & packaged foods: Biscuits & bakery, Toast biscuits & dry cake (rusk), Lentils & pulses (packed), Instant noodles, Snacks (chanachur, chips), Fruit juices & drinks, Pickles & chutneys, Sauces & ketchup, Spice mixes (masala), Mustard oil, Mango pulp & purée, Confectionery & candy, Ready mixes (halim, kheer, firni), Traditional sweets (canned rasgulla, chomchom), Rice bran oil
