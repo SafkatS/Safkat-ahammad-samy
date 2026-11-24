@@ -9,3 +9,6 @@ gen
 __pycache__
 assets/ASSET-BRIEF.md
 SEO-AUDIT.md
+worker.js
+node_modules
+.wrangler

@@ -8,7 +8,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse, unquote
 
 ROOT = os.path.abspath(sys.argv[1])
-SITE = "https://www.goodbuyfoods.com"
+SITE = "https://goodbuyfoods.com"
 
 
 class P(HTMLParser):

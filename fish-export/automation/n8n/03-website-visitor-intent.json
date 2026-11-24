@@ -23,7 +23,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801331352255',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'\n  }\n}}];"
+        "jsCode": "// ⚙ Edit once after import. Read by every node via $('Config').first().json\nreturn [{ json: {\n  ...$input.first().json,\n  cfg: {\n    brand: 'GoodBuy Foods Global',\n    salesEmail: 'sales@goodbuyfoods.com',\n    managerEmail: 'manager@goodbuyfoods.com',\n    fromEmail: 'GoodBuy Foods Global <sales@goodbuyfoods.com>',\n    waPhoneNumberId: 'REPLACE_WA_PHONE_NUMBER_ID',\n    salesWhatsApp: '8801331352255',\n    sheetId: 'REPLACE_GOOGLE_SHEET_ID',\n    hubspotPipeline: 'default',\n    hubspotStage: 'appointmentscheduled',\n    hotScore: 60,\n    catalogueUrl: 'https://goodbuyfoods.com/products.html'\n  }\n}}];"
       },
       "id": "37ece408-d723-4764-a951-08c4ca845242",
       "name": "Config",

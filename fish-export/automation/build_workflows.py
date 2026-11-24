@@ -34,7 +34,7 @@ return [{ json: {
     hubspotPipeline: 'default',
     hubspotStage: 'appointmentscheduled',
     hotScore: 60,
-    catalogueUrl: 'https://www.goodbuyfoods.com/products.html'
+    catalogueUrl: 'https://goodbuyfoods.com/products.html'
   }
 }}];"""
 

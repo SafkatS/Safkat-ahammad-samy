@@ -12,23 +12,23 @@ Key facts
 - Bangladesh's LDC graduation was deferred by the UN General Assembly (30 October 2026) to 24 November 2029.
 
 Pages
-- [Product directory](https://www.goodbuyfoods.com/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
-- [For Gulf food importers](https://www.goodbuyfoods.com/gulf-food-importers.html): Saudi Arabia, UAE, Kuwait, Qatar, Oman and Bahrain; Arabic labels, Halal, SFDA and GCC rules; Arabic site at https://www.goodbuyfoods.com/ar/
-- [For Bengali grocery buyers worldwide](https://www.goodbuyfoods.com/bangladeshi-grocery-importers.html): mixed containers of Bangladeshi groceries for importers in the Gulf, UK, USA, Canada, Italy, Malaysia and Australia; Bangla site at https://www.goodbuyfoods.com/bn/
-- [Dry food](https://www.goodbuyfoods.com/dry-food.html): dried fish (shutki), rice, puffed and flattened rice, semai, spices, tea, biscuits, snacks and pulses; Ramadan ordering timeline
-- [Fresh vegetables](https://www.goodbuyfoods.com/vegetables.html): weekly air-freight vegetables from Dhaka, packhouse QC on packing day, landed-cost calculator
-- [Services & fees](https://www.goodbuyfoods.com/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests and inspector travel outside Dhaka, Chattogram and Khulna at cost); Fresh US$120 per air consignment (weekly programme US$400/month); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
-- [Solutions](https://www.goodbuyfoods.com/solutions.html): the problems buyers and suppliers face and how GFG solves each; GFG is paid only by buyers and takes no supplier commission
-- Product pages: one page per product at https://www.goodbuyfoods.com/<product-name>-bangladesh.html with HS code, forms, season, minimum order, documents and QC checks
-- Import guides: https://www.goodbuyfoods.com/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, Kuwait, Qatar, Oman, USA, China, Malaysia and Japan (Gulf guides also in Arabic under https://www.goodbuyfoods.com/ar/)
-- Arabic product pages: https://www.goodbuyfoods.com/ar/<product-name>-bangladesh.html for every product
+- [Product directory](https://goodbuyfoods.com/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
+- [For Gulf food importers](https://goodbuyfoods.com/gulf-food-importers.html): Saudi Arabia, UAE, Kuwait, Qatar, Oman and Bahrain; Arabic labels, Halal, SFDA and GCC rules; Arabic site at https://goodbuyfoods.com/ar/
+- [For Bengali grocery buyers worldwide](https://goodbuyfoods.com/bangladeshi-grocery-importers.html): mixed containers of Bangladeshi groceries for importers in the Gulf, UK, USA, Canada, Italy, Malaysia and Australia; Bangla site at https://goodbuyfoods.com/bn/
+- [Dry food](https://goodbuyfoods.com/dry-food.html): dried fish (shutki), rice, puffed and flattened rice, semai, spices, tea, biscuits, snacks and pulses; Ramadan ordering timeline
+- [Fresh vegetables](https://goodbuyfoods.com/vegetables.html): weekly air-freight vegetables from Dhaka, packhouse QC on packing day, landed-cost calculator
+- [Services & fees](https://goodbuyfoods.com/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests and inspector travel outside Dhaka, Chattogram and Khulna at cost); Fresh US$120 per air consignment (weekly programme US$400/month); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
+- [Solutions](https://goodbuyfoods.com/solutions.html): the problems buyers and suppliers face and how GFG solves each; GFG is paid only by buyers and takes no supplier commission
+- Product pages: one page per product at https://goodbuyfoods.com/<product-name>-bangladesh.html with HS code, forms, season, minimum order, documents and QC checks
+- Import guides: https://goodbuyfoods.com/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, Kuwait, Qatar, Oman, USA, China, Malaysia and Japan (Gulf guides also in Arabic under https://goodbuyfoods.com/ar/)
+- Arabic product pages: https://goodbuyfoods.com/ar/<product-name>-bangladesh.html for every product
 - Contact: WhatsApp +880 1331-352255 (English, Arabic, Bangla), email sales@goodbuyfoods.com
-- [Food & crops](https://www.goodbuyfoods.com/food.html): food and crop sectors, sourcing regions and a harvest calendar
-- [Bangladesh export guide](https://www.goodbuyfoods.com/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
-- [Supplier network](https://www.goodbuyfoods.com/sourcing.html): how suppliers are rated; exporters can apply to join
-- [Quality](https://www.goodbuyfoods.com/quality.html): lab testing per lot and the cold chain
-- [Markets & logistics](https://www.goodbuyfoods.com/markets.html): transit times, load planner, ordering steps
-- [Request a quote](https://www.goodbuyfoods.com/contact.html)
+- [Food & crops](https://goodbuyfoods.com/food.html): food and crop sectors, sourcing regions and a harvest calendar
+- [Bangladesh export guide](https://goodbuyfoods.com/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
+- [Supplier network](https://goodbuyfoods.com/sourcing.html): how suppliers are rated; exporters can apply to join
+- [Quality](https://goodbuyfoods.com/quality.html): lab testing per lot and the cold chain
+- [Markets & logistics](https://goodbuyfoods.com/markets.html): transit times, load planner, ordering steps
+- [Request a quote](https://goodbuyfoods.com/contact.html)
 
 Product directory
 - Shrimp & prawn: Black tiger shrimp, Giant freshwater prawn, Whiteleg shrimp, Indian white shrimp, Speckled (brown) shrimp, Small freshwater shrimp, Value-added shrimp

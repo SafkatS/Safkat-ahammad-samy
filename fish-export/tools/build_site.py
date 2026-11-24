@@ -13,7 +13,7 @@ from catalog import CATEGORIES, P
 from i18n import AR_PAGES, BN_PAGES, AR_NAME, BN_NAME
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://www.goodbuyfoods.com"   # ← your live domain
+SITE = "https://goodbuyfoods.com"   # ← your live domain
 BRAND = "GoodBuy Foods Global"
 SHORT = "GFG"
 TODAY = datetime.date.today().isoformat()
