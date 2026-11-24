@@ -10,9 +10,10 @@ and assets/js/catalog.js.
 import html, json, os, sys, datetime
 sys.path.insert(0, os.path.dirname(__file__))
 from catalog import CATEGORIES, P
+from i18n import AR_PAGES, BN_PAGES, AR_NAME, BN_NAME
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://www.goodbuyfoods.com"   # ← your live domain
+SITE = "https://goodbuyfoods.com"   # ← your live domain
 BRAND = "GoodBuy Foods Global"
 SHORT = "GFG"
 TODAY = datetime.date.today().isoformat()
@@ -60,14 +61,14 @@ BUB = '<div class="bubbles" aria-hidden="true">' + "".join(
     f'<span style="--x:{x}%;--s:{s}px;--d:{d}s;--dl:{dl}s"></span>' for x, s, d, dl in
     [(4,10,13,0),(12,16,17,3),(21,8,11,6),(33,14,15,1),(45,9,12,8),(57,18,19,2),(66,10,14,5),(74,13,16,9),(83,8,10,4),(92,15,18,7)]) + "</div>"
 
-NAV = [("index.html","home","Home"),("products.html","products","Products"),("solutions.html","solutions","Solutions"),("services.html","services","Services &amp; fees"),("quality.html","quality","Quality &amp; risk"),
-       ("sourcing.html","sourcing","Suppliers"),("guide.html","guide","Guide"),("contact.html","contact","Contact")]
+NAV = [("index.html","home","Home"),("products.html","products","Products"),("dry-food.html","dryfood","Dry food"),("vegetables.html","vegetables","Vegetables"),
+       ("services.html","services","Services &amp; fees"),("quality.html","quality","Quality"),("sourcing.html","sourcing","Suppliers"),("contact.html","contact","Contact")]
 
 ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": BRAND, "alternateName": SHORT, "url": SITE + "/",
        "logo": SITE + "/assets/img/logo.png",
        "slogan": "One-stop food sourcing services", "description": f"{BRAND} is a one-stop food sourcing company and buyer's broker that sources frozen, chilled, live and dried seafood and Bangladeshi food products from licensed exporters for importers worldwide, with five-gate QC on every lot. Mission: to be the world's best and most trusted food sourcing company.",
-       "areaServed": "Worldwide", "address": {"@type": "PostalAddress", "addressCountry": "BD"},
-       "knowsAbout": ["Bangladesh seafood export", "Black tiger shrimp", "Hilsa", "Mud crab", "HS 0306", "HS 0303", "Cold chain logistics"],
+       "areaServed": ["Saudi Arabia", "United Arab Emirates", "Kuwait", "Qatar", "Oman", "Bahrain", "United Kingdom", "United States", "Canada", "Italy", "Malaysia", "Australia", "Worldwide"], "address": {"@type": "PostalAddress", "addressCountry": "BD"},
+       "knowsAbout": ["Bangladesh food export", "Dried fish (shutki)", "Spices", "Aromatic rice", "Fresh vegetables by air freight", "Bangladeshi grocery wholesale", "GCC food import requirements", "Halal food sourcing", "Black tiger shrimp", "Hilsa", "Cold chain logistics"],
        "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "availableLanguage": ["English", "Bengali", "Arabic"]},
        "employee": {"@type": "Person", "name": "Safkat Ahammad Samy", "jobTitle": "Chairman", "description": "International business specialist",
                     "alumniOf": {"@type": "CollegeOrUniversity", "name": "University of Dhaka"},
@@ -84,7 +85,66 @@ def faq_ld(faqs):
     return {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}
 
 
+PSLUGS = {pslug(p) for p in P}
+_CUR = {"path": "index.html"}
+
+
+def has_ar(path):
+    return path in AR_PAGES or path in PSLUGS
+
+
+def has_bn(path):
+    return path in BN_PAGES
+
+
+def lang_url(lang, path):
+    """Absolute URL of a page in a language ('en', 'ar', 'bn')."""
+    tail = "" if path == "index.html" else path
+    return f"{SITE}/{tail}" if lang == "en" else f"{SITE}/{lang}/{tail}"
+
+
+def hreflang_links(path):
+    langs = ["en"] + (["ar"] if has_ar(path) else []) + (["bn"] if has_bn(path) else [])
+    if len(langs) == 1:
+        return ""
+    return "".join(f'\n<link rel="alternate" hreflang="{l}" href="{lang_url(l, path)}">' for l in langs) + f'\n<link rel="alternate" hreflang="x-default" href="{lang_url("en", path)}">'
+
+
+def fit_title(t, n=68):
+    """Keep titles within what search results show: drop the brand suffix, then trailing list items, keeping the main keywords first."""
+    if len(t) <= n:
+        return t
+    main, _, suf = t.rpartition(" | ") if " | " in t else (t, "", "")
+    for cand in ([f"{main} | {suf}"] if suf else []) + [main]:
+        if len(cand) <= n:
+            return cand
+    head_, sep, tail = main.partition(": ")
+    items = [x.strip() for x in tail.replace(" & ", ", ").split(",") if x.strip()] if sep else []
+    while items:
+        cand = f"{head_}: {', '.join(items)}"
+        if len(cand) <= n:
+            return cand
+        items.pop()
+    if len(head_) <= n:
+        return head_
+    cut = head_[:n - 1].rsplit(" ", 1)[0]
+    return cut.rstrip(",:;(") + "…"
+
+
+def fit_desc(d, n=160):
+    if len(d) <= n:
+        return d
+    cut = d[:n]
+    for mark in (". ", "。", "। "):
+        i = cut.rfind(mark)
+        if i > n * 0.55:
+            return cut[:i + 1].strip()
+    return cut[:n - 1].rsplit(" ", 1)[0].rstrip(",;:") + "…"
+
+
 def head(title, desc, path, ld=(), og="iced-snapper.jpg"):
+    title, desc = fit_title(title), fit_desc(desc)
+    _CUR["path"] = path
     graph = {"@context": "https://schema.org", "@graph": [ORG, *ld]}
     url = f"{SITE}/{'' if path == 'index.html' else path}"
     return f'''<!DOCTYPE html>
@@ -95,7 +155,8 @@ def head(title, desc, path, ld=(), og="iced-snapper.jpg"):
 <title>{E(title)}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="{E(desc)}">
-<link rel="canonical" href="{url}">
+<link rel="canonical" href="{url}">{hreflang_links(path)}
+<meta property="og:locale" content="en_US">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:site_name" content="{BRAND}">
 <meta property="og:title" content="{E(title)}">
@@ -116,8 +177,15 @@ def head(title, desc, path, ld=(), og="iced-snapper.jpg"):
 
 def header(page):
     links = "\n      ".join(f'<a href="{h}" data-nav="{k}">{t}</a>' for h, k, t in NAV[1:])
+    path = _CUR["path"]
+    ar = "ar/" + (path if has_ar(path) else "index.html")
+    bn = "bn/" + (path if has_bn(path) else "index.html")
     return f'''<body data-page="{page}">
 <a class="skip" href="#main">Skip to content</a>
+<div class="utility"><div class="wrap">
+  <p class="u-focus"><a href="gulf-food-importers.html">Gulf food importers</a><span aria-hidden="true">·</span><a href="bangladeshi-grocery-importers.html">Bengali grocery buyers worldwide</a><span aria-hidden="true">·</span><a href="dry-food.html#ramadan" class="u-hot">Ramadan 2027 orders open</a></p>
+  <nav class="langs" aria-label="Language"><a href="#" aria-current="true" lang="en">English</a><a href="{ar}" lang="ar" hreflang="ar">العربية</a><a href="{bn}" lang="bn" hreflang="bn">বাংলা</a></nav>
+</div></div>
 <header class="top">
   <div class="wrap">
     <a class="logo" href="index.html" aria-label="{BRAND} home">{LOGO}<span><span data-brand>{BRAND}</span><small>Best food to buy in the world</small></span></a>
@@ -189,9 +257,9 @@ FOOT = f'''</main>
       <a class="logo" href="index.html" style="color:var(--fg)">{LOGO}<span><span data-brand>{BRAND}</span><small>Best food to buy in the world</small></span></a>
       <p style="margin-top:1rem;max-width:36ch">We source seafood and food from licensed Bangladeshi exporters and manage quality, documents and cold chain for importers worldwide.</p>
     </div>
-    <div><h4>Explore</h4><ul><li><a href="solutions.html">Solutions</a></li><li><a href="products.html">Product directory</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="services.html">Services &amp; fees</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="food.html">Food &amp; crops</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li></ul></div>
+    <div><h4>Explore</h4><ul><li><a href="products.html">Product directory</a></li><li><a href="dry-food.html">Dry food</a></li><li><a href="vegetables.html">Fresh vegetables</a></li><li><a href="gulf-food-importers.html">For Gulf importers</a></li><li><a href="bangladeshi-grocery-importers.html">For Bengali grocery buyers</a></li><li><a href="solutions.html">Solutions</a></li><li><a href="sourcing.html">Supplier network</a></li><li><a href="services.html">Services &amp; fees</a></li><li><a href="quality.html">Quality &amp; compliance</a></li><li><a href="food.html">Food &amp; crops</a></li><li><a href="markets.html">Markets &amp; logistics</a></li><li><a href="guide.html">Bangladesh export guide</a></li><li><a href="ar/index.html" lang="ar">العربية</a> · <a href="bn/index.html" lang="bn">বাংলা</a></li></ul></div>
     <div><h4>Work with us</h4><ul><li><a href="contact.html#rfq">Request a quote</a></li><li><a href="sourcing.html#apply">Become a supplier partner</a></li><li><a href="#" data-wa="Hello {BRAND}" data-track="whatsapp_click">WhatsApp</a></li><li><a href="#" data-messenger data-track="messenger_click">Messenger</a></li><li><a href="#" data-mail data-track="email_click">Email</a></li></ul></div>
-    <div><h4>Office</h4><p>Dhaka, Bangladesh<br>Sunday–Thursday, 09:00–18:00 (UTC+6)<br>WhatsApp answered 7 days</p></div>
+    <div><h4>Office</h4><p>Dhaka, Bangladesh<br>Sunday–Thursday, 09:00–18:00 (UTC+6)<br>WhatsApp <a href="#" data-wa="Hello {BRAND}" data-track="whatsapp_click">+880 1331-352255</a>, answered 7 days<br>English · العربية · বাংলা</p></div>
   </div>
   <div class="foot-bottom"><div class="wrap" style="padding-block:1.25rem calc(1.25rem + env(safe-area-inset-bottom,0px))">
     <span>© <span data-year>{TODAY[:4]}</span> {BRAND}</span>
@@ -296,7 +364,7 @@ SERVICES = [
    "Plant listing checked for your market: EU, SFDA, GACC, US FDA", "Certificates validated with the issuing body (HACCP, BRCGS, FSSC 22000, Halal…)",
    "Factory or packhouse visit with photo and video report", "Risk rating (A / B / C) and a written verification report in 5 working days"],
   "We certify what we checked; you decide whether to buy.", False),
- ("assure", "Assure", "Per-shipment QC & compliance", "US$290", "per container · lab tests at cost, no markup",
+ ("assure", "Assure", "Per-shipment QC & compliance", "US$290", "per container · lab tests at cost, no markup · inspector travel outside Dhaka, Chattogram and Khulna at cost",
   ["All five QC gates: raw material, processing, lab release, pre-shipment inspection, loading", "Lab testing for the lot at an accredited lab (residues, heavy metals, microbiology or pesticides), billed at cost with no markup",
    "AQL inspection against your specification, with photos and video", "Document check: health or phytosanitary certificate, origin, invoice, packing list, B/L drafts",
    "Supervised loading, reefer temperature log and seal record", "You approve before the balance payment or document release"],
@@ -306,6 +374,11 @@ SERVICES = [
    "Freight booking and shipment tracking to your port", "Claims handled with the exporter on your behalf, answered within 48 hours",
    "Quality guarantee: if a lot we released does not match the agreed specification, we refund our full service fee for that shipment and pursue the exporter for you"],
   "We carry the full quality and compliance responsibility, from supplier to port.", True),
+ ("fresh", "Fresh", "Air-freight vegetables & fruit", "US$120", "per air consignment up to 3 t · weekly programme US$400 per month (4 consignments)",
+  ["Packhouse visit on packing day: grading, sorting, size and freshness against your specification", "Pesticide-residue test plan for your market (tests billed at lab cost)",
+   "Phytosanitary certificate and invoice checked before the truck leaves", "Cold-chain check from packhouse to the Dhaka airport cargo shed, with photos",
+   "Freight booked on the best available rate for your airport", "Arrival report and claims handled with the packhouse"],
+  "Fresh produce is checked on the day it is packed, not the day it lands.", False),
  ("programme", "Programme", "Recurring supply programme", "From US$750", "per month · includes up to 3 containers of Assure",
   ["A dedicated GFG QC officer for your account", "Priority production slots and a backup plant for each product", "Seasonal buying plan and price-lock windows",
    "Monthly quality and supplier performance report", "US$240 per container from the fourth container"],
@@ -518,7 +591,7 @@ MARKETS = [
  ("european-union", "the European Union", "EU",
   ["Seafood must come from a plant on the EU list of approved establishments for Bangladesh.", "Residue monitoring must meet EU rules; maximum levels are set by Regulation (EU) 2023/915.", "Wild-caught fish needs a catch certificate under the EU IUU regulation.", "Fresh produce needs a phytosanitary certificate; mango comes from monitored orchards."],
   ["Health certificate issued by the Department of Fisheries (seafood)", "Common Health Entry Document through TRACES at the border control post", "Catch certificate for wild-caught marine fish", "Phytosanitary certificate (fresh produce)", "Commercial invoice, packing list, bill of lading and certificate of origin"],
-  "Bangladeshi goods currently enter under the Everything But Arms scheme. Preferences are expected to continue for three years after Bangladesh's LDC graduation, then move to another scheme. Confirm the duty for your HS code.",
+  "Bangladeshi goods currently enter under the Everything But Arms scheme. Preferences are expected to continue for three years after Bangladesh's LDC graduation (now due on 24 November 2029), then move to another scheme. Confirm the duty for your HS code.",
   "28–35 days to Rotterdam, Antwerp or Hamburg", ["bt", "gp", "va", "sq", "mn", "fj"],
   ["Antibiotic residues (nitrofurans, chloramphenicol) in shrimp", "Plant missing from the approved list", "Pesticide residues above MRLs on fresh produce", "Incomplete catch certificates"]),
  ("united-kingdom", "the United Kingdom", "UK",
@@ -528,7 +601,7 @@ MARKETS = [
   "30–35 days to Felixstowe or London Gateway; 1–2 days by air to Heathrow", ["rh", "hl", "pb", "dl", "ar", "pt", "fp"],
   ["Labelling that does not meet UK rules", "Undeclared allergens in packaged food", "Residues in farmed fish and shrimp"]),
  ("saudi-arabia", "Saudi Arabia", "KSA",
-  ["Fish plants must appear on the SFDA list of approved Bangladeshi establishments.", "Halal certification is required for many products.", "Labels must be in Arabic."],
+  ["Fish plants must appear on the SFDA list of approved Bangladeshi establishments.", "The importer registers the establishment and the food products with the SFDA (Ghad platform) before clearance.", "Halal certificates from an SFDA-accredited body are required for products with animal-origin ingredients or a Halal claim.", "Labels must be in Arabic, with production and expiry dates."],
   ["Health certificate", "Halal certificate where required", "Certificate of origin", "Commercial invoice, packing list and bill of lading"],
   "Duty depends on the HS code under the GCC common tariff. Confirm with your customs broker.",
   "14–20 days to Jeddah or Dammam", ["sp", "hl", "rb", "pc", "km", "ar", "po"],
@@ -539,6 +612,24 @@ MARKETS = [
   "Duty depends on the HS code under the GCC common tariff. Confirm with your customs broker.",
   "14–18 days to Jebel Ali; 1 day by air to Dubai", ["sp", "rh", "pg", "mc", "ar", "mn", "po"],
   ["Label registration not completed before shipment", "Shelf-life rules for chilled and frozen products", "Missing Halal certificate"]),
+ ("kuwait", "Kuwait", "KW",
+  ["Imported food is registered and released by Kuwait's Public Authority for Food and Nutrition (PAFN).", "GCC (GSO) standards apply, including Arabic labelling with production and expiry dates.", "Halal certification is required for products of animal origin and requested by most buyers for processed food."],
+  ["Health or phytosanitary certificate", "Halal certificate where required", "Certificate of origin", "Commercial invoice, packing list and bill of lading"],
+  "Duty depends on the HS code under the GCC common tariff. Confirm with your customs broker.",
+  "18–25 days to Shuwaikh or Shuaiba, usually via Jebel Ali or Colombo; 1 day by air to Kuwait City", ["dm", "dl", "sp", "ar", "mu", "tu", "po"],
+  ["Arabic label missing or incomplete", "Remaining shelf life too short at arrival", "Missing Halal certificate"]),
+ ("qatar", "Qatar", "QA",
+  ["Food imports are checked by the Ministry of Public Health before release.", "GCC (GSO) standards apply, including Arabic labelling with production and expiry dates.", "Halal certification is required for products of animal origin and requested by most buyers for processed food."],
+  ["Health or phytosanitary certificate", "Halal certificate where required", "Certificate of origin", "Commercial invoice, packing list and bill of lading"],
+  "Duty depends on the HS code under the GCC common tariff. Confirm with your customs broker.",
+  "16–22 days to Hamad Port, usually via Jebel Ali or Colombo; 1 day by air to Doha", ["dm", "sp", "rh", "ar", "se", "bi", "gc"],
+  ["Arabic label missing or incomplete", "Temperature abuse for chilled produce", "Missing Halal certificate"]),
+ ("oman", "Oman", "OM",
+  ["Food imports are controlled by Oman's Food Safety and Quality Center.", "GCC (GSO) standards apply, including Arabic labelling with production and expiry dates.", "Halal certification is required for products of animal origin and requested by most buyers for processed food."],
+  ["Health or phytosanitary certificate", "Halal certificate where required", "Certificate of origin", "Commercial invoice, packing list and bill of lading"],
+  "Duty depends on the HS code under the GCC common tariff. Confirm with your customs broker.",
+  "12–18 days to Sohar or Muscat (Sultan Qaboos Port), often via Jebel Ali; 1 day by air to Muscat", ["dm", "dpf", "rh", "pg", "tu", "rc", "po"],
+  ["Arabic label missing or incomplete", "Pesticide residues on fresh vegetables", "Missing Halal certificate"]),
  ("united-states", "the United States", "USA",
   ["The plant must be registered with the FDA and follow seafood HACCP.", "Each shipment needs FDA Prior Notice.", "Shrimp is covered by the Seafood Import Monitoring Program (SIMP).", "The FDA Food Traceability Rule (FSMA 204) applies from 20 July 2028 and covers most seafood."],
   ["FDA Prior Notice confirmation", "Seafood HACCP records from the processor", "SIMP harvest and chain-of-custody data for shrimp", "Commercial invoice, packing list and bill of lading", "Importer's Foreign Supplier Verification Program records (non-seafood foods)"],
@@ -548,7 +639,7 @@ MARKETS = [
  ("china", "China", "CN",
   ["Overseas food producers must be registered with China Customs (GACC).", "Live crab and eel need approved exporters and packing sites.", "Chinese labels are required for packaged food."],
   ["Health certificate", "GACC registration number of the producer", "Certificate of origin", "Commercial invoice, packing list and air waybill or bill of lading"],
-  "China grants zero-tariff treatment to least developed countries on most tariff lines. Confirm how this applies after Bangladesh's LDC graduation.",
+  "China grants zero-tariff treatment to least developed countries on most tariff lines. Confirm how this applies after Bangladesh's LDC graduation, now due on 24 November 2029.",
   "1–2 days by air for live products; 18–26 days by sea to Shanghai", ["mc", "ee", "bsc", "rb", "fm", "sq"],
   ["Exporter not GACC-registered", "Mortality in live shipments", "Label or registration number mismatch"]),
  ("malaysia", "Malaysia", "MY",
@@ -623,16 +714,81 @@ SEASON = {"hl": "June–November, peak August–October, under government export
           "ar": "Harvest November–January; shipped year-round, under government export permit", "jg": "December–February", "wm": "March–May", "jj": "January–March", "ol": "August–October"}
 
 
+# ------------------------------------------------------------------ HOME BLOCKS (3D showcase, segments, promise, Ramadan)
+CUBE_FACES = [("dry-goods-sacks", "Dry food"), ("aromatic-rice-spoon", "Aromatic rice"), ("green-red-chillies", "Spices"),
+              ("pointed-gourd-brinjal-beans", "Fresh vegetables"), ("hilsa-on-ice", "Fish & seafood"), ("packed-cartons-warehouse", "Packed for export")]
+
+
+def cube_html(prefix="", faces=None, hint="Drag to turn", more="See every product", more_href="products.html"):
+    faces = faces or CUBE_FACES
+    figs = "".join(f'<figure class="face f{i + 1}"><img src="{prefix}{IMG}{img}-md.jpg" alt="{E(cap)}" width="400" height="400" loading="{"eager" if i < 2 else "lazy"}"><figcaption>{E(cap)}</figcaption></figure>'
+                   for i, (img, cap) in enumerate(faces))
+    return f'''<aside class="showcase" aria-label="Products we source">
+        <div class="cube-stage" data-cube><div class="cube">{figs}</div></div>
+        <p class="showcase-hint"><span aria-hidden="true">⟲</span> {hint} · <a href="{more_href}">{more}</a></p>
+      </aside>'''
+
+
+CUBE = cube_html()
+
+SEGMENTS_HTML = f'''  <section id="buyers" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">Who we buy for</p><h2>Built for Gulf importers and Bengali grocery buyers everywhere.</h2></div>
+        <p class="lede">Two groups of buyers order most of Bangladesh's food exports. We set up our sourcing, documents and languages around them.</p></div>
+      <div class="segments">
+        <a class="segment tilt3d" href="gulf-food-importers.html"><span class="seg-flag" aria-hidden="true">KSA · UAE · KW · QA · OM · BH</span><b>Gulf food importers &amp; distributors</b>
+          <span>Arabic labels, Halal certificates, SFDA and GCC rules checked before loading. Dried fish, rice, spices, snacks, vegetables and frozen fish.</span><em>For Gulf importers →</em></a>
+        <a class="segment tilt3d" href="bangladeshi-grocery-importers.html"><span class="seg-flag" aria-hidden="true">UK · USA · CA · IT · MY · AU · Gulf</span><b>Bengali grocery importers worldwide</b>
+          <span>The tastes your customers grew up with, from one partner: shutki, chinigura rice, muri, semai, mustard oil, spices, frozen fish and fresh vegetables, in one mixed container.</span><em>For grocery importers →</em></a>
+        <a class="segment tilt3d" href="vegetables.html"><span class="seg-flag" aria-hidden="true">Weekly · by air</span><b>Supermarkets, restaurants &amp; caterers</b>
+          <span>Weekly air-freight vegetables checked on packing day, plus private-label dry food in your own packs.</span><em>Fresh vegetables →</em></a>
+      </div>
+      <p class="langline">We work in <a href="ar/index.html" lang="ar">العربية</a>, <a href="bn/index.html" lang="bn">বাংলা</a> and English, on WhatsApp seven days a week.</p>
+    </div>
+  </section>'''
+
+PROMISES = [
+ ("Pay after you see the lot", "You approve photos, video and the lab report for your lot before the balance payment is released."),
+ ("One open price", "FOB, freight, insurance and our fee shown line by line. No hidden margin from suppliers: we take no supplier commission."),
+ ("Fee back if we get it wrong", "On the Complete service, if a lot we released does not match the agreed specification, our full fee for that shipment is refunded."),
+ ("One container, many suppliers", "Dried fish, rice, spices, snacks and oil from different suppliers consolidated into one container where the products can travel together."),
+ ("Your language, seven days", "Arabic, Bangla and English. WhatsApp answered seven days a week; quotes within 24 working hours."),
+ ("Re-order in one message", "Your specifications, labels and last prices stay on file, so repeat orders and Ramadan programmes take one message."),
+]
+PROMISE_HTML = f'''  <section id="promise" style="padding-top:1rem">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="eyebrow">Why buyers order through goodbuyfoods.com</p><h2>Less risk than buying direct. Less cost than flying in.</h2></div>
+        <p class="lede">Each promise is written into your offer, so you can hold us to it.</p></div>
+      <div class="promises">{"".join(f'<article class="promise-card tilt3d"><span class="pc-n">{i + 1:02d}</span><h3>{E(t)}</h3><p>{E(d)}</p></article>' for i, (t, d) in enumerate(PROMISES))}</div>
+    </div>
+  </section>'''
+
+RAMADAN = [("By 15 December 2026", "Confirm products, packs and Arabic labels. Contract and deposit."),
+           ("Late December – early January", "Production, five-gate QC and lab release. You approve the lot file."),
+           ("Early January 2027", "Container sails from Chattogram. 12–25 days to Gulf ports."),
+           ("Late January 2027", "Cleared and on your shelves before Ramadan.")]
+RAMADAN_HTML = f'''  <section id="ramadan-plan" class="ramadan" style="padding-block:3rem">
+    <div class="wrap">
+      <div class="ram-head"><p class="eyebrow">Ramadan 2027 planner</p><h2>Ramadan is expected to begin around 8 February 2027. Order dry food now.</h2>
+        <p class="lede">Muri, chira, semai, snacks, rice, spices and dried fish sell fastest in the weeks before Ramadan and Eid. Work back from the shelf date: the exact start depends on the moon sighting.</p></div>
+      <ol class="ram-steps">{"".join(f'<li class="tilt3d"><b>{E(a)}</b><span>{E(b)}</span></li>' for a, b in RAMADAN)}</ol>
+      <div class="actions"><a class="btn btn-primary" href="dry-food.html#ramadan">Plan my Ramadan order</a><a class="btn btn-wa" href="#" data-wa="Hello {BRAND}, I want to plan a Ramadan 2027 dry-food order." data-track="whatsapp_click">{WA} WhatsApp</a></div>
+    </div>
+  </section>'''
+
+
 def write(name, text):
-    with open(os.path.join(ROOT, name), "w") as f:
+    path = os.path.join(ROOT, name)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
         f.write(text)
     print("wrote", name, len(text))
 
 
 def build():
     # ---------- HOME
-    home = head(f"{BRAND} | One-Stop Food Sourcing from Bangladesh",
-                f"Buyer's broker for {N_PRODUCTS} Bangladeshi seafood, food and crop products: shrimp, hilsa, crab, aromatic rice, spices, tea, vegetables, mango and packaged foods. Five-gate QC, quotes in 24 hours.",
+    home = head(f"Bangladeshi Food Sourcing for Gulf & Bengali Buyers | {BRAND}",
+                f"Dried fish, rice, spices, snacks, fresh vegetables and seafood from Bangladesh for Gulf importers and Bengali grocers worldwide. Lot-checked QC, Arabic labels, quotes in 24 hours.",
                 "index.html", [{"@type": "WebSite", "@id": SITE + "/#web", "url": SITE + "/", "name": BRAND, "publisher": {"@id": SITE + "/#org"}}, faq_ld(FAQ_HOME)]) + header("home") + f'''
   <section class="hero vid" style="padding:0">
     <video class="bg" data-auto autoplay muted loop playsinline preload="auto" poster="{V}iced-snapper.jpg" aria-hidden="true"><source src="{V}iced-snapper.mp4" type="video/mp4"></video>
@@ -640,15 +796,21 @@ def build():
     <div class="wrap">
       <div>
         <p class="eyebrow">Our mission: the world's best and most trusted food sourcing company</p>
-        <h1>Better margins on Bangladeshi seafood and food, <em>with the risk taken out</em>.</h1>
-        <p class="lede">{BRAND} buys seafood, fresh produce, rice, spices, tea and packaged foods for importers, distributors and retailers from the best-qualified exporters in Bangladesh. We negotiate price at source, enforce strict QC on every lot and keep every shipment compliant with your market, so each container sells at a profit and the next order is easy.</p>
+        <h1>Bangladeshi food for Gulf and Bengali buyers worldwide, <em>with the risk taken out</em>.</h1>
+        <p class="lede">For Gulf importers and Bengali grocery buyers worldwide: dried fish, rice, spices, snacks, fresh vegetables, seafood and packaged foods, bought for you from the best-qualified exporters in Bangladesh. We negotiate price at source, enforce strict QC on every lot and keep every shipment compliant with your market, so each container sells at a profit and the next order is easy.</p>
+        <form class="find" action="products.html" method="get" role="search">
+          <label for="findQ">What do you want to buy?</label>
+          <div><input id="findQ" name="q" type="search" list="findList" placeholder="e.g. dried fish, turmeric, okra, puffed rice" autocomplete="off"><button class="btn btn-primary" type="submit">Find</button></div>
+          <datalist id="findList">{''.join(f'<option value="{E(p[2])}">' for p in P)}</datalist>
+        </form>
         <div class="actions">
           <a class="btn btn-primary" href="contact.html#rfq" data-track="cta_hero">Request a price offer</a>
-          <a class="btn btn-ghost" href="products.html#prices" style="color:var(--fg)">See indicative prices</a>
+          <a class="btn btn-wa" href="#" data-wa="Hello {BRAND}, I'd like a price offer." data-track="whatsapp_click">{WA} WhatsApp</a>
         </div>
-        <div class="trust-row"><span>One-stop food sourcing</span><span>Price negotiated at source</span><span>Five-gate QC on every lot</span><span>Compliant for your market</span></div>
+        <div class="trust-row"><span>Gulf &amp; Bengali grocery buyers</span><span>Pay the balance after you approve the lot</span><span>Arabic, Bangla &amp; English</span><span>Five-gate QC on every lot</span></div>
       </div>
-      <aside class="reefer" aria-label="Example reefer container readout">
+      {CUBE}
+      <aside class="reefer" hidden aria-hidden="true">
         <div class="reefer-head"><span>Reefer · example shipment</span><span class="live"><i></i>Live</span></div>
         <div class="temp" id="reeferTemp">−20.1<small> °C</small></div>
         <div class="sub">Set point −20.0 °C · Return air</div>
@@ -679,6 +841,12 @@ def build():
       </div>
     </div>
   </section>
+
+{SEGMENTS_HTML}
+
+{PROMISE_HTML}
+
+{RAMADAN_HTML}
 
   <section id="doors" style="padding-top:0">
     <div class="wrap doors">
@@ -1352,7 +1520,7 @@ def build():
         <h2 id="watch">Regulatory watch: what is changing</h2>
         <p>Rules for importing food change every year. These are the changes we are tracking for buyers of Bangladeshi products.</p>
         <ul>
-          <li><b>Bangladesh's LDC graduation.</b> Graduation from least-developed-country status is scheduled for 24 November 2026, and the government has asked the UN for a deferral. The EU has said Everything But Arms preferences continue for three years after graduation. Check the duty that applies to your HS code before you contract. (<a href="https://www.tbsnews.net/economy/substantial-gaps-remain-bangladeshs-ldc-graduation-preparedness-un-assessment-report-1403396" rel="noopener" target="_blank">The Business Standard</a>)</li>
+          <li><b>Bangladesh's LDC graduation.</b> On 30 October 2026 the UN General Assembly deferred graduation from least-developed-country status to 24 November 2029, at Bangladesh's request; the UN has said no further extension will be granted. Current preferences continue until then. The EU has said Everything But Arms preferences continue for three years after graduation. Check the duty that applies to your HS code before you contract. (<a href="https://www.thedailystar.net/news/bangladesh/news/ldc-graduation-bangladesh-sets-reform-targets-eu-un-watch-4312371" rel="noopener" target="_blank">The Daily Star</a>; <a href="https://english.news.cn/20261030/8e86931a3256488395a4d3bdb99b0066/c.html" rel="noopener" target="_blank">Xinhua</a>)</li>
           <li><b>US food traceability (FSMA 204).</b> The FDA Food Traceability Rule covers most seafood. Its compliance date is 20 July 2028, and large US retailers are asking suppliers for the records earlier. (<a href="https://www.fda.gov/food/food-safety-modernization-act-fsma/fsma-proposed-rule-food-traceability" rel="noopener" target="_blank">FDA</a>)</li>
           <li><b>Catch documentation.</b> The EU and UK require catch certificates for wild-caught fish, and the EU is moving these to its digital CATCH system. Wild-caught orders need the vessel and landing details from the start.</li>
           <li><b>Export controls in Bangladesh.</b> Hilsa and aromatic rice are exported under government permits and quotas that change by season.</li>
@@ -1579,7 +1747,7 @@ def build():
         <div class="f"><label for="incoterm">Incoterm</label><select id="incoterm" name="incoterm"><option>CFR</option><option>CIF</option><option>FOB Chattogram</option><option>CPT / CIP (air)</option><option>Not sure yet</option></select></div>
         <div class="f"><label for="volume">Volume</label><select id="volume" name="volume"><option value="sample">Samples only</option><option value="lcl">Less than 1 container</option><option value="1" selected>1 × 40′ reefer</option><option value="2-4">2–4 containers / month</option><option value="5+">5+ containers / month</option></select></div>
         <div class="f"><label for="buyerType">You are a</label><select id="buyerType" name="buyerType"><option>Importer / distributor</option><option>Retail chain</option><option>Food service</option><option>Processor / re-packer</option><option>Trading agent</option></select></div>
-        <div class="f"><label for="servicePackage">Service package</label><select id="servicePackage" name="servicePackage"><option value="complete">Complete: end-to-end, tension-free</option><option value="assure">Assure: QC &amp; compliance per container</option><option value="verify">Verify: supplier check only</option><option value="programme">Programme: recurring supply</option><option value="advise">Not sure, advise me</option></select></div>
+        <div class="f"><label for="servicePackage">Service package</label><select id="servicePackage" name="servicePackage"><option value="complete">Complete: end-to-end, tension-free</option><option value="assure">Assure: QC &amp; compliance per container</option><option value="verify">Verify: supplier check only</option><option value="fresh">Fresh: air-freight vegetables &amp; fruit</option><option value="programme">Programme: recurring supply</option><option value="advise">Not sure, advise me</option></select></div>
         <div class="f"><label for="shipMonth">Target shipment</label><input id="shipMonth" name="shipMonth" type="month"></div>
         <div class="f full"><label for="details">Specification details</label><textarea id="details" name="details" placeholder="Cut, count grade, glaze %, packing, label, certificates required…"></textarea></div>
         <label class="consent full" for="consent"><input type="checkbox" id="consent" name="consent" required> I agree that {BRAND} may store these details to prepare a quote and contact me about it. We do not share your data with third parties.</label>
@@ -1688,6 +1856,7 @@ def build():
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><a href="products.html">Products</a><span aria-hidden="true">/</span><span>{E(CAT[cat][1])}</span></nav>
       <h1>{E(name)} from Bangladesh</h1>
+      <p class="alt-lang"><a href="ar/{fn}" lang="ar" hreflang="ar">{E(AR_NAME.get(pid, name))}: اقرأ بالعربية</a>{f' · <span lang="bn">{E(BN_NAME[pid])}</span>' if pid in BN_NAME else ''}</p>
       <p class="lede"><i>{E(sci)}</i>.{aka} Sourced from verified Bangladeshi suppliers, checked at five QC gates and shipped with the documents your market requires.</p>
       <div class="actions" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn btn-primary" type="button" data-add="{pid}" aria-pressed="false" style="border:0">Add to quote</button><a class="btn btn-ghost" href="contact.html#rfq" style="color:var(--fg)">Request a price offer</a></div>
     </div>
@@ -1799,11 +1968,21 @@ def build():
         write(fn, page); extra_pages.append(fn)
 
     # ---------- catalog.js, sitemap, robots, llms.txt
-    cat_js = {p[0]: {"n": p[2], "hs": p[5], "c": CAT[p[1]][1]} for p in P}
+    cat_js = {p[0]: {"n": p[2], "a": AR_NAME.get(p[0], p[2]), "b": BN_NAME.get(p[0], p[2]), "hs": p[5], "c": CAT[p[1]][1]} for p in P}
     write("assets/js/catalog.js", "/* Generated by tools/build_site.py from tools/catalog.py */\nwindow.CATALOG=" + json.dumps(cat_js, ensure_ascii=False) + ";\n")
+    import build_extra, build_i18n
+    extra_pages += build_extra.build(sys.modules[__name__])
+    i18n_pages = build_i18n.build(sys.modules[__name__])
     pages = ["index.html", "products.html", "food.html", "services.html", "sourcing.html", "quality.html", "markets.html", "guide.html", "contact.html"] + extra_pages
-    write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
-        f'  <url><loc>{SITE}/{"" if p == "index.html" else p}</loc><lastmod>{TODAY}</lastmod></url>\n' for p in pages) + "</urlset>\n")
+
+    def alt_xml(path):
+        langs = ["en"] + (["ar"] if has_ar(path) else []) + (["bn"] if has_bn(path) else [])
+        if len(langs) == 1:
+            return ""
+        return "".join(f'<xhtml:link rel="alternate" hreflang="{l}" href="{lang_url(l, path)}"/>' for l in langs) + f'<xhtml:link rel="alternate" hreflang="x-default" href="{lang_url("en", path)}"/>'
+    urls = [(lang_url("en", p), alt_xml(p)) for p in pages] + [(lang_url(l, p), alt_xml(p)) for l, p in i18n_pages]
+    write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "".join(
+        f'  <url><loc>{u}</loc><lastmod>{TODAY}</lastmod>{a}</url>\n' for u, a in urls) + "</urlset>\n")
     write("robots.txt", f"""User-agent: *
 Allow: /
 
@@ -1838,14 +2017,21 @@ Key facts
 - Reference prices (public): hilsa government minimum export price US$12.50/kg (2025); aromatic rice minimum export price US$1.60/kg FOB (2025–26); Bangladeshi frozen shrimp US$8.25–15.20/kg (2024, Tridge); table potato about US$300/t (2025). Firm offers depend on grade and compliance.
 - Chairman: Safkat Ahammad Samy, international business specialist; Master of International Trade and Business (MITB), University of Dhaka.
 - Terms: FOB Chattogram, CFR or CIF; air freight from Dhaka for live and chilled products. Quotes within 24 hours.
-- Minimum order: usually one 20-foot reefer per product.
+- Minimum order: from 500 kg for dry food and air-freight vegetables; mixed containers combine several products and suppliers; frozen seafood usually one 20-foot reefer.
+- Bangladesh's LDC graduation was deferred by the UN General Assembly (30 October 2026) to 24 November 2029.
 
 Pages
 - [Product directory]({SITE}/products.html): every product with scientific name, Bangla name, HS heading, forms and main markets
-- [Services & fees]({SITE}/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests at cost); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
+- [For Gulf food importers]({SITE}/gulf-food-importers.html): Saudi Arabia, UAE, Kuwait, Qatar, Oman and Bahrain; Arabic labels, Halal, SFDA and GCC rules; Arabic site at {SITE}/ar/
+- [For Bengali grocery buyers worldwide]({SITE}/bangladeshi-grocery-importers.html): mixed containers of Bangladeshi groceries for importers in the Gulf, UK, USA, Canada, Italy, Malaysia and Australia; Bangla site at {SITE}/bn/
+- [Dry food]({SITE}/dry-food.html): dried fish (shutki), rice, puffed and flattened rice, semai, spices, tea, biscuits, snacks and pulses; Ramadan ordering timeline
+- [Fresh vegetables]({SITE}/vegetables.html): weekly air-freight vegetables from Dhaka, packhouse QC on packing day, landed-cost calculator
+- [Services & fees]({SITE}/services.html): Verify US$150 per supplier; Assure US$290 per container (lab tests and inspector travel outside Dhaka, Chattogram and Khulna at cost); Fresh US$120 per air consignment (weekly programme US$400/month); Complete 1.5% of FOB (min US$450 per container) with a service-fee refund guarantee; supply programmes from US$750/month
 - [Solutions]({SITE}/solutions.html): the problems buyers and suppliers face and how GFG solves each; GFG is paid only by buyers and takes no supplier commission
 - Product pages: one page per product at {SITE}/<product-name>-bangladesh.html with HS code, forms, season, minimum order, documents and QC checks
-- Import guides: {SITE}/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, USA, China, Malaysia and Japan
+- Import guides: {SITE}/import-from-bangladesh-to-<market>.html for the EU, UK, Saudi Arabia, UAE, Kuwait, Qatar, Oman, USA, China, Malaysia and Japan (Gulf guides also in Arabic under {SITE}/ar/)
+- Arabic product pages: {SITE}/ar/<product-name>-bangladesh.html for every product
+- Contact: WhatsApp +880 1331-352255 (English, Arabic, Bangla), email sales@goodbuyfoods.com
 - [Food & crops]({SITE}/food.html): food and crop sectors, sourcing regions and a harvest calendar
 - [Bangladesh export guide]({SITE}/guide.html): exporters by district, HS codes, licences and approvals, hilsa rules, associations, shipping
 - [Supplier network]({SITE}/sourcing.html): how suppliers are rated; exporters can apply to join

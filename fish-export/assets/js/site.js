@@ -3,8 +3,8 @@
    ============================================================ */
 const CONFIG = {
   brand: "GoodBuy Foods Global",
-  whatsappNumber: "8801700000000",        // international format, digits only
-  whatsappDisplay: "+880 1700-000000",
+  whatsappNumber: "8801331352255",        // international format, digits only
+  whatsappDisplay: "+880 1331-352255",
   email: "sales@goodbuyfoods.com",
   messengerPage: "goodbuyfoods",       // facebook page username for m.me links
   // n8n production webhook URLs (Webhook node → "Production URL").
@@ -19,6 +19,23 @@ const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const store = { get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
 const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* ---------- Language (en / ar / bn) ---------- */
+const LANG = (document.documentElement.lang||"en").slice(0,2);
+const TX_ALL = {
+  en:{add:"Add to quote",added:"Added to quote",toast:" added to your quote request",sending:"Sending…",send:"Send quote request",fill:"Please fill in: ",sep:", ",
+      email:"That email address looks incomplete. Check it and try again.",consent:"Tick the consent box so we can store your request and reply.",
+      ok:r=>`Request received. Your reference is ${r}. Check your inbox for the confirmation.`,demo:" (Demo mode: connect the n8n webhook in CONFIG to go live.)",
+      fail:e=>`We couldn't send your request just now. Message us on WhatsApp or email ${e} and we'll reply today.`,remove:"Remove",products:n=>n+(n===1?" product":" products")},
+  ar:{add:"أضف إلى طلب السعر",added:"أُضيف إلى طلب السعر",toast:" أُضيف إلى طلب السعر",sending:"جارٍ الإرسال…",send:"أرسل طلب السعر",fill:"يرجى تعبئة: ",sep:"، ",
+      email:"يبدو أن البريد الإلكتروني غير مكتمل. تحققوا منه وحاولوا مرة أخرى.",consent:"يرجى الموافقة على حفظ البيانات لنتمكن من الرد.",
+      ok:r=>`تم استلام طلبكم. الرقم المرجعي: ${r}. ستصلكم رسالة تأكيد بالبريد.`,demo:" (وضع تجريبي: اربطوا webhook ‏n8n في الإعدادات.)",
+      fail:e=>`تعذّر إرسال الطلب الآن. راسلونا على واتساب أو على ${e} وسنرد اليوم.`,remove:"إزالة",products:n=>n+" منتج"},
+  bn:{add:"কোটেশনে যোগ করুন",added:"কোটেশনে যোগ হয়েছে",toast:" কোটেশনে যোগ হয়েছে",sending:"পাঠানো হচ্ছে…",send:"কোটেশন পাঠান",fill:"এগুলো পূরণ করুন: ",sep:", ",
+      email:"ইমেইল ঠিকানাটি অসম্পূর্ণ মনে হচ্ছে। দেখে আবার চেষ্টা করুন।",consent:"আপনার অনুরোধ সংরক্ষণ ও উত্তর দিতে সম্মতির ঘরে টিক দিন।",
+      ok:r=>`অনুরোধ পেয়েছি। আপনার রেফারেন্স ${r}। নিশ্চিতকরণ ইমেইল দেখুন।`,demo:" (ডেমো মোড: CONFIG-এ n8n webhook যুক্ত করুন।)",
+      fail:e=>`এই মুহূর্তে পাঠানো যায়নি। হোয়াটসঅ্যাপে বা ${e} ঠিকানায় লিখুন, আজই উত্তর দেব।`,remove:"সরান",products:n=>n+"টি পণ্য"},
+};
+const TX = TX_ALL[LANG] || TX_ALL.en;
 function toast(msg){const t=$("#toast");if(!t)return;t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2600)}
 const qs = new URLSearchParams(location.search);
 const utm = store.get("oc_utm") || {};
@@ -125,16 +142,17 @@ if($("#reeferTemp")){let t=-20.1;setInterval(()=>{t=Math.max(-20.6,Math.min(-19.
 /* ---------- Product directory + quote basket (shared across pages) ---------- */
 const CAT = window.CATALOG || {};
 let basket = (store.get("oc_basket") || []).filter(id=>CAT[id]);
-function syncButtons(){$$("[data-add]").forEach(b=>{const on=basket.includes(b.dataset.add);b.setAttribute("aria-pressed",on);b.textContent=on?"Added to quote":"Add to quote"})}
+const PN = id => LANG==="ar" ? (CAT[id].a||CAT[id].n) : LANG==="bn" ? (CAT[id].b||CAT[id].n) : CAT[id].n;
+function syncButtons(){$$("[data-add]").forEach(b=>{const on=basket.includes(b.dataset.add);b.setAttribute("aria-pressed",on);b.textContent=on?TX.added:TX.add})}
 function renderBasket(){
   store.set("oc_basket",basket);
   $$("[data-basket-count]").forEach(e=>{e.textContent=basket.length;e.hidden=!basket.length});
-  const b=$("#basket");if(b)b.innerHTML=basket.map(id=>`<span class="pill">${CAT[id].n}<button type="button" data-remove="${id}" aria-label="Remove ${CAT[id].n}">×</button></span>`).join("");
+  const b=$("#basket");if(b)b.innerHTML=basket.map(id=>`<span class="pill">${PN(id)}<button type="button" data-remove="${id}" aria-label="${TX.remove} ${PN(id)}">×</button></span>`).join("");
   syncButtons();
 }
 document.addEventListener("click",e=>{
   const a=e.target.closest("[data-add]");
-  if(a){const id=a.dataset.add;if(basket.includes(id))basket=basket.filter(x=>x!==id);else{basket.push(id);toast(CAT[id].n+" added to your quote request");track("rfq_item_added",{product:id})}renderBasket()}
+  if(a){const id=a.dataset.add;if(basket.includes(id))basket=basket.filter(x=>x!==id);else{basket.push(id);toast(PN(id)+TX.toast);track("rfq_item_added",{product:id})}renderBasket()}
   const r=e.target.closest("[data-remove]");
   if(r){basket=basket.filter(x=>x!==r.dataset.remove);renderBasket()}
 });
@@ -148,11 +166,18 @@ if(dir){
     $$(".cat",dir).forEach(sec=>{let n=0;
       $$(".item",sec).forEach(it=>{const ok=(cat==="all"||it.dataset.cat===cat)&&(!term||it.dataset.search.includes(term));it.hidden=!ok;if(ok)n++});
       sec.hidden=!n;shown+=n});
-    $("#dirCount").textContent=shown+(shown===1?" product":" products");$("#dirEmpty").hidden=!!shown;
+    $("#dirCount").textContent=TX.products(shown);$("#dirEmpty").hidden=!!shown;
   };
   $$(".chip[data-filter]").forEach(c=>c.onclick=()=>{$$(".chip[data-filter]").forEach(x=>x.setAttribute("aria-pressed","false"));c.setAttribute("aria-pressed","true");cat=c.dataset.filter;apply();track("catalogue_filter",{filter:cat})});
   let t;q.addEventListener("input",()=>{apply();clearTimeout(t);t=setTimeout(()=>q.value.trim()&&track("catalogue_search",{q:q.value.trim().slice(0,60)}),800)});
   if(location.hash.startsWith("#p-")){const el=document.getElementById(location.hash.slice(1));if(el)el.classList.add("flash")}
+  if(qs.get("q")){q.value=qs.get("q");apply();track("catalogue_search",{q:q.value.slice(0,60),from:"finder"})}
+}
+/* Arabic product list: filter table rows by Arabic or English name */
+const tf=$("[data-table-filter]");
+if(tf){
+  const run=()=>{const t=tf.value.trim().toLowerCase();$$(".directory-ar .cat").forEach(sec=>{let n=0;$$("tbody tr",sec).forEach(r=>{const ok=!t||r.textContent.toLowerCase().includes(t);r.hidden=!ok;if(ok)n++});sec.hidden=!n})};
+  tf.addEventListener("input",run);if(qs.get("q")){tf.value=qs.get("q");run()}
 }
 
 /* ---------- Lot trace (sample data) ---------- */
@@ -200,22 +225,22 @@ if(form){
   form.addEventListener("submit",async e=>{
     e.preventDefault();status.hidden=true;
     const missing=["company","name","email","country"].filter(k=>!form.elements[k].value.trim());
-    if(missing.length){showStatus("Please fill in "+missing.join(", ")+".",true);form.elements[missing[0]].focus();return}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.elements.email.value.trim())){showStatus("That email address looks incomplete. Check it and try again.",true);form.elements.email.focus();return}
-    if(!form.elements.consent.checked){showStatus("Tick the consent box so we can store your request and reply.",true);return}
+    if(missing.length){showStatus(TX.fill+missing.map(k=>((form.querySelector(`label[for="${k}"]`)||{}).textContent||k)).join(TX.sep)+".",true);form.elements[missing[0]].focus();return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.elements.email.value.trim())){showStatus(TX.email,true);form.elements.email.focus();return}
+    if(!form.elements.consent.checked){showStatus(TX.consent,true);return}
     if(form.elements.website.value)return; // honeypot
     const fd=Object.fromEntries(new FormData(form));delete fd.website;
     const payload={...fd,consent:true,products:basket.map(id=>({id,name:CAT[id].n,hs:CAT[id].hs,category:CAT[id].c})),
-      source:"website",visitorId,utm,page:location.href,submittedAt:new Date().toISOString()};
-    const btn=$("#rfqSubmit");btn.disabled=true;btn.textContent="Sending…";
+      source:"website",lang:LANG,visitorId,utm,page:location.href,submittedAt:new Date().toISOString()};
+    const btn=$("#rfqSubmit");btn.disabled=true;btn.textContent=TX.sending;
     try{
       let j;
       if(!CONFIG.rfqWebhook){await new Promise(r=>setTimeout(r,600));j={ref:"DEMO-"+Date.now().toString().slice(-6),demo:true}}
       else{const res=await fetch(CONFIG.rfqWebhook,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});if(!res.ok)throw new Error("HTTP "+res.status);j=await res.json().catch(()=>({}))}
-      showStatus(`Request received. Your reference is ${j.ref||"—"}. Check your inbox for the confirmation${form.elements.whatsapp.value?" and WhatsApp":""}.${j.demo?" (Demo mode: connect the n8n webhook in CONFIG to go live.)":""}`);
+      showStatus(TX.ok(j.ref||"—")+(j.demo?TX.demo:""));
       basket=[];renderBasket();store.set("oc_draft",null);form.reset();
-    }catch(err){showStatus("We couldn't send your request just now. Message us on WhatsApp or email "+CONFIG.email+" and we'll reply today.",true)}
-    finally{btn.disabled=false;btn.textContent="Send quote request"}
+    }catch(err){showStatus(TX.fail(CONFIG.email),true)}
+    finally{btn.disabled=false;btn.textContent=TX.send}
   });
 }
 
@@ -232,7 +257,7 @@ if(sf){
     if(sf.elements.website.value)return;
     const fd=new FormData(sf),data=Object.fromEntries(fd);delete data.website;
     data.categories=fd.getAll("categories");data.approvals=fd.getAll("approvals");
-    Object.assign(data,{source:"website",visitorId,utm,submittedAt:new Date().toISOString()});
+    Object.assign(data,{source:"website",lang:LANG,visitorId,utm,submittedAt:new Date().toISOString()});
     const btn=$("#supplierSubmit");btn.disabled=true;btn.textContent="Submitting…";
     try{
       let j;
@@ -264,3 +289,42 @@ if($("#landed")){
 
 /* ---------- Preselect service package from ?package= ---------- */
 (function(){const sel=$("#servicePackage");if(!sel)return;const pk=qs.get("package");if(pk&&[...sel.options].some(o=>o.value===pk))sel.value=pk})();
+
+/* ---------- 3D product cube: drag to turn, slow auto-rotation ---------- */
+$$("[data-cube]").forEach(stage=>{
+  const cube=$(".cube",stage);let ry=20,drag=null,last=0;const v=STILL?0:.12;
+  const set=()=>cube.style.setProperty("--ry",ry+"deg");
+  stage.addEventListener("pointerdown",e=>{drag=e.clientX;last=e.clientX;stage.setPointerCapture(e.pointerId)});
+  stage.addEventListener("pointermove",e=>{if(drag===null)return;const dx=e.clientX-last;last=e.clientX;ry+=dx*.5;set()});
+  const end=()=>{drag=null};stage.addEventListener("pointerup",end);stage.addEventListener("pointercancel",end);
+  let vis=true;if("IntersectionObserver" in window)new IntersectionObserver(es=>es.forEach(x=>vis=x.isIntersecting)).observe(stage);
+  (function spin(){if(vis&&drag===null&&v&&!document.hidden){ry+=v;set()}requestAnimationFrame(spin)})();
+  stage.tabIndex=0;stage.setAttribute("role","img");stage.setAttribute("aria-label",$$("figcaption",stage).map(f=>f.textContent).join(", "));
+  stage.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"){ry-=90;set()}if(e.key==="ArrowRight"){ry+=90;set()}});
+  set();
+});
+
+/* ---------- 3D tilt on cards (mouse and pen only) ---------- */
+if(!STILL&&matchMedia("(hover: hover) and (pointer: fine)").matches){
+  document.addEventListener("pointermove",e=>{
+    const c=e.target.closest&&e.target.closest(".tilt3d,.spec,.sector,.pkg,.door");
+    $$(".tilting").forEach(x=>{if(x!==c){x.classList.remove("tilting");x.style.removeProperty("--rx");x.style.removeProperty("--ry")}});
+    if(!c)return;c.classList.add("tilting");if(!c.classList.contains("tilt3d"))c.classList.add("tilt3d");
+    const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    c.style.setProperty("--rx",(-y*6).toFixed(2)+"deg");c.style.setProperty("--ry",(x*8).toFixed(2)+"deg");
+  },{passive:true});
+}
+
+/* ---------- Fresh vegetables: landed cost per kg ---------- */
+if($("#vegCalc")){
+  const n=id=>parseFloat($(id).value)||0,FEE=120,f2=x=>isFinite(x)?x.toFixed(2):"—";
+  const calc=()=>{const kg=Math.max(n("#vKg"),1),shrink=Math.min(n("#vShrink"),90)/100;
+    const cost=kg*(n("#vFob")+n("#vAir")+n("#vPack"))+FEE+n("#vLocal");
+    const landed=cost/(kg*(1-shrink)),sell=n("#vSell"),m=sell?(sell-landed)/sell*100:NaN;
+    $("#vLanded").textContent="$"+f2(landed);$("#vProfit").textContent=isFinite(m)?"$"+Math.round((sell-landed)*kg*(1-shrink)).toLocaleString("en-US"):"—";$("#vMargin").textContent=isFinite(m)?m.toFixed(1)+" %":"—";
+    return {kg,landed:+landed.toFixed(2),margin:isFinite(m)?+m.toFixed(1):null}};
+  $$("#vegCalc input").forEach(i=>i.addEventListener("input",calc));calc();
+  $("#vegToRfq").onclick=()=>{const r=calc(),d=store.get("oc_draft")||{};
+    d.details=(d.details?d.details+"\n":"")+`Vegetable plan: ${r.kg} kg per air consignment, target landed US$${r.landed}/kg${r.margin!=null?`, margin ${r.margin}%`:""}.`;
+    store.set("oc_draft",d);track("veg_calc",r);location.href="contact.html#rfq"};
+}

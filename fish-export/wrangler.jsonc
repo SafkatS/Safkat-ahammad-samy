@@ -1,10 +1,17 @@
 {
-  // Static site served by a Cloudflare Worker with static assets.
-  // Cloudflare Workers Builds: set the root directory to "fish-export",
-  // build command empty, deploy command "npx wrangler deploy".
-  "name": "goodbuyfood",
+  // GoodBuy Foods Global static site on a Cloudflare Worker with static assets.
+  // Deploy from this folder: npx wrangler deploy
+  // Cloudflare Workers Builds: root directory "fish-export", build command empty, deploy command "npx wrangler deploy".
+  "name": "food-export",
+  "main": "worker.js",
   "compatibility_date": "2026-01-01",
   "assets": {
-    "directory": "./"
-  }
+    "directory": "./",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "goodbuyfoods.com", "custom_domain": true },
+    { "pattern": "www.goodbuyfoods.com", "custom_domain": true }
+  ]
 }

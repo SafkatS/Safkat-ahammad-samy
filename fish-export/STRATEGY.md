@@ -67,7 +67,7 @@ Hilsa and aromatic rice draw attention but are export-restricted. Use them to at
 | Legal status | Confirm the right registration for a buying agent in Bangladesh (indenting or commission-agent registration, trade licence) with a lawyer before invoicing. |
 | Liability for goods | Contracts must state that the exporter is the seller and GFG is the buyer's agent. |
 | Buyers and suppliers bypassing GFG | NCNDA, plus real value on every shipment (QC, documents, claims). |
-| Trade preferences | Bangladesh's LDC graduation is scheduled for 24 November 2026 and a deferral has been requested. Check duty per shipment. |
+| Trade preferences | The UN deferred Bangladesh's LDC graduation to 24 November 2029 (General Assembly, 30 October 2026); no further extension will be granted. Check duty per shipment and plan for 2029. |
 | Unproven claims | "World's best and most trusted" is stated as a mission. Replace it with evidence as shipments complete. |
 
 ## 7. First 90 days
@@ -77,3 +77,16 @@ Hilsa and aromatic rice draw attention but are export-restricted. Use them to at
 3. Recruit two freelance inspectors (Khulna, Chattogram).
 4. Win three first orders: one shrimp importer, one grocery wholesaler, one food-service buyer.
 5. Publish the first case study and real photos; replace placeholder media.
+
+## 8. Update, November 2026: Gulf and Bengali buyers first
+
+**Focus.** Two buyer groups now lead the site and the sales effort: Gulf food importers, and Bengali grocery importers worldwide. They buy most of Bangladesh's dry food, and both buy repeatedly around Ramadan, Eid and other festivals.
+
+**Products.** Added high-demand dry food (dried pomfret, anchovy and croaker; Indian bay leaf, mustard and sesame seed; toast and dry cake; packed lentils) and fresh vegetables Bengali and Arab buyers ask for (jute leaves/molokhia, flat bean, radish, cucumber, banana flower, kochur loti). The directory now has 154 products.
+
+**No-loss pricing (decision applied).**
+- Assure stays at US$290 per container, but inspector travel outside Dhaka, Chattogram and Khulna is now charged at cost, so remote inspections no longer lose money.
+- New **Fresh** service for air-freight vegetables: US$120 per consignment up to 3 t, or US$400 per month for a weekly programme of four. It covers a packhouse visit on packing day; tests are billed at lab cost. This is a proposed price; confirm it against your inspector's real cost per visit.
+- The vegetable calculator adds a shrink allowance to the landed cost per kg, so the figure buyers see is the true break-even price after arrival losses.
+
+**Ramadan 2027.** Ramadan is expected to begin around 8 February 2027. To reach Gulf shelves by late January, contracts are needed by 15 December 2026. Promote this now on WhatsApp and LinkedIn.
